@@ -466,18 +466,74 @@ footer{background:#e9ecf0;color:#596473;border-top:1px solid #dce1e7}
 /* Keep the hero headline on one line across screen sizes */
 .hero h1{font-size:clamp(14px,1.65vw,18px);line-height:1.8;white-space:nowrap;letter-spacing:-.7px}
 @media(max-width:650px){.hero h1{font-size:clamp(10px,3.05vw,13px);line-height:2;white-space:nowrap;letter-spacing:-.55px}}
+
+/* RAM TECH - reference-inspired storefront layout */
+body{background:#f2f4f8}
+.topline{background:#242b39;color:#f7f9fc;padding:8px 0;font-size:12px}
+.utility-links{display:flex;align-items:center;gap:18px;min-height:30px}
+.utility-links a{color:#f7f9fc;text-decoration:none;white-space:nowrap}
+.utility-links b{font-size:17px;margin-right:7px}
+.utility-sep{opacity:.55}
+.utility-right{display:flex;align-items:center;gap:25px;margin-right:auto}
+header{background:#fff;color:#172338;position:relative;box-shadow:0 3px 14px #152b4815}
+.head{min-height:112px;display:flex;align-items:center;gap:28px;padding:12px 0}
+.brand{flex:0 0 285px;min-width:0;justify-content:flex-start}
+.brand-logo{width:270px;height:92px;object-fit:contain;object-position:right center}
+.search{flex:1;max-width:650px}
+.search input{height:66px;background:#f5f6f9;border:1px solid #dce1e9;color:#263246;border-radius:18px;padding:14px 48px 14px 18px;font-size:17px}
+.search input::placeholder{color:#7a8290}
+.search:before{top:10px;color:#687386}
+.head-actions{flex:0 0 190px}
+.cart-header{width:100%;height:66px;display:flex;align-items:center;justify-content:space-around;background:#f6f7fa;color:#172338;border:1px solid #dfe4ec;border-radius:17px;font-size:16px}
+.cart-header strong{font-size:14px}
+nav{background:#242b39;border-top:1px solid #30394a}
+.navlinks{display:flex;align-items:center;gap:0;min-height:68px;overflow-x:auto;white-space:nowrap}
+.navlinks a{color:#f5f7fb;text-decoration:none;padding:17px 22px;font-size:15px;font-weight:700;border-left:1px solid #ffffff12}
+.navlinks a:hover{background:#303c50}
+.navlinks .nav-home{background:#0869ed;border-radius:0 15px 15px 0;padding-left:32px;padding-right:32px}
+.hero.wrap{width:min(1640px,99%);margin:4px auto 22px}
+.hero-box{min-height:420px;border-radius:20px;overflow:hidden;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;padding:32px 5%;background:linear-gradient(112deg,#dbe8f9 0%,#fff 53%,#dce9fb 100%);border:1px solid #d6dfed;box-shadow:0 8px 24px #1c335015}
+.hero-copy{text-align:right;position:relative;z-index:2}
+.hero-copy .eyebrow{font-size:22px;color:#142b59;font-weight:800}
+.hero-copy h1{font-size:clamp(36px,4vw,66px);line-height:1.35;color:#142b59;margin:8px 0 10px;white-space:normal;letter-spacing:-1.5px}
+.hero-brand-name{display:inline-block;background:#0874f5;color:#fff;border-radius:40px;padding:2px 50px;font-size:clamp(25px,3vw,43px);line-height:1.6}
+.hero-benefits{display:flex;gap:26px;flex-wrap:wrap;margin:24px 0 18px;color:#182d51;font-weight:700}
+.hero-benefits span{border-left:1px solid #aab8cc;padding-left:20px}
+.hero-cta .btn-primary{border-radius:40px;padding:13px 28px;font-size:17px}
+.hero-art{min-height:330px;display:grid;place-items:center;position:relative}
+.device-stack{width:100%;height:320px;position:relative;background:radial-gradient(ellipse at 48% 75%,#8ca7cc55,transparent 60%)}
+.device.phone{position:absolute;left:36%;top:5%;width:115px;height:235px;border:8px solid #1c2432;border-radius:24px;background:linear-gradient(145deg,#8ed6ff,#3568c5 55%,#182c54);box-shadow:0 15px 28px #13213d45;transform:rotate(-5deg)}
+.device.laptop{position:absolute;left:2%;bottom:12%;width:78%;height:190px;border:10px solid #252d3b;border-radius:13px;background:linear-gradient(135deg,#74b6f6,#1d3d7a);box-shadow:0 22px 28px #14213d45;transform:perspective(500px) rotateY(-10deg)}
+.device.laptop:after{content:"";position:absolute;left:-8%;right:-8%;bottom:-22px;height:17px;background:linear-gradient(#aab6c8,#59677c);border-radius:3px 3px 14px 14px}
+.categories{grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.cat{background:#fff;border:1px solid #d8dee8;border-radius:16px;padding:9px 8px 12px;box-shadow:0 3px 12px #182c4610}
+.cat-art{height:105px;border-radius:11px;background:linear-gradient(145deg,#eef2f7,#fff);overflow:hidden;display:grid;place-items:center}
+.cat-art span{font-size:54px}
+.cat strong{font-size:14px;color:#1d2738}
+.cat small{display:none}
+@media(max-width:900px){.head{gap:12px}.brand{flex-basis:200px}.brand-logo{width:195px;height:74px}.head-actions{flex-basis:145px}.navlinks a{padding:15px 14px}.hero-box{min-height:350px}.categories{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){.utility-links{gap:9px;font-size:10px}.utility-right{gap:10px}.utility-right a:first-child{display:none}.head{min-height:80px;gap:8px;flex-wrap:wrap}.brand{flex:0 0 132px}.brand-logo{width:130px;height:55px}.search{order:3;flex-basis:100%;max-width:none}.search input{height:48px;font-size:13px}.search:before{top:2px}.head-actions{flex:1}.cart-header{height:48px;font-size:12px}.navlinks{min-height:54px}.navlinks a{font-size:12px;padding:13px 12px}.navlinks .nav-home{padding-left:18px;padding-right:18px}.hero.wrap{width:100%;margin:0 auto 14px}.hero-box{border-radius:0;min-height:300px;grid-template-columns:1fr;padding:24px 18px}.hero-copy h1{font-size:32px}.hero-copy .eyebrow{font-size:15px}.hero-brand-name{font-size:24px;padding:0 30px}.hero-art{min-height:150px;order:2}.device-stack{height:150px}.device.phone{height:120px;width:62px;border-width:5px}.device.laptop{height:95px}.hero-benefits{gap:8px;font-size:11px;margin:12px 0}.hero-benefits span{padding-left:8px}.hero-cta .btn-primary{font-size:13px;padding:8px 18px}.categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cat-art{height:90px}}
+
 </style>
 </head>
 <body>
-<div class="topline"><div class="wrap"><span>فروشگاه اینترنتی لوازم جانبی موبایل و کامپیوتر رام آنلاین</span><span>پشتیبانی و ثبت سفارش از طریق فروشگاه</span></div></div>
-<header><div class="wrap head">
- <a class="brand" href="#home" aria-label="رام‌تک، صفحه اصلی"><img class="brand-logo" src="assets/ram-tech-logo.svg" alt="RAM TECH | رام‌تک"></a>
- <div class="search"><input id="search" type="search" placeholder="جست‌وجوی محصول، برند یا دسته‌بندی..." aria-label="جست‌وجوی محصولات"></div>
- <div class="head-actions"><button class="btn btn-ghost" id="cartBtn">سبد خرید <span class="cart-count" id="cartCount">۰</span></button></div>
-</div><nav><div class="wrap navlinks"><a href="#home">خانه</a><a href="#categories">دسته‌بندی کالاها</a><a href="#products">همه محصولات</a><a href="#benefits">مزیت‌های خرید</a><a href="#contact">تماس با ما</a></div></nav></header>
+<div class="topline"><div class="wrap utility-links">
+ <a href="#contact">پشتیبانی آنلاین <b>🎧</b></a><span class="utility-sep">|</span><span>۷ روز هفته، ۲۴ ساعته <b>◷</b></span>
+ <div class="utility-right"><a href="#contact">سبد خرید 🛒</a><a href="#contact">پیگیری سفارش 🚚</a><a href="#contact">حساب کاربری 👤</a></div>
+</div></div>
+<header>
+ <div class="wrap head">
+  <a class="brand" href="#home" aria-label="رام‌تک، صفحه اصلی"><img class="brand-logo" src="assets/ram-tech-logo.svg" alt="RAM TECH | رام‌تک"></a>
+  <div class="search"><input id="search" type="search" placeholder="جستجوی محصولات..." aria-label="جست‌وجوی محصولات"></div>
+  <div class="head-actions"><button class="btn btn-ghost cart-header" id="cartBtn">🛒 <span>سبد خرید</span><strong id="cartCount">۰</strong></button></div>
+ </div>
+ <nav><div class="wrap navlinks">
+  <a class="nav-home" href="#home">⌂ خانه</a><a href="#categories">▦ دسته‌بندی محصولات</a><a href="#products">٪ تخفیف‌های ویژه</a><a href="#benefits">ⓘ درباره ما</a><a href="#contact">☎ تماس با ما</a><a href="#products">؟ راهنمای خرید</a><a href="#contact">همکاری با ما</a>
+ </div></nav>
+</header>
 <main>
 <section class="hero wrap" id="home"><div class="hero-box">
- <div><span class="eyebrow">خرید آسان لوازم دیجیتال</span><h1>هر چیزی برای موبایل و کامپیوترت نیاز داری</h1><p>از کابل و شارژر تا هندزفری، کیبورد و ماوس؛ محصولات موردنیازت را در فروشگاه کامپیوتر محمدی پیدا کن.</p><div class="hero-cta"><a class="btn btn-primary" href="#products" style="text-decoration:none">مشاهده محصولات</a><a class="btn btn-ghost" href="#categories" style="text-decoration:none">دسته‌بندی‌ها</a></div></div>
+ <div class="hero-copy"><span class="eyebrow">فروشگاه اینترنتی لوازم جانبی</span><h1>موبایل و کامپیوتر</h1><strong class="hero-brand-name">رام آنلاین</strong><div class="hero-benefits"><span>🛡️ خرید مطمئن</span><span>🚚 ارسال سریع</span><span>🏷️ قیمت مناسب</span></div><div class="hero-cta"><a class="btn btn-primary" href="#products" style="text-decoration:none">مشاهده محصولات</a></div></div>
  <div class="hero-art"><div class="device-stack"><div class="device phone"></div><div class="device laptop"></div></div></div>
 </div></section>
 <section class="section wrap" id="categories"><div class="section-head"><div><h2>دسته‌بندی محصولات</h2><p>سریع‌تر محصول موردنظرت را پیدا کن</p></div></div><div class="categories" id="categoryGrid"></div></section>
