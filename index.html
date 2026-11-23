@@ -916,6 +916,8 @@ body :is(.hero-copy h1,.hero-copy .eyebrow,.hero-brand-name,.navlinks a,
 #contact .footgrid a{font-size:1.48em!important;line-height:2!important}
 #contact .copyright{font-size:1.38em!important;line-height:1.9!important}
 
+/* Smaller titles only for the four requested category cards */
+#categoryGrid .cat.cat-compact-title strong{font-size:1.15em!important;line-height:1.5!important}
 </style>
 </head>
 <body>
@@ -998,6 +1000,7 @@ function renderCategories(){
  const rank=name=>{const n=(name||"").toLocaleLowerCase("fa");if(/موبایل|گوشی/.test(n))return 0;if(/لپ.?تاپ|کامپیوتر/.test(n))return 1;if(/ماوس|موس|کیبورد|صفحه.?کلید/.test(n))return 2;if(/شارژ|آداپتور|کابل/.test(n))return 3;if(/پاوربانک|پاور بانک/.test(n))return 4;if(/هندز|هدفون|هدست/.test(n))return 5;if(/بازی|گیم|کنسول/.test(n))return 6;return 7;};
  const items=categories.slice(1).slice().sort((a,b)=>rank(a[1])-rank(b[1]));
  $("categoryGrid").innerHTML=items.map(c=>'<button type="button" class="cat" data-cat="'+safe(c[0])+'"><span class="cat-art"><img src="'+imageFor(c[1])+'" alt="'+safe(c[1])+'" loading="lazy"></span><strong>'+safe(c[1])+'</strong><small>مشاهده کالاها</small></button>').join("");
+ document.querySelectorAll("#categoryGrid .cat").forEach(el=>{const title=el.querySelector("strong")?.textContent||"";if(/لوازم.?کامپیوتر|کابل.?و.?شارژر|صوتی.?و.?هندزفری|حافظه.?و.?ذخیره.?سازی/.test(title))el.classList.add("cat-compact-title");});
  document.querySelectorAll(".cat").forEach(el=>el.onclick=()=>setCategory(el.dataset.cat));
 }
 function renderFilters(){
