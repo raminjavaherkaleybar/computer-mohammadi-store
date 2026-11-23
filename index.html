@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=1200, initial-scale=0.33, minimum-scale=0.25, maximum-scale=5, user-scalable=yes">
 <meta name="theme-color" content="#111827">
 <title>فروشگاه اینترنتی لوازم جانبی موبایل و کامپیوتر رام آنلاین | کامپیوتر محمدی</title>
 <meta name="description" content="فروشگاه آنلاین کامپیوتر محمدی؛ لوازم جانبی موبایل و کامپیوتر، کابل، شارژر، هندزفری، کیبورد و ماوس.">
@@ -796,6 +796,38 @@ nav{background:#252b38!important;border:0!important}
  .hero-copy h1{font-size:16px!important}
  .hero-benefits{font-size:8px!important}
  .cat{height:104px!important}.cat-art{height:69px!important;min-height:69px!important;flex-basis:69px!important}
+}
+
+/* ONE SHARED LAYOUT: mobile uses the same 1200px desktop composition */
+@media (max-width: 650px){
+ html,body{min-width:1200px!important;width:1200px!important;max-width:none!important;overflow-x:auto!important}
+ body{font-size:initial!important}
+ .wrap{width:min(1200px,99%)!important;max-width:1200px!important}
+ .head{display:flex!important;flex-wrap:nowrap!important;min-height:112px!important;gap:28px!important;padding:12px 0!important}
+ .brand{flex:0 0 285px!important;min-width:0!important}
+ .brand-logo{width:270px!important;height:92px!important}
+ .search{order:initial!important;flex:1 1 auto!important;max-width:650px!important;width:auto!important}
+ .search input{height:66px!important;font-size:17px!important}
+ .head-actions{display:flex!important;flex:0 0 190px!important;margin:0!important}
+ .cart-header{width:100%!important;height:66px!important;min-width:0!important;font-size:16px!important}
+ .navlinks{height:auto!important;min-height:68px!important;overflow:visible!important;justify-content:flex-start!important;gap:0!important}
+ .navlinks a{height:auto!important;min-height:0!important;flex:0 0 auto!important;padding:17px 22px!important;font-size:15px!important}
+ .hero.wrap{width:min(1640px,99%)!important;margin:4px auto 22px!important;padding:0!important}
+ .hero-box{display:grid!important;grid-template-columns:1.1fr .9fr!important;grid-template-rows:none!important;min-height:420px!important;height:auto!important;padding:32px 5%!important}
+ .hero-copy{grid-column:auto!important;grid-row:auto!important;text-align:right!important;padding:0!important}
+ .hero-copy h1{font-size:clamp(14px,1.65vw,18px)!important;white-space:nowrap!important}
+ .hero-art{display:block!important;grid-column:auto!important;grid-row:auto!important;width:auto!important;height:auto!important;min-height:260px!important}
+ .categories{grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:8px!important}
+ .cat{height:auto!important;min-height:0!important;padding:12px 5px!important}
+ .cat-art{height:76px!important;min-height:76px!important;flex:initial!important}
+ .cat strong{font-size:14px!important}
+ .cat small{display:block!important}
+ .products{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}
+ .product-visual{height:160px!important}
+ .product-body{padding:14px!important}
+ .product h3{font-size:14px!important}
+ .features{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+ .footgrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 }
 </style>
 </head>
