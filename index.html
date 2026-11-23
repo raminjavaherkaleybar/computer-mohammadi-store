@@ -521,6 +521,50 @@ nav{background:#242b39;border-top:1px solid #30394a}
 .hero-art{display:block;min-height:0;width:100%;line-height:0}
 .hero-banner-image{display:block;width:100%;height:auto;aspect-ratio:1600/520;object-fit:cover}
 @media(max-width:560px){.hero{padding-top:16px}.hero-box{border-radius:16px}.hero-banner-image{aspect-ratio:1.75/1;object-fit:cover}}
+
+/* Reference composition: utility strip, light search header, dark nav, wide banner, seven category tiles */
+.topline{background:#20242b;color:#e7edf5;padding:7px 0}
+.topline .wrap{display:flex;align-items:center;justify-content:space-between}
+.utility-links a,.utility-links span{color:#e7edf5;text-decoration:none}
+.utility-right{display:flex;gap:22px;align-items:center}
+header{background:#fff;color:#1c2635;position:relative;box-shadow:0 3px 15px #10182812}
+.head{min-height:92px;padding:12px 0;display:grid;grid-template-columns:210px minmax(260px,1fr) 210px;gap:25px}
+.brand{grid-column:3;grid-row:1;justify-content:flex-end}
+.brand-logo{width:205px;height:66px;object-position:right center}
+.search{grid-column:2;grid-row:1}
+.search input{background:#f4f6f9;border:1px solid #e1e6ee;color:#202a39;border-radius:9px;height:48px}
+.search input::placeholder{color:#8792a2}
+.search:before{color:#56657a;top:0}
+.head-actions{grid-column:1;grid-row:1;justify-content:flex-start}
+.cart-header{background:#f1f4f8;color:#28364a;border:1px solid #e1e6ee}
+.cart-header strong{background:#216ee8;color:#fff;border-radius:20px;padding:1px 8px}
+nav{background:#20242b;border-top:0}
+.navlinks{padding:0;gap:0;min-height:48px;align-items:stretch}
+.navlinks a{display:flex;align-items:center;padding:0 17px;color:#f0f3f8;font-size:13px}
+.navlinks a.nav-home{background:#2678ee;color:#fff}
+.navlinks a:hover{background:#303b4b;color:#fff}
+.navlinks a.nav-home:hover{background:#1767dc}
+.hero{padding:22px 0 14px}
+.hero-box{border-radius:10px;border:0;box-shadow:none}
+.hero-banner-image{aspect-ratio:1600/520;object-fit:cover}
+.section{padding:14px 0 24px}
+#categories .section-head{margin-bottom:12px}
+#categories .section-head h2{font-size:20px}
+.categories{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}
+.cat{min-width:0;min-height:150px;padding:12px 8px 14px;border:1px solid #e6e9ef;border-radius:9px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 5px 16px #16243a0b}
+.cat-art{height:92px;width:100%;display:grid;place-items:center;border-radius:7px;overflow:hidden;background:linear-gradient(145deg,#e9f1fb,#f7f9fc)}
+.cat-art span{font-size:48px;filter:drop-shadow(0 7px 5px #172b4630)}
+.cat strong{font-size:12px;color:#253348;line-height:1.5}
+.cat small{font-size:10px;color:#77849a}
+.cat:nth-child(7n+1) .cat-art{background:linear-gradient(145deg,#e3eafa,#cbdaf2)}
+.cat:nth-child(7n+2) .cat-art{background:linear-gradient(145deg,#f0eafa,#e0d6f2)}
+.cat:nth-child(7n+3) .cat-art{background:linear-gradient(145deg,#e4f5f2,#cde9e5)}
+.cat:nth-child(7n+4) .cat-art{background:linear-gradient(145deg,#f9f0df,#f2dfbd)}
+.cat:nth-child(7n+5) .cat-art{background:linear-gradient(145deg,#e8edf2,#d7e1ea)}
+.cat:nth-child(7n+6) .cat-art{background:linear-gradient(145deg,#e3f1fa,#cde5f4)}
+.cat:nth-child(7n) .cat-art{background:linear-gradient(145deg,#f7e9ec,#f0d5dc)}
+@media(max-width:900px){.head{grid-template-columns:150px 1fr 160px;gap:12px}.categories{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:600px){.topline .wrap{gap:6px}.utility-right{gap:10px}.head{display:flex;flex-wrap:wrap;gap:9px}.brand{order:0}.head-actions{order:1;margin-right:auto}.search{order:2;flex-basis:100%}.brand-logo{width:150px;height:48px}.navlinks{overflow:auto}.navlinks a{padding:0 12px}.hero{padding:14px 0 8px}.hero-banner-image{aspect-ratio:1.75/1}.categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.cat{min-height:130px}.cat-art{height:78px}.cat-art span{font-size:40px}}
 </style>
 </head>
 <body>
