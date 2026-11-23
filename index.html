@@ -320,6 +320,19 @@ footer{background:#050a13;color:#a9bdd6;border-top:1px solid #263c56}
 @media(max-width:900px){.hero-box{min-height:300px}.products{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.hero{padding-top:18px}.hero-box{min-height:0;grid-template-columns:1fr;border-radius:21px;padding:26px 20px}.hero-box:after{inset:8px;border-radius:15px}.hero-art{min-height:150px}.device-stack{transform:scale(.82);transform-origin:center top;height:150px}.hero h1{font-size:28px}.categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.cat-art{height:76px}.cat-art span{font-size:34px}.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.product-visual{height:132px}.product-body{padding:10px}.product h3{font-size:12px}.section{padding:19px 0}}
 
+
+/* HERO PHOTO — premium technology accessories */
+.hero-box{
+ background-image:
+  linear-gradient(90deg,rgba(4,11,22,.20) 0%,rgba(4,11,22,.62) 48%,rgba(4,11,22,.94) 100%),
+  url("https://images.unsplash.com/photo-1560671582-7668ca55fdc8?auto=format&fit=crop&w=2000&q=85");
+ background-size:cover;
+ background-position:center 48%;
+}
+@media(max-width:650px){
+ .hero-box{background-position:center;background-image:linear-gradient(90deg,rgba(4,11,22,.48),rgba(4,11,22,.88)),url("https://images.unsplash.com/photo-1560671582-7668ca55fdc8?auto=format&fit=crop&w=1200&q=82");}
+}
+
 </style>
 </head>
 <body>
