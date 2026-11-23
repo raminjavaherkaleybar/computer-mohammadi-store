@@ -851,6 +851,19 @@ body :is(.hero-copy h1,.hero-copy .eyebrow,.hero-brand-name,.navlinks a,
  font-size:1.12em;
 }
 @media(max-width:650px){body{zoom:1.08!important}}
+
+/* READABILITY PASS 2: enlarge text consistently on desktop and mobile */
+body :is(h1,h2,h3,h4,h5,h6,p,a,button,label,small,strong,span,li,summary,th,td,input,select,textarea,legend){
+  font-size:1.18em!important;
+}
+body :is(.hero-copy h1,.hero-copy .eyebrow,.hero-brand-name,.navlinks a,
+.utility-links,.cart-header,.section-head h2,.section-head p,.cat strong,.cat small,
+.product h3,.product-cat,.price,.product-actions button,.filter,.sort,
+.feature strong,.feature small,.footgrid h3,.footgrid p,.footgrid a,.copyright,
+.note,.empty,.cart-row,.cart-total,.checkout-message){
+  font-size:1.20em!important;
+}
+
 </style>
 </head>
 <body>
