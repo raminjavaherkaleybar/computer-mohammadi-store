@@ -160,7 +160,8 @@ function render(){
  const catFilter=$('productCategoryFilter')?.value||'';
  const visibleProducts=products.filter(p=>(!term||[p.name,p.sku||''].join(' ').toLocaleLowerCase('fa').includes(term))&&(!catFilter||p.category_id===catFilter));
  $('totalProducts').textContent=fa(products.length);$('activeProducts').textContent=fa(products.filter(p=>p.is_active).length);$('lowStock').textContent=fa(products.filter(p=>p.stock_quantity<=3).length);
- populateStockProducts();\n  $('productRows').innerHTML=visibleProducts.length?visibleProducts.map(p=>'<tr><td>'+safe(p.name)+'</td><td>'+safe(p.categories?.name||'—')+'</td><td>'+fa(p.price)+'</td><td>'+fa(p.stock_quantity)+'</td><td><span class="pill '+(p.is_active?'':'off')+'">'+(p.is_active?'فعال':'پیش‌نویس')+'</span></td><td><div class="inline"><button class="btn secondary" data-edit="'+p.id+'">ویرایش</button><button class="btn danger" data-delete="'+p.id+'">حذف</button></div></td></tr>').join(''):'<tr><td colspan="6">هنوز کالایی ثبت نشده است. محصولات واقعی را از فرم بالا اضافه کنید.</td></tr>';
+ populateStockProducts();
+  $('productRows').innerHTML=visibleProducts.length?visibleProducts.map(p=>'<tr><td>'+safe(p.name)+'</td><td>'+safe(p.categories?.name||'—')+'</td><td>'+fa(p.price)+'</td><td>'+fa(p.stock_quantity)+'</td><td><span class="pill '+(p.is_active?'':'off')+'">'+(p.is_active?'فعال':'پیش‌نویس')+'</span></td><td><div class="inline"><button class="btn secondary" data-edit="'+p.id+'">ویرایش</button><button class="btn danger" data-delete="'+p.id+'">حذف</button></div></td></tr>').join(''):'<tr><td colspan="6">هنوز کالایی ثبت نشده است. محصولات واقعی را از فرم بالا اضافه کنید.</td></tr>';
  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editProduct(b.dataset.edit));document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteProduct(b.dataset.delete));
 }
 
