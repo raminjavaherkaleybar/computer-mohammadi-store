@@ -892,6 +892,33 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 </style>
 
 
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0b1220">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/svg+xml" href="./assets/ram-tech-app-icon.svg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "فروشگاه کامپیوتر محمدی | رام‌تک",
+  "alternateName": "RAM TECH",
+  "url": "https://raminjavaherkaleybar.github.io/computer-mohammadi-store/",
+  "logo": "https://raminjavaherkaleybar.github.io/computer-mohammadi-store/assets/ram-tech-logo.svg",
+  "image": "https://raminjavaherkaleybar.github.io/computer-mohammadi-store/assets/ram-tech-hero.svg",
+  "description": "فروشگاه لوازم جانبی موبایل و کامپیوتر در کلیبر؛ کابل، شارژر، هندزفری، کیبورد و ماوس.",
+  "email": "raminmkaleybar1363@gmail.com",
+  "telephone": "+989387893112",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "کلیبر",
+    "addressRegion": "آذربایجان شرقی",
+    "addressCountry": "IR"
+  }
+}
+</script>
+
 </head>
 <body>
 <div class="topline"><div class="wrap utility-links">
@@ -1308,4 +1335,10 @@ button,input,select,textarea{max-width:100%;min-width:0}
 }
 </style>
 
+
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {}));
+}
+</script>
 </body></html>
