@@ -213,7 +213,7 @@ async function loadPaymentReceipts(){
   const pending=r.receipt_status==='received'&&r.order_status==='pending'&&r.payment_status==='unpaid';
   const statusText=receiptStatusLabel[r.receipt_status]||r.receipt_status;
   const file=[r.file_name,r.media_type].filter(Boolean).join(' · ')||'پیوست روبیکا';
-  const isImage=/image/i.test(r.media_type||'')||/\\.(jpe?g|png|webp)$/i.test(r.file_name||'');
+  const isImage=/image/i.test(r.media_type||'')||/(jpe?g|png|webp)/i.test(r.file_name||'');
   let preview='—';
   if(r.signed_url&&isImage)preview='<a href="'+safe(r.signed_url)+'" target="_blank" rel="noopener noreferrer" title="بازکردن تصویر در اندازه کامل"><img src="'+safe(r.signed_url)+'" alt="رسید سفارش '+fa(r.order_number)+'" style="width:112px;height:82px;object-fit:contain;border:1px solid #dce4ef;border-radius:9px;background:#f8fafd;padding:3px"></a>';
   else if(r.signed_url)preview='<a href="'+safe(r.signed_url)+'" target="_blank" rel="noopener noreferrer">بازکردن فایل رسید</a>';
