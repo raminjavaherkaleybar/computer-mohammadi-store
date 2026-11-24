@@ -1054,6 +1054,26 @@ function renderProducts(){
  document.querySelectorAll("[data-favorite]").forEach(b=>{b.classList.toggle("is-favorite",favorites.includes(String(b.dataset.favorite)));b.textContent=favorites.includes(String(b.dataset.favorite))?"♥":"♡";b.onclick=()=>toggleFavorite(b.dataset.favorite);});
  document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>addToCart(b.dataset.add));
  document.querySelectorAll("[data-detail]").forEach(b=>b.onclick=()=>{location.href="product.html?id="+encodeURIComponent(b.dataset.detail)});
+ // باز کردن صفحه مستقل جزئیات با کلیک روی بدنه کارت محصول؛ دکمه‌های خرید/مقایسه/علاقه‌مندی مستقل می‌مانند.
+ document.querySelectorAll("#productGrid .product").forEach(card=>{
+  const detailButton=card.querySelector("[data-detail]");
+  const productId=detailButton?.dataset.detail;
+  if(!productId)return;
+  card.setAttribute("role","link");
+  card.setAttribute("tabindex","0");
+  card.setAttribute("aria-label","مشاهده صفحه جزئیات "+(card.querySelector("h3")?.textContent||"محصول"));
+  card.style.cursor="pointer";
+  card.addEventListener("click",event=>{
+   if(event.target.closest("button,a,input,select,textarea"))return;
+   location.href="product.html?id="+encodeURIComponent(productId);
+  });
+  card.addEventListener("keydown",event=>{
+   if((event.key==="Enter"||event.key===" ")&&event.target===card){
+    event.preventDefault();
+    location.href="product.html?id="+encodeURIComponent(productId);
+   }
+  });
+ });
 }
 function setCategory(c){active=c;favoriteOnly=false;renderFilters();renderProducts();}
 function toggleFavorite(id){id=String(id);favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];localStorage.setItem("ramTechFavorites",JSON.stringify(favorites));renderFilters();renderProducts();}
