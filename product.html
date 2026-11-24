@@ -26,6 +26,33 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 @media(max-width:700px){.wrap{width:calc(100% - 28px)}.card{grid-template-columns:minmax(0,1fr);gap:16px;padding:16px;border-radius:17px}.visual{min-height:220px;max-height:320px}.visual img{max-height:300px}.info{min-height:0}.name{font-size:clamp(21px,5vw,25px)}.price{font-size:21px}.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.actions button{width:100%;min-width:0;padding:10px 7px;font-size:12px}}
 @media(max-width:380px){.wrap{width:calc(100% - 20px)}.card{padding:12px}.actions{grid-template-columns:1fr}.visual{min-height:190px}}
 
+
+/* RAM TAK TOUCH-DESKTOP CONSISTENCY */
+
+/* Keep product details mobile-first on phones even in Chrome desktop mode */
+@media (hover:none) and (pointer:coarse) and (max-device-width:767px){
+ html,body{width:100%;max-width:100%;overflow-x:hidden}
+ .wrap{width:calc(100% - 28px)!important;max-width:100%!important}
+ header .wrap{display:flex;flex-wrap:nowrap;gap:8px}
+ .brand{font-size:18px;min-width:0}
+ .back{white-space:nowrap;font-size:11px;padding:7px 9px}
+ .crumb{margin:14px 0;font-size:11px}
+ .card{grid-template-columns:minmax(0,1fr)!important;gap:16px!important;padding:16px!important;border-radius:17px!important}
+ .visual{width:100%;min-height:210px!important;max-height:300px!important}
+ .visual img{max-height:290px!important;padding:12px}
+ .info{min-height:0!important;min-width:0}
+ .name{font-size:clamp(21px,5vw,25px)!important}
+ .price{font-size:21px!important}
+ .actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+ .actions button{width:100%;min-width:0;padding:10px 7px;font-size:12px}
+}
+@media (hover:none) and (pointer:coarse) and (max-device-width:380px){
+ .wrap{width:calc(100% - 20px)!important}
+ .card{padding:12px!important}
+ .actions{grid-template-columns:1fr!important}
+ .visual{min-height:190px!important}
+}
+
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#0b1220">
