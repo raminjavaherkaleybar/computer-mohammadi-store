@@ -1510,6 +1510,72 @@ html.ramtech-force-mobile .hero-keyboard{left:34%!important;top:0!important;widt
 html.ramtech-force-mobile .hero-mouse{left:53%!important;bottom:0!important;width:20%!important;height:27%!important}
 html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;width:17%!important;height:26%!important}
 
+
+/* RAM TECH DESKTOP FINAL LAYOUT — isolated from phone/tablet rules */
+@media screen and (min-width:1101px){
+  html,body{min-width:0!important;width:100%!important;overflow-x:hidden!important}
+  .wrap,.topline .wrap,header .wrap,.navlinks{
+    width:min(1320px,calc(100% - 64px))!important;
+    max-width:1320px!important;
+    margin-left:auto!important;margin-right:auto!important;
+  }
+  .topline .wrap{display:flex!important;align-items:center!important;justify-content:space-between!important}
+  header .head{
+    display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+    justify-content:space-between!important;gap:28px!important;
+    min-height:94px!important;padding:10px 0!important;
+  }
+  header .brand{display:flex!important;flex:0 0 230px!important;width:230px!important;max-width:230px!important;min-width:0!important}
+  header .brand-logo{display:block!important;width:230px!important;height:70px!important;max-width:100%!important;max-height:70px!important;object-fit:contain!important}
+  header .head-actions{display:flex!important;flex:0 0 auto!important;margin:0!important}
+  header .head-actions .cart-header{min-height:46px!important;padding:0 18px!important;font-size:14px!important;white-space:nowrap!important}
+  nav .navlinks{
+    display:flex!important;flex-wrap:nowrap!important;align-items:stretch!important;
+    justify-content:space-between!important;gap:0!important;overflow:visible!important;
+    min-height:54px!important;width:min(1320px,calc(100% - 64px))!important;
+  }
+  nav .navlinks a{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 1 auto!important;min-width:0!important;padding:0 13px!important;font-size:13px!important;white-space:nowrap!important}
+  .hero.wrap{width:min(1320px,calc(100% - 64px))!important;margin:22px auto 18px!important;padding:0!important}
+  .hero-box{
+    display:grid!important;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)!important;
+    align-items:center!important;gap:28px!important;min-height:330px!important;
+    padding:30px 38px!important;overflow:hidden!important;
+  }
+  .hero-copy{display:block!important;min-width:0!important;width:100%!important;text-align:center!important}
+  .hero-copy h1{font-size:clamp(30px,2.6vw,42px)!important}
+  .hero-art{display:block!important;position:relative!important;width:100%!important;height:270px!important;min-height:270px!important;overflow:hidden!important}
+  .hero-products{display:block!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:0!important;overflow:hidden!important}
+  .hero-products img{display:block!important;position:absolute!important;max-width:none!important;object-fit:contain!important;object-position:center!important;visibility:visible!important;opacity:1!important}
+  .hero-laptop{left:0!important;bottom:5%!important;width:58%!important;height:78%!important;object-fit:cover!important}
+  .hero-phone{left:35%!important;top:12%!important;width:18%!important;height:72%!important}
+  .hero-headphones{left:59%!important;top:13%!important;width:31%!important;height:72%!important}
+  .hero-keyboard{left:34%!important;top:0!important;width:35%!important;height:43%!important}
+  .hero-mouse{left:55%!important;bottom:0!important;width:20%!important;height:27%!important}
+  .hero-earbuds{left:21%!important;bottom:0!important;width:17%!important;height:26%!important}
+  .catalog-search-wrap{padding-top:18px!important}
+  .catalog-search{width:min(680px,70%)!important}
+  #categories .section-head{display:flex!important}
+  .categories{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:16px!important}
+  .cat{min-width:0!important;min-height:170px!important}
+  .cat-art{width:100%!important;height:110px!important;overflow:hidden!important}
+  .cat-art img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important}
+  .toolbar{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:14px!important;padding:14px 16px!important}
+  .filters{display:flex!important;flex:1 1 auto!important;flex-wrap:wrap!important;gap:8px!important;min-width:0!important;overflow:visible!important}
+  .filter{flex:0 0 auto!important;white-space:nowrap!important}
+  .sort{flex:0 0 190px!important;width:190px!important;max-width:190px!important}
+  .products{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:18px!important;align-items:stretch!important}
+  .product{display:flex!important;flex-direction:column!important;min-width:0!important;height:100%!important;overflow:hidden!important}
+  .product-visual{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:clamp(190px,17vw,250px)!important;min-height:190px!important;overflow:hidden!important}
+  .product-visual>img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important;padding:14px!important}
+  .product-body{display:flex!important;flex:1 1 auto!important;flex-direction:column!important;min-width:0!important;padding:15px!important}
+  .product h3{font-size:14px!important;line-height:1.8!important;min-height:52px!important;overflow-wrap:anywhere!important}
+  .product-actions{display:flex!important;flex-wrap:nowrap!important;gap:7px!important;margin-top:auto!important}
+  .product-actions button{flex:1 1 0!important;min-width:0!important;padding:10px 7px!important;font-size:12px!important;white-space:nowrap!important}
+  .section{padding:24px 0 30px!important}
+  .section-head{display:flex!important;align-items:center!important;justify-content:space-between!important}
+  .footgrid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:24px!important}
+}
+
 </style>
 
 
