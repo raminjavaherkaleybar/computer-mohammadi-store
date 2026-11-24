@@ -20,7 +20,7 @@
 <section id="appPanel" class="hidden">
 <nav class="panel admin-nav" aria-label="دسترسی سریع پنل"><a href="#dashboard">داشبورد</a><a href="#sales">گزارش فروش</a><a href="#productFormPanel">ثبت کالا</a><a href="#productsPanel">فهرست کالاها</a><a href="#ordersPanel">سفارش‌ها</a><a href="#shippingSettings">تعرفه ارسال</a><a href="#customersPanel">مشتریان</a><a href="#inventoryPanel">گردش موجودی</a><a href="#contactPanel">تماس با ما</a><a href="./#contact" target="_blank" rel="noopener noreferrer">صفحه تماس عمومی ↗</a></nav>
 <div class="panel" id="dashboard"><div class="headrow"><div><h2>خلاصه فروشگاه</h2><p class="muted">آمار کالاهای ثبت‌شده در پایگاه داده اختصاصی</p></div><span id="who" class="muted"></span></div><div class="stats"><div class="stat"><strong id="totalProducts">۰</strong><span>کل کالاها</span></div><div class="stat"><strong id="activeProducts">۰</strong><span>کالاهای فعال در سایت</span></div><div class="stat"><strong id="lowStock">۰</strong><span>کالای کم‌موجودی (۳ عدد یا کمتر)</span></div></div></div>
-<div class="panel" id="sales"><h2>گزارش فروش</h2><p class="muted">خلاصه سفارش‌های ثبت‌شده در پایگاه داده فروشگاه</p><div class="stats"><div class="stat"><strong id="reportOrders">۰</strong><span>تعداد سفارش‌ها</span></div><div class="stat"><strong id="reportRevenue">۰</strong><span>مجموع مبلغ سفارش‌ها (تومان)</span></div><div class="stat"><strong id="reportDelivered">۰</strong><span>سفارش‌های تحویل‌شده</span></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>ماه</th><th>تعداد سفارش</th><th>مجموع مبلغ (تومان)</th></tr></thead><tbody id="reportMonthly"><tr><td colspan="3">پس از دریافت سفارش‌ها نمایش داده می‌شود.</td></tr></tbody></table></div><p class="muted">این گزارش بر اساس سفارش‌های ثبت‌شده است و به معنی مبلغ پرداخت قطعی‌شده نیست.</p></div><div class="panel" id="productFormPanel"><h2 id="formTitle">ثبت کالای جدید</h2><form id="productForm"><input type="hidden" id="productId"><div class="grid">
+<div class="panel" id="sales"><h2>گزارش فروش</h2><p class="muted">گزارش فقط سفارش‌های دارای پرداخت تأییدشده را محاسبه می‌کند.</p><div class="stats"><div class="stat"><strong id="reportOrders">۰</strong><span>تعداد سفارش‌های پرداخت‌شده</span></div><div class="stat"><strong id="reportRevenue">۰</strong><span>مجموع دریافتی تأییدشده (تومان)</span></div><div class="stat"><strong id="reportDelivered">۰</strong><span>سفارش‌های تحویل‌شده</span></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>ماه</th><th>تعداد سفارش</th><th>مجموع مبلغ (تومان)</th></tr></thead><tbody id="reportMonthly"><tr><td colspan="3">پس از دریافت سفارش‌ها نمایش داده می‌شود.</td></tr></tbody></table></div><p class="muted">سفارش‌های پرداخت‌نشده و لغوشده در مبلغ دریافتی محاسبه نمی‌شوند. گزارش از سفارش‌های دریافت‌شده در پنل تشکیل شده است.</p></div><div class="panel" id="productFormPanel"><h2 id="formTitle">ثبت کالای جدید</h2><form id="productForm"><input type="hidden" id="productId"><div class="grid">
 <div class="field"><label for="name">نام کالا *</label><input id="name" required maxlength="150" placeholder="مثلاً شارژر فست"></div>
 <div class="field"><label for="category">دسته‌بندی *</label><select id="category" required></select></div>
 <div class="field"><label for="price">قیمت (تومان) *</label><input id="price" type="number" min="0" step="1" required placeholder="قیمت واقعی کالا"></div>
@@ -65,7 +65,7 @@ async function loadProducts(){
  if(error)throw error;products=data||[];render();
 }
 async function loadOrders(){
- const {data,error}=await db.from('orders').select('id,order_number,customer_name,customer_phone,subtotal,shipping_fee,discount,total,status,payment_status,shipping_method,shipping_tracking_code,created_at').order('created_at',{ascending:false}).limit(200);
+ const {data,error}=await db.from('orders').select('id,order_number,customer_name,customer_phone,subtotal,shipping_fee,discount,total,status,payment_status,shipping_method,shipping_tracking_code,created_at').order('created_at',{ascending:false}).limit(500);
  if(error){message('formMsg','خطا در دریافت سفارش‌ها: '+error.message);return}
  orders=data||[];renderOrders();renderSalesReport();
 }
@@ -79,14 +79,15 @@ async function notifyOrder(orderId,baseMessage){
 }
 
 function renderSalesReport(){
- const total=orders.reduce((s,o)=>s+Number(o.total||0),0);
- $("reportOrders").textContent=fa(orders.length);
+ const paidOrders=orders.filter(o=>o.payment_status==="paid"&&o.status!=="cancelled");
+ const total=paidOrders.reduce((sum,o)=>sum+Number(o.total||0),0);
+ $("reportOrders").textContent=fa(paidOrders.length);
  $("reportRevenue").textContent=fa(total);
- $("reportDelivered").textContent=fa(orders.filter(o=>o.status==="delivered").length);
+ $("reportDelivered").textContent=fa(paidOrders.filter(o=>o.status==="delivered").length);
  const months={};
- orders.forEach(o=>{const d=new Date(o.created_at);if(Number.isNaN(d.getTime()))return;const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");if(!months[key])months[key]={count:0,total:0};months[key].count++;months[key].total+=Number(o.total||0);});
+ paidOrders.forEach(o=>{const d=new Date(o.created_at);if(Number.isNaN(d.getTime()))return;const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");if(!months[key])months[key]={count:0,total:0};months[key].count++;months[key].total+=Number(o.total||0);});
  const rows=Object.entries(months).sort((a,b)=>b[0].localeCompare(a[0]));
- $("reportMonthly").innerHTML=rows.length?rows.map(([m,v])=>"<tr><td>"+safe(m)+"</td><td>"+fa(v.count)+"</td><td>"+fa(v.total)+"</td></tr>").join(""):'<tr><td colspan="3">هنوز سفارشی برای گزارش وجود ندارد.</td></tr>';
+ $("reportMonthly").innerHTML=rows.length?rows.map(([m,v])=>"<tr><td>"+safe(m)+"</td><td>"+fa(v.count)+"</td><td>"+fa(v.total)+"</td></tr>").join(""):'<tr><td colspan="3">هنوز پرداخت تأییدشده‌ای ثبت نشده است.</td></tr>';
 }
 
 function renderOrders(){
