@@ -16,6 +16,7 @@
 <meta property="og:url" content="https://raminjavaherkaleybar.github.io/computer-mohammadi-store/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&amp;fit=crop&amp;w=650&amp;q=72" fetchpriority="high">
 <link rel="preconnect" href="https://esm.sh" crossorigin>
 <link rel="preconnect" href="https://fgfeiilkzoajguabzuex.supabase.co" crossorigin>
 <link rel="dns-prefetch" href="//images.unsplash.com">
@@ -1406,11 +1407,11 @@ footer{
  <div class="hero-art">
   <div class="hero-products" aria-label="محصولات دیجیتال">
    <img class="hero-laptop" src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=650&q=72" alt="لپ‌تاپ" fetchpriority="high" decoding="async">
-   <img class="hero-phone" src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=350&q=72" alt="موبایل" decoding="async">
-   <img class="hero-headphones" src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=350&q=72" alt="هدفون" decoding="async">
-   <img class="hero-keyboard" src="https://images.unsplash.com/photo-1541140532154-b024d705b90a?auto=format&fit=crop&w=500&q=72" alt="کیبورد" decoding="async">
-   <img class="hero-mouse" src="https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=300&q=72" alt="ماوس" decoding="async">
-   <img class="hero-earbuds" src="https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=250&q=72" alt="هندزفری" decoding="async">
+   <img class="hero-phone" src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=350&q=72" alt="موبایل" decoding="async" loading="lazy">
+   <img class="hero-headphones" src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=350&q=72" alt="هدفون" decoding="async" loading="lazy">
+   <img class="hero-keyboard" src="https://images.unsplash.com/photo-1541140532154-b024d705b90a?auto=format&fit=crop&w=500&q=72" alt="کیبورد" decoding="async" loading="lazy">
+   <img class="hero-mouse" src="https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=300&q=72" alt="ماوس" decoding="async" loading="lazy">
+   <img class="hero-earbuds" src="https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=250&q=72" alt="هندزفری" decoding="async" loading="lazy">
   </div>
  </div>
 </div></section>
@@ -1468,14 +1469,14 @@ try{
 function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function productImageFor(p){
  const n=(String(p?.name||"")+" "+String(p?.label||"")).toLocaleLowerCase("fa");
- if(/بازی|گیم|کنسول/.test(n))return "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=700&q=82";
- if(/هندز|هدفون|هدست|ایرپاد/.test(n))return "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=700&q=82";
- if(/پاوربانک|پاور بانک/.test(n))return "https://images.unsplash.com/photo-1609592424857-4f6c6e6b9f5b?auto=format&fit=crop&w=700&q=82";
- if(/شارژ|آداپتور|کابل/.test(n))return "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=700&q=82";
- if(/ماوس|موس|کیبورد|صفحه.?کلید/.test(n))return "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=700&q=82";
- if(/لپ.?تاپ|کامپیوتر/.test(n))return "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=700&q=82";
- if(/موبایل|گوشی|قاب|گلس/.test(n))return "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=82";
- return "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=700&q=82";
+ if(/بازی|گیم|کنسول/.test(n))return "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=520&q=70";
+ if(/هندز|هدفون|هدست|ایرپاد/.test(n))return "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=520&q=70";
+ if(/پاوربانک|پاور بانک/.test(n))return "https://images.unsplash.com/photo-1609592424857-4f6c6e6b9f5b?auto=format&fit=crop&w=520&q=70";
+ if(/شارژ|آداپتور|کابل/.test(n))return "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=520&q=70";
+ if(/ماوس|موس|کیبورد|صفحه.?کلید/.test(n))return "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=520&q=70";
+ if(/لپ.?تاپ|کامپیوتر/.test(n))return "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=520&q=70";
+ if(/موبایل|گوشی|قاب|گلس/.test(n))return "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=520&q=70";
+ return "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=520&q=70";
 }
 function productEmojiFor(p){
  const n=(String(p?.name||"")+" "+String(p?.label||"")).toLocaleLowerCase("fa");
@@ -1492,14 +1493,14 @@ function productEmojiFor(p){
 function renderCategories(){
  const imageFor=name=>{
   const n=(name||"").toLocaleLowerCase("fa");
-  if(/بازی|گیم|کنسول/.test(n))return "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=420&q=85";
-  if(/هندز|هدفون|هدست/.test(n))return "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=420&q=85";
-  if(/پاوربانک|پاور بانک/.test(n))return "https://images.unsplash.com/photo-1609592424857-4f6c6e6b9f5b?auto=format&fit=crop&w=420&q=85";
-  if(/شارژ|آداپتور|کابل/.test(n))return "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=420&q=85";
-  if(/ماوس|موس|کیبورد|صفحه.?کلید/.test(n))return "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=420&q=85";
-  if(/لپ.?تاپ|کامپیوتر/.test(n))return "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=420&q=85";
-  if(/موبایل|گوشی/.test(n))return "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=420&q=85";
-  return "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=420&q=85";
+  if(/بازی|گیم|کنسول/.test(n))return "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=320&q=70";
+  if(/هندز|هدفون|هدست/.test(n))return "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=320&q=70";
+  if(/پاوربانک|پاور بانک/.test(n))return "https://images.unsplash.com/photo-1609592424857-4f6c6e6b9f5b?auto=format&fit=crop&w=320&q=70";
+  if(/شارژ|آداپتور|کابل/.test(n))return "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=320&q=70";
+  if(/ماوس|موس|کیبورد|صفحه.?کلید/.test(n))return "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=320&q=70";
+  if(/لپ.?تاپ|کامپیوتر/.test(n))return "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=320&q=70";
+  if(/موبایل|گوشی/.test(n))return "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=320&q=70";
+  return "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=320&q=70";
  };
  const rank=name=>{const n=(name||"").toLocaleLowerCase("fa");if(/موبایل|گوشی/.test(n))return 0;if(/لپ.?تاپ|کامپیوتر/.test(n))return 1;if(/ماوس|موس|کیبورد|صفحه.?کلید/.test(n))return 2;if(/شارژ|آداپتور|کابل/.test(n))return 3;if(/پاوربانک|پاور بانک/.test(n))return 4;if(/هندز|هدفون|هدست/.test(n))return 5;if(/بازی|گیم|کنسول/.test(n))return 6;return 7;};
  const items=categories.slice(1).slice().sort((a,b)=>rank(a[1])-rank(b[1]));
