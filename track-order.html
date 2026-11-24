@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827"><title>پیگیری سفارش | رام‌تک</title>
+<meta name="description" content="پیگیری وضعیت سفارش‌های ثبت‌شده در فروشگاه کامپیوتر محمدی رام‌تک.">
+<meta name="robots" content="noindex,nofollow">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#1c293c;font-family:Tahoma,Arial,sans-serif;line-height:1.9}.wrap{width:min(760px,94%);margin:auto}header{background:#111827;color:#fff;padding:14px 0}header .wrap{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{font-weight:900;font-size:19px}.brand small{display:block;color:#aabbd2;font-size:10px;font-weight:400}.back{font-size:12px;color:#d9e8ff;text-decoration:none}.card{background:#fff;border:1px solid #e5eaf1;border-radius:18px;padding:clamp(17px,4vw,28px);margin:28px 0;box-shadow:0 14px 40px #172b4910}.card h1{font-size:21px;margin:0 0 5px}.muted{font-size:12px;color:#78869a;margin:0 0 18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}label{font-size:12px;color:#526177}input{width:100%;padding:12px;border:1px solid #dce4ee;border-radius:10px;font:inherit;font-size:15px;direction:ltr;text-align:right}.btn{border:0;border-radius:11px;padding:12px 18px;background:linear-gradient(110deg,#2563eb,#089dbd);color:white;font:inherit;font-weight:700;cursor:pointer}.btn:disabled{opacity:.5}.result{margin-top:20px}.notice{padding:13px;border-radius:12px;background:#f2f5fa;color:#526177;font-size:13px}.notice.error{background:#fff1f1;color:#a32d2d}.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}.item{background:#f6f8fb;border-radius:11px;padding:10px}.item small{display:block;color:#7b8798;font-size:10px}.item strong{font-size:13px;overflow-wrap:anywhere}.status{padding:13px;border-radius:12px;background:#edf4ff;color:#2359a8;font-weight:800;margin:14px 0}.steps{display:grid;gap:9px;margin:18px 0}.step{display:flex;align-items:center;gap:10px;color:#8792a2;font-size:12px}.dot{width:13px;height:13px;border-radius:50%;border:2px solid #cbd5e1;background:white;flex:none}.step.done{color:#167451;font-weight:700}.step.done .dot{background:#16a36b;border-color:#16a36b;box-shadow:inset 0 0 0 3px white}.step.current{color:#225fc4;font-weight:800}.step.current .dot{border:4px solid #3478e5}.items{width:100%;border-collapse:collapse;margin-top:10px}.items th,.items td{text-align:right;border-bottom:1px solid #edf0f5;padding:9px 5px;font-size:11px}.items th{color:#7a8799}.tracking{background:#effaf5;border:1px solid #ccebdc;color:#176c4d;border-radius:12px;padding:12px;margin-top:12px;font-size:13px}.tracking a{color:inherit}footer{text-align:center;color:#8994a5;font-size:11px;padding:15px 0 30px}@media(max-width:560px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.summary{grid-template-columns:1fr 1fr}.card h1{font-size:19px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="./">RAM TECH<small>کامپیوتر محمدی</small></a><a class="back" href="./">بازگشت به فروشگاه ←</a></div></header>
+<main class="wrap"><section class="card">
+<h1>پیگیری سفارش</h1><p class="muted">شماره سفارش و همان شماره موبایلی را وارد کنید که هنگام ثبت سفارش ثبت کرده‌اید.</p>
+<form id="trackForm" class="grid">
+<div class="field"><label for="orderNumber">شماره سفارش</label><input id="orderNumber" inputmode="numeric" autocomplete="off" required placeholder="مثلاً ۱۲۳۴۵"></div>
+<div class="field"><label for="phone">شماره موبایل ثبت‌شده</label><input id="phone" inputmode="tel" autocomplete="tel" required maxlength="16" placeholder="09xxxxxxxxx"></div>
+<div class="field full"><button class="btn" id="submit" type="submit">بررسی وضعیت سفارش</button></div>
+</form><div id="result" class="result" aria-live="polite"></div>
+</section></main><footer>© فروشگاه کامپیوتر محمدی | RAM TECH</footer>
+<script>
+const db=supabase.createClient("https://fgfeiilkzoajguabzuex.supabase.co","sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB");
+const $=id=>document.getElementById(id),fa=n=>Number(n||0).toLocaleString("fa-IR"),safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const digits=s=>String(s||"").replace(/[۰-۹٠-٩]/g,c=>"۰۱۲۳۴۵۶۷۸۹".indexOf(c)>=0?String("۰۱۲۳۴۵۶۷۸۹".indexOf(c)) : String("٠١٢٣٤٥٦٧٨٩".indexOf(c)));
+const labels={pending:"در انتظار بررسی",confirmed:"تأیید شده",processing:"در حال آماده‌سازی",shipped:"ارسال شده",delivered:"تحویل شده",cancelled:"لغو شده"};
+const stages=["pending","confirmed","processing","shipped","delivered"];
+function showOrder(o){
+ const cancelled=o.status==="cancelled",idx=stages.indexOf(o.status);
+ const steps=stages.map((st,i)=>'<div class="step '+(cancelled?"":i<idx?"done":i===idx?"current":"")+'"><span class="dot"></span><span>'+labels[st]+'</span></div>').join("");
+ const items=(o.items||[]).map(x=>'<tr><td>'+safe(x.product_name)+'</td><td>'+fa(x.quantity)+'</td><td>'+fa(x.unit_price)+' تومان</td><td>'+fa(x.line_total??Number(x.unit_price)*Number(x.quantity))+' تومان</td></tr>').join("");
+ const method=o.shipping_method==="tipax"?"تیپاکس":o.shipping_method==="post"?"پست":"در حال هماهنگی";
+ const track=o.shipping_tracking_code?'<div class="tracking">کد رهگیری ارسال: <strong>'+safe(o.shipping_tracking_code)+'</strong>'+(o.shipping_method==="post"?' — <a href="https://tracking.post.ir/" target="_blank" rel="noopener">پیگیری در سامانه پست</a>':"")+'</div>':"";
+ $("result").innerHTML='<div class="status">'+(cancelled?"این سفارش لغو شده است.":"وضعیت فعلی: "+(labels[o.status]||"در حال بررسی"))+'</div>'+(cancelled?"":'<div class="steps">'+steps+'</div>')+'<div class="summary"><div class="item"><small>شماره سفارش</small><strong>'+fa(o.order_number)+'</strong></div><div class="item"><small>تاریخ ثبت</small><strong>'+new Date(o.created_at).toLocaleDateString("fa-IR")+'</strong></div><div class="item"><small>روش ارسال</small><strong>'+method+'</strong></div><div class="item"><small>مبلغ نهایی</small><strong>'+fa(o.total)+' تومان</strong></div></div>'+(items?'<h3>اقلام سفارش</h3><table class="items"><thead><tr><th>محصول</th><th>تعداد</th><th>قیمت واحد</th><th>جمع</th></tr></thead><tbody>'+items+'</tbody></table>':"")+track+(o.status==="shipped"&&!o.shipping_tracking_code?'<p class="muted">سفارش ارسال شده است؛ کد رهگیری پس از ثبت توسط فروشگاه نمایش داده می‌شود.</p>':"");
+}
+$("trackForm").onsubmit=async e=>{
+ e.preventDefault();const order=digits($("orderNumber").value).replace(/[^0-9]/g,""),phone=digits($("phone").value).replace(/[^0-9]/g,"");
+ if(!order||!phone){$("result").innerHTML='<div class="notice error">شماره سفارش و موبایل را کامل وارد کنید.</div>';return}
+ $("submit").disabled=true;$("submit").textContent="در حال بررسی...";$("result").innerHTML='<div class="notice">در حال دریافت وضعیت سفارش...</div>';
+ try{const {data,error}=await db.rpc("track_store_order",{p_order_number:Number(order),p_phone:phone});if(error)throw error;if(!data){$("result").innerHTML='<div class="notice error">سفارشی با این شماره سفارش و موبایل پیدا نشد. اطلاعات را بررسی کنید.</div>'}else showOrder(data)}
+ catch(err){$("result").innerHTML='<div class="notice error">فعلاً امکان دریافت وضعیت سفارش وجود ندارد. کمی بعد دوباره تلاش کنید.</div>'}
+ finally{$("submit").disabled=false;$("submit").textContent="بررسی وضعیت سفارش"}
+};
+</script>
+</body></html>
