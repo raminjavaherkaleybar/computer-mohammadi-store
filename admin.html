@@ -18,9 +18,37 @@
 <div class="note">حساب مدیر باید یک‌بار در بخش Authentication پروژه Supabase ساخته شود. رمز عبور را در این صفحه یا برای هیچ‌کس ارسال نکنید؛ آن را فقط خودتان وارد کنید.</div>
 </section>
 <section id="appPanel" class="hidden">
-<nav class="panel admin-nav" aria-label="دسترسی سریع پنل"><a href="#dashboard">داشبورد</a><a href="#sales">گزارش سود و فروش</a><a href="#expensesPanel">ثبت هزینه‌ها</a><a href="#productFormPanel">ثبت کالا</a><a href="#productsPanel">فهرست کالاها</a><a href="#ordersPanel">سفارش‌ها</a><a href="#returnsPanel">مرجوعی و تعویض</a><a href="#shippingSettings">تعرفه ارسال</a><a href="#customersPanel">مشتریان</a><a href="#stockAdjustPanel">ثبت ورود / خروج موجودی</a><a href="#inventoryPanel">گردش موجودی کالا</a><a href="#contactPanel">تماس با ما</a><a href="./#contact" target="_blank" rel="noopener noreferrer">صفحه تماس عمومی ↗</a></nav>
+<nav class="panel admin-nav" aria-label="دسترسی سریع پنل"><a href="#dashboard">داشبورد</a><a href="#sales">گزارش سود و فروش</a><a href="#expensesPanel">ثبت هزینه‌ها</a><a href="#productFormPanel">ثبت کالا</a><a href="#productsPanel">فهرست کالاها</a><a href="#ordersPanel">سفارش‌ها</a><a href="#returnsPanel">مرجوعی و تعویض</a><a href="#shippingSettings">تعرفه ارسال</a><a href="#customersPanel">مشتریان</a><a href="#stockAdjustPanel">ثبت ورود / خروج موجودی</a><a href="#inventoryPanel">گردش موجودی کالا</a><a href="#purchasesPanel">ثبت خرید کالا</a><a href="#contactPanel">تماس با ما</a><a href="./#contact" target="_blank" rel="noopener noreferrer">صفحه تماس عمومی ↗</a></nav>
 <div class="panel" id="dashboard"><div class="headrow"><div><h2>خلاصه فروشگاه</h2><p class="muted">آمار کالاهای ثبت‌شده در پایگاه داده اختصاصی</p></div><span id="who" class="muted"></span></div><div class="stats"><div class="stat"><strong id="totalProducts">۰</strong><span>کل کالاها</span></div><div class="stat"><strong id="activeProducts">۰</strong><span>کالاهای فعال در سایت</span></div><div class="stat"><strong id="lowStock">۰</strong><span>کالای کم‌موجودی (۳ عدد یا کمتر)</span></div><div class="stat"><strong id="pendingOrders">۰</strong><span>سفارش‌های در انتظار بررسی</span></div><div class="stat"><strong id="unpaidOrders">۰</strong><span>سفارش‌های پرداخت‌نشده</span></div></div></div>
-<div class="panel" id="sales"><h2>گزارش سود واقعی و فروش</h2><p class="muted">محاسبه بر پایه سفارش‌های پرداخت‌شده، بهای خرید ثبت‌شده هنگام سفارش و هزینه‌های ثبت‌شده است. هزینه ارسال دریافتی جزو سود کالا محسوب نمی‌شود.</p><div class="actions" style="margin:12px 0;align-items:end"><div class="field"><label for="reportFrom">از تاریخ</label><input id="reportFrom" type="date"></div><div class="field"><label for="reportTo">تا تاریخ</label><input id="reportTo" type="date"></div><button class="btn" type="button" id="applyReportFilter">اعمال بازه</button><button class="btn secondary" type="button" id="clearReportFilter">نمایش همه</button><button class="btn secondary" type="button" id="exportProfitReport">خروجی CSV گزارش</button></div><div class="stats"><div class="stat"><strong id="reportOrders">۰</strong><span>سفارش‌های پرداخت‌شده</span></div><div class="stat"><strong id="reportRevenue">۰</strong><span>دریافتی کل با ارسال (تومان)</span></div><div class="stat"><strong id="reportGross">۰</strong><span>سود ناخالص قابل محاسبه (تومان)</span></div><div class="stat"><strong id="reportExpenses">۰</strong><span>هزینه‌های ثبت‌شده (تومان)</span></div><div class="stat"><strong id="reportNet">۰</strong><span>سود خالص قابل محاسبه (تومان)</span></div><div class="stat"><strong id="reportMissing">۰</strong><span>سفارش‌های فاقد بهای خرید کامل</span></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>ماه</th><th>تعداد سفارش</th><th>فروش کالا پس از تخفیف</th><th>سود ناخالص</th><th>هزینه ثبت‌شده</th><th>سود خالص</th><th>سفارش ناقص</th></tr></thead><tbody id="reportMonthly"><tr><td colspan="7">پس از دریافت سفارش‌ها نمایش داده می‌شود.</td></tr></tbody></table></div><p class="note">سفارش‌های قدیمی که بهای خریدشان ثبت نشده، از سود قطعی کنار گذاشته می‌شوند و تعدادشان جداگانه نمایش داده می‌شود. قیمت خرید را در فرم ثبت یا ویرایش کالا وارد کنید. سود خالص بر اساس هزینه‌هایی است که ثبت کرده‌اید.</p></div><div class="panel" id="expensesPanel"><h2>ثبت و مدیریت هزینه‌های فروشگاه</h2><p class="muted">هزینه‌هایی مانند اجاره، حقوق، بسته‌بندی، تبلیغات و حمل‌ونقل را ثبت کنید.</p><form id="expenseForm"><div class="grid"><div class="field"><label for="expenseTitle">عنوان هزینه *</label><input id="expenseTitle" required maxlength="160"></div><div class="field"><label for="expenseCategory">دسته هزینه</label><select id="expenseCategory"><option value="rent">اجاره</option><option value="salary">حقوق و دستمزد</option><option value="shipping">حمل‌ونقل</option><option value="packaging">بسته‌بندی</option><option value="marketing">تبلیغات</option><option value="utilities">قبوض و خدمات</option><option value="other" selected>سایر</option></select></div><div class="field"><label for="expenseAmount">مبلغ (تومان) *</label><input id="expenseAmount" type="number" min="1" required></div><div class="field"><label for="expenseDate">تاریخ هزینه *</label><input id="expenseDate" type="date" required></div><div class="field full"><label for="expenseNote">توضیحات</label><textarea id="expenseNote" maxlength="500"></textarea></div></div><div class="actions"><button class="btn" type="submit" id="saveExpense">ثبت هزینه</button></div><div id="expenseMsg" class="msg"></div></form><div class="tablewrap"><table><thead><tr><th>عنوان</th><th>دسته</th><th>مبلغ</th><th>تاریخ</th><th>توضیح</th><th>عملیات</th></tr></thead><tbody id="expenseRows"><tr><td colspan="6">در حال دریافت...</td></tr></tbody></table></div></div><div class="panel" id="productFormPanel"><h2 id="formTitle">ثبت کالای جدید</h2><form id="productForm"><input type="hidden" id="productId"><div class="grid">
+<div class="panel" id="sales"><h2>گزارش سود واقعی و فروش</h2><p class="muted">محاسبه بر پایه سفارش‌های پرداخت‌شده، بهای خرید ثبت‌شده هنگام سفارش و هزینه‌های ثبت‌شده است. هزینه ارسال دریافتی جزو سود کالا محسوب نمی‌شود.</p><div class="actions" style="margin:12px 0;align-items:end"><div class="field"><label for="reportFrom">از تاریخ</label><input id="reportFrom" type="date"></div><div class="field"><label for="reportTo">تا تاریخ</label><input id="reportTo" type="date"></div><button class="btn" type="button" id="applyReportFilter">اعمال بازه</button><button class="btn secondary" type="button" id="clearReportFilter">نمایش همه</button><button class="btn secondary" type="button" id="exportProfitReport">خروجی CSV گزارش</button></div><div class="stats"><div class="stat"><strong id="reportOrders">۰</strong><span>سفارش‌های پرداخت‌شده</span></div><div class="stat"><strong id="reportRevenue">۰</strong><span>دریافتی کل با ارسال (تومان)</span></div><div class="stat"><strong id="reportGross">۰</strong><span>سود ناخالص قابل محاسبه (تومان)</span></div><div class="stat"><strong id="reportExpenses">۰</strong><span>هزینه‌های ثبت‌شده (تومان)</span></div><div class="stat"><strong id="reportNet">۰</strong><span>سود خالص قابل محاسبه (تومان)</span></div><div class="stat"><strong id="reportMissing">۰</strong><span>سفارش‌های فاقد بهای خرید کامل</span></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>ماه</th><th>تعداد سفارش</th><th>فروش کالا پس از تخفیف</th><th>سود ناخالص</th><th>هزینه ثبت‌شده</th><th>سود خالص</th><th>سفارش ناقص</th></tr></thead><tbody id="reportMonthly"><tr><td colspan="7">پس از دریافت سفارش‌ها نمایش داده می‌شود.</td></tr></tbody></table></div><p class="note">سفارش‌های قدیمی که بهای خریدشان ثبت نشده، از سود قطعی کنار گذاشته می‌شوند و تعدادشان جداگانه نمایش داده می‌شود. قیمت خرید را در فرم ثبت یا ویرایش کالا وارد کنید. سود خالص بر اساس هزینه‌هایی است که ثبت کرده‌اید.</p></div><div class="panel" id="expensesPanel"><h2>ثبت و مدیریت هزینه‌های فروشگاه</h2><p class="muted">هزینه‌هایی مانند اجاره، حقوق، بسته‌بندی، تبلیغات و حمل‌ونقل را ثبت کنید.</p><form id="expenseForm"><div class="grid"><div class="field"><label for="expenseTitle">عنوان هزینه *</label><input id="expenseTitle" required maxlength="160"></div><div class="field"><label for="expenseCategory">دسته هزینه</label><select id="expenseCategory"><option value="rent">اجاره</option><option value="salary">حقوق و دستمزد</option><option value="shipping">حمل‌ونقل</option><option value="packaging">بسته‌بندی</option><option value="marketing">تبلیغات</option><option value="utilities">قبوض و خدمات</option><option value="other" selected>سایر</option></select></div><div class="field"><label for="expenseAmount">مبلغ (تومان) *</label><input id="expenseAmount" type="number" min="1" required></div><div class="field"><label for="expenseDate">تاریخ هزینه *</label><input id="expenseDate" type="date" required></div><div class="field full"><label for="expenseNote">توضیحات</label><textarea id="expenseNote" maxlength="500"></textarea></div></div><div class="actions"><button class="btn" type="submit" id="saveExpense">ثبت هزینه</button></div><div id="expenseMsg" class="msg"></div></form><div class="tablewrap"><table><thead><tr><th>عنوان</th><th>دسته</th><th>مبلغ</th><th>تاریخ</th><th>توضیح</th><th>عملیات</th></tr></thead><tbody id="expenseRows"><tr><td colspan="6">در حال دریافت...</td></tr></tbody></table></div></div>
+<div class="panel" id="purchasesPanel">
+ <div class="headrow"><div><h2>خرید کالا و تأمین‌کنندگان</h2><p class="muted">ثبت فاکتور خرید، افزایش خودکار موجودی و ذخیره آخرین بهای خرید هر کالا</p></div><button id="refreshPurchases" class="btn secondary" type="button">به‌روزرسانی</button></div>
+ <div class="grid">
+  <form id="supplierForm" class="field" style="gap:9px">
+   <h3 style="margin:4px 0">ثبت تأمین‌کننده جدید</h3>
+   <label for="supplierName">نام تأمین‌کننده *</label><input id="supplierName" required maxlength="160" placeholder="نام شخص یا شرکت">
+   <label for="supplierPhone">شماره تماس</label><input id="supplierPhone" maxlength="40" inputmode="tel">
+   <label for="supplierAddress">آدرس</label><input id="supplierAddress" maxlength="300">
+   <label for="supplierNote">توضیحات</label><textarea id="supplierNote" maxlength="500"></textarea>
+   <button class="btn" id="saveSupplier" type="submit">ذخیره تأمین‌کننده</button><div id="supplierMsg" class="msg"></div>
+  </form>
+  <form id="purchaseForm" class="field" style="gap:9px">
+   <h3 style="margin:4px 0">ثبت فاکتور خرید</h3>
+   <label for="purchaseSupplier">تأمین‌کننده</label><select id="purchaseSupplier"><option value="">بدون انتخاب تأمین‌کننده</option></select>
+   <label for="purchaseInvoice">شماره فاکتور</label><input id="purchaseInvoice" maxlength="100">
+   <label for="purchaseDate">تاریخ خرید *</label><input id="purchaseDate" type="date" required>
+   <label for="purchaseNote">توضیحات فاکتور</label><textarea id="purchaseNote" maxlength="500"></textarea>
+   <div class="headrow"><strong>اقلام خرید</strong><button id="addPurchaseRow" type="button" class="btn secondary">افزودن کالا +</button></div>
+   <div id="purchaseItems" class="field"></div>
+   <div class="stat"><span>جمع کل فاکتور (تومان)</span><strong id="purchaseTotal">۰</strong></div>
+   <button class="btn" id="savePurchase" type="submit">ثبت نهایی خرید و افزایش موجودی</button><div id="purchaseMsg" class="msg"></div>
+  </form>
+ </div>
+ <h3>سوابق فاکتورهای خرید</h3><div class="tablewrap"><table><thead><tr><th>تاریخ</th><th>شماره فاکتور</th><th>تأمین‌کننده</th><th>تعداد قلم</th><th>جمع خرید (تومان)</th><th>یادداشت</th></tr></thead><tbody id="purchaseRows"><tr><td colspan="6">در حال دریافت...</td></tr></tbody></table></div>
+ <h3>فهرست تأمین‌کنندگان</h3><div class="tablewrap"><table><thead><tr><th>نام</th><th>تماس</th><th>آدرس</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="supplierRows"><tr><td colspan="5">در حال دریافت...</td></tr></tbody></table></div>
+ <p class="note">با ثبت نهایی هر فاکتور، موجودی هر کالا و گردش انبار به‌صورت اتمی ثبت می‌شود. آخرین بهای خرید برای محاسبه سود سفارش‌های بعدی ذخیره می‌شود؛ سوابق سفارش‌های قبلی تغییر نمی‌کنند.</p>
+</div>
+<div class="panel" id="productFormPanel"><h2 id="formTitle">ثبت کالای جدید</h2><form id="productForm"><input type="hidden" id="productId"><div class="grid">
 <div class="field"><label for="name">نام کالا *</label><input id="name" required maxlength="150" placeholder="مثلاً شارژر فست"></div>
 <div class="field"><label for="category">دسته‌بندی *</label><select id="category" required></select></div>
 <div class="field"><label for="price">قیمت فروش (تومان) *</label><input id="price" type="number" min="1" step="1" required placeholder="قیمت فروش کالا"></div><div class="field"><label for="purchasePrice">قیمت خرید هر عدد (تومان)</label><input id="purchasePrice" type="number" min="0" step="1" placeholder="بهای تمام‌شده خرید"></div>
@@ -273,7 +301,65 @@ $('savePostFee').onclick=async()=>{
  message('shippingSettingsMsg','تعرفه پیش‌فرض پست ذخیره شد. سفارش‌های جدید با این مبلغ محاسبه می‌شوند.',true);
 };
 
-async function loadAll(){try{await loadCategories();await loadProducts();await loadOrders();await loadCustomers();await loadInventory();await loadReturns();await loadShippingSettings();await loadExpenses()}catch(e){message('formMsg','خطا در دریافت اطلاعات: '+e.message)}}
+
+let suppliers=[];
+function purchaseProductOptions(){
+ return '<option value="">انتخاب کالا</option>'+products.map(p=>'<option value="'+p.id+'">'+safe(p.name)+(p.sku?' ('+safe(p.sku)+')':'')+'</option>').join('');
+}
+function addPurchaseRow(){
+ const row=document.createElement('div');row.className='grid purchase-line';row.style.cssText='border:1px solid #e4eaf2;border-radius:10px;padding:10px;margin:5px 0';
+ row.innerHTML='<div class="field"><label>کالا</label><select class="purchase-product" required>'+purchaseProductOptions()+'</select></div><div class="field"><label>تعداد</label><input class="purchase-qty" type="number" min="1" max="1000000" step="1" value="1" required></div><div class="field"><label>قیمت خرید هر عدد (تومان)</label><input class="purchase-cost" type="number" min="0" step="1" required placeholder="قیمت خرید"></div><div class="actions"><button type="button" class="btn danger remove-purchase-row">حذف این قلم</button></div>';
+ $('purchaseItems').appendChild(row);
+ row.addEventListener('input',updatePurchaseTotal);
+ row.querySelector('.remove-purchase-row').onclick=()=>{row.remove();updatePurchaseTotal()};
+}
+function updatePurchaseTotal(){
+ let total=0;
+ document.querySelectorAll('.purchase-line').forEach(row=>{total+=(Number(row.querySelector('.purchase-qty').value)||0)*(Number(row.querySelector('.purchase-cost').value)||0)});
+ $('purchaseTotal').textContent=fa(total);
+}
+async function loadSuppliers(){
+ const {data,error}=await db.from('store_suppliers').select('id,name,phone,address,note,is_active,created_at').order('name');
+ if(error)throw error;suppliers=data||[];
+ $('purchaseSupplier').innerHTML='<option value="">بدون انتخاب تأمین‌کننده</option>'+suppliers.filter(s=>s.is_active).map(s=>'<option value="'+s.id+'">'+safe(s.name)+'</option>').join('');
+ $('supplierRows').innerHTML=suppliers.length?suppliers.map(s=>'<tr><td>'+safe(s.name)+'</td><td>'+safe(s.phone||'—')+'</td><td>'+safe(s.address||'—')+'</td><td>'+(s.is_active?'فعال':'غیرفعال')+'</td><td><button class="btn secondary" type="button" onclick="toggleSupplier(\''+s.id+'\','+(!s.is_active)+')">'+(s.is_active?'غیرفعال‌کردن':'فعال‌کردن')+'</button></td></tr>').join(''):'<tr><td colspan="5">هنوز تأمین‌کننده‌ای ثبت نشده است.</td></tr>';
+}
+async function toggleSupplier(id,active){
+ const {error}=await db.from('store_suppliers').update({is_active:active}).eq('id',id);
+ if(error){message('supplierMsg','تغییر وضعیت انجام نشد: '+error.message);return}
+ await loadSuppliers();message('supplierMsg','وضعیت تأمین‌کننده به‌روزرسانی شد.',true);
+}
+async function loadPurchases(){
+ const {data,error}=await db.from('store_purchases').select('id,invoice_number,purchase_date,total_amount,note,store_suppliers(name),store_purchase_items(quantity)').order('purchase_date',{ascending:false}).order('created_at',{ascending:false}).limit(200);
+ if(error){message('purchaseMsg','دریافت سوابق خرید ناموفق بود: '+error.message);return}
+ $('purchaseRows').innerHTML=data?.length?data.map(p=>'<tr><td>'+safe(p.purchase_date)+'</td><td>'+safe(p.invoice_number||'—')+'</td><td>'+safe(p.store_suppliers?.name||'—')+'</td><td>'+fa((p.store_purchase_items||[]).length)+'</td><td>'+fa(p.total_amount)+'</td><td>'+safe(p.note||'—')+'</td></tr>').join(''):'<tr><td colspan="6">هنوز فاکتور خریدی ثبت نشده است.</td></tr>';
+}
+$('supplierForm').onsubmit=async e=>{
+ e.preventDefault();$('saveSupplier').disabled=true;
+ const row={name:$('supplierName').value.trim(),phone:$('supplierPhone').value.trim()||null,address:$('supplierAddress').value.trim()||null,note:$('supplierNote').value.trim()||null};
+ const {error}=await db.from('store_suppliers').insert(row);
+ $('saveSupplier').disabled=false;
+ if(error){message('supplierMsg','ثبت تأمین‌کننده ناموفق بود: '+error.message);return}
+ $('supplierForm').reset();await loadSuppliers();message('supplierMsg','تأمین‌کننده ثبت شد.',true);
+};
+$('purchaseForm').onsubmit=async e=>{
+ e.preventDefault();
+ const items=[...document.querySelectorAll('.purchase-line')].map(row=>({product_id:row.querySelector('.purchase-product').value,quantity:Number(row.querySelector('.purchase-qty').value),unit_cost:Number(row.querySelector('.purchase-cost').value)}));
+ if(!items.length||items.some(x=>!x.product_id||!Number.isInteger(x.quantity)||x.quantity<1||!Number.isFinite(x.unit_cost)||x.unit_cost<0)){message('purchaseMsg','برای هر قلم، کالا، تعداد و قیمت خرید معتبر وارد کنید.');return}
+ if(new Set(items.map(x=>x.product_id)).size!==items.length){message('purchaseMsg','هر کالا را فقط یک‌بار در فاکتور وارد کنید؛ تعداد همان ردیف را اصلاح کنید.');return}
+ const total=items.reduce((s,x)=>s+x.quantity*x.unit_cost,0);
+ if(!confirm('فاکتور با جمع '+fa(total)+' تومان ثبت شود و موجودی کالاها افزایش یابد؟'))return;
+ $('savePurchase').disabled=true;
+ const payload={supplier_id:$('purchaseSupplier').value||null,invoice_number:$('purchaseInvoice').value.trim()||null,purchase_date:$('purchaseDate').value,note:$('purchaseNote').value.trim()||null,items};
+ const {data,error}=await db.rpc('record_store_purchase',{p_payload:payload});
+ $('savePurchase').disabled=false;
+ if(error){message('purchaseMsg','ثبت خرید انجام نشد: '+error.message);return}
+ $('purchaseForm').reset();$('purchaseDate').value=new Date().toISOString().slice(0,10);$('purchaseItems').innerHTML='';addPurchaseRow();updatePurchaseTotal();
+ await Promise.all([loadProducts(),loadInventory(),loadPurchases()]);
+ message('purchaseMsg','فاکتور خرید با موفقیت ثبت شد؛ موجودی کالاها افزایش یافت. شماره ثبت: '+(data?.purchase_id||''),true);
+};
+$('addPurchaseRow').onclick=addPurchaseRow;
+async function loadAll(){try{await loadCategories();await loadProducts();await loadOrders();await loadCustomers();await loadInventory();await loadReturns();await loadShippingSettings();await loadExpenses();await loadSuppliers();await loadPurchases()}catch(e){message('formMsg','خطا در دریافت اطلاعات: '+e.message)}}
 function clearForm(){$('productForm').reset();$('productId').value='';$('stock').value='0';$('purchasePrice').value='';$('formTitle').textContent='ثبت کالای جدید';$('save').textContent='ذخیره کالا'}
 function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;$('productId').value=p.id;$('name').value=p.name;$('category').value=p.category_id||'';$('price').value=p.price;$('purchasePrice').value=p.purchase_price??'';$('stock').value=p.stock_quantity;$('sku').value=p.sku||'';$('image').value=p.image_url||'';$('description').value=p.description||'';$('active').checked=p.is_active;$('featured').checked=!!p.is_featured;$('formTitle').textContent='ویرایش کالا';$('save').textContent='ذخیره تغییرات';window.scrollTo({top:0,behavior:'smooth'})}
 async function deleteProduct(id){const p=products.find(x=>x.id===id);if(!p||!confirm('کالای «'+p.name+'» حذف شود؟'))return;const {error}=await db.from('products').delete().eq('id',id);if(error){message('formMsg','حذف انجام نشد: '+error.message);return}await loadProducts();message('formMsg','کالا حذف شد.',true)}
@@ -293,8 +379,9 @@ $('customerSearch').oninput=loadCustomers;
 $('exportCustomers').onclick=exportCustomers;
 $('refreshInventory').onclick=loadInventory;
 $('stockProduct').onchange=updateStockCurrent;
-$('refreshReturns').onclick=loadReturns;
+$('refreshReturns').onclick=loadReturns;$('refreshPurchases').onclick=async()=>{await loadSuppliers();await loadPurchases()};
 
+$('purchaseDate').value=new Date().toISOString().slice(0,10);addPurchaseRow();
 db.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')showLogin()});
 const {data:{session}}=await db.auth.getSession();if(session)await enter(session);
 </script>
