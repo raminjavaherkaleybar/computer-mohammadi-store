@@ -1098,7 +1098,6 @@ header .head-actions .cart-count{
 <header>
  <div class="wrap head">
   <a class="brand" href="#home" aria-label="رام‌تک، صفحه اصلی"><img class="brand-logo" src="assets/ram-tech-logo.svg" alt="RAM TECH | رام‌تک"></a>
-  <div class="search"><input id="search" type="search" placeholder="جستجوی محصولات..." aria-label="جست‌وجوی محصولات"></div>
   <div class="head-actions"><button class="btn btn-ghost cart-header" id="cartBtn">🛒 <span>سبد خرید</span><strong id="cartCount">۰</strong></button></div>
  </div>
  <nav><div class="wrap navlinks"><a class="nav-home" href="#home">⌂ خانه</a><a href="#categories">▦ دسته‌بندی محصولات</a><a href="#products">٪ محصولات فروشگاه</a><a href="#benefits">ⓘ درباره ما</a><a href="#contact">☎ تماس با ما</a><a href="track-order.html">پیگیری سفارش</a><a href="admin.html" class="admin-nav-link" aria-label="ورود مدیر به پنل مدیریت">⚙ مدیریت فروشگاه</a><a href="#benefits">؟ راهنمای خرید</a><a href="#contact">همکاری با ما</a></div></nav>
@@ -1117,6 +1116,7 @@ header .head-actions .cart-count{
   </div>
  </div>
 </div></section>
+<div class="catalog-search-wrap wrap"><div class="catalog-search"><input id="search" type="search" placeholder="جستجوی محصولات..." aria-label="جست‌وجوی محصولات"><span aria-hidden="true">⌕</span></div></div>
 <section class="section wrap" id="categories"><div class="section-head"><div><h2>دسته‌بندی محصولات</h2><p>سریع‌تر محصول موردنظرت را پیدا کن</p></div></div><div class="categories" id="categoryGrid"></div></section>
 <section class="section wrap" id="products"><div class="section-head"><div><h2>محصولات فروشگاه</h2><p id="productCount">محصولات و قیمت‌ها مستقیماً از موجودی واقعی فروشگاه خوانده می‌شوند</p></div></div>
  <div class="toolbar"><div class="filters" id="filters"></div><label class="stock-only-control"><input type="checkbox" id="inStockOnly"> فقط کالاهای موجود</label><select class="sort" id="sort"><option value="default">مرتب‌سازی پیش‌فرض</option><option value="name">نام محصول</option><option value="price-asc">ارزان‌ترین</option><option value="price-desc">گران‌ترین</option><option value="stock">بیشترین موجودی</option></select></div>
@@ -1621,6 +1621,15 @@ button,input,select,textarea{max-width:100%;min-width:0}
   .hero-copy h1{line-height:1.6!important}
 }
 
+
+/* RAM TECH: move product search directly above product categories */
+.catalog-search-wrap{padding-top:18px;padding-bottom:0}
+.catalog-search{position:relative;width:min(100%,680px);margin-inline:auto}
+.catalog-search input{display:block;width:100%;min-height:52px;padding:12px 48px 12px 16px;border:1px solid #d8deea;border-radius:15px;background:#fff;color:#26324a;font:600 14px Tahoma,Arial,sans-serif;outline:none;box-shadow:0 8px 24px rgba(34,55,90,.07);transition:border-color .2s,box-shadow .2s}
+.catalog-search input::placeholder{color:#8a94a6}
+.catalog-search input:focus{border-color:#8299d8;box-shadow:0 0 0 3px rgba(84,120,238,.12),0 8px 24px rgba(34,55,90,.07)}
+.catalog-search span{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:27px;line-height:1;color:#7183b0;pointer-events:none}
+@media(max-width:650px){.catalog-search-wrap{padding-top:12px}.catalog-search input{min-height:48px;font-size:13px;border-radius:13px}}
 </style>
 
 
