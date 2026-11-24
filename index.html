@@ -1562,6 +1562,29 @@ button,input,select,textarea{max-width:100%;min-width:0}
  .hero-copy h1{font-size:clamp(23px,6vw,29px)!important;letter-spacing:.5px!important}
  .hero-brand-name{font-size:18px!important;letter-spacing:2.5px!important}
 }
+
+/* RAM TECH hero banner: replace blue background with a silver metallic theme */
+.hero-box{
+ background:linear-gradient(135deg,#f7f8fa 0%,#d9dee5 38%,#eef1f4 68%,#c7ced7 100%)!important;
+ border:1px solid #aeb8c4!important;
+ color:#263241!important;
+ box-shadow:0 18px 42px rgba(65,78,94,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.hero-box:after{border-color:rgba(91,105,122,.18)!important}
+.hero-copy .eyebrow{
+ background:linear-gradient(135deg,#f8f9fa,#d8dee6)!important;
+ border:1px solid #b8c1cc!important;
+ color:#394656!important;
+}
+.hero-copy h1{color:#263241!important;text-shadow:none!important}
+.hero-brand-name{
+ background:linear-gradient(135deg,#f4f6f8 0%,#bcc5cf 48%,#edf0f3 100%)!important;
+ color:#263241!important;
+ border:1px solid #aab5c1!important;
+ box-shadow:0 5px 16px rgba(95,108,123,.22),inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.hero-benefits,.hero-benefits span{color:#394656!important}
+
 </style>
 
 
@@ -1571,12 +1594,3 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 }
 </script>
 </body></html>
-
-
-/* RAM TECH: silver finish for the English RAMTEK hero label */
-.hero-brand-name{
- background:linear-gradient(135deg,#f4f6f8 0%,#c5cbd3 48%,#edf0f3 100%)!important;
- color:#263241!important;
- border:1px solid #aeb7c3!important;
- box-shadow:0 5px 16px rgba(190,199,210,.28),inset 0 1px 0 rgba(255,255,255,.9)!important;
-}
