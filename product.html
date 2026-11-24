@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<title>جزئیات محصول | رام‌تک</title>
+<meta name="description" content="مشاهده مشخصات و قیمت محصولات فروشگاه کامپیوتر محمدی رام‌تک.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="کامپیوتر محمدی | RAM TECH">
+<meta property="og:title" content="جزئیات محصول | رام‌تک">
+<meta property="og:description" content="مشاهده مشخصات و قیمت محصولات فروشگاه کامپیوتر محمدی رام‌تک.">
+<meta property="og:image" content="">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#1d2939;font-family:Tahoma,Arial,sans-serif;line-height:1.9}.wrap{width:min(1100px,94%);margin:auto}header{background:#111827;color:#fff;padding:13px 0}header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}a{color:inherit;text-decoration:none}.brand{font-weight:900;font-size:20px;color:#e8f1ff}.brand small{display:block;font-size:10px;color:#a8bad2;font-weight:400}.back{background:#ffffff18;border:1px solid #ffffff30;border-radius:10px;padding:7px 12px;font-size:12px}.crumb{font-size:12px;color:#718096;margin:18px 0}.card{background:white;border:1px solid #e7ebf2;border-radius:20px;padding:clamp(16px,4vw,30px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:30px;box-shadow:0 14px 38px #172b490d}.visual{min-height:320px;border-radius:16px;background:linear-gradient(145deg,#edf3fb,#f8faff);display:grid;place-items:center;overflow:hidden}.visual img{width:100%;height:100%;max-height:480px;object-fit:contain;padding:20px}.emoji{font-size:90px}.info{display:flex;flex-direction:column;align-items:flex-start}.cat{font-size:12px;color:#64748b;background:#eef3fa;padding:4px 10px;border-radius:20px}.name{font-size:clamp(22px,3vw,32px);line-height:1.6;margin:12px 0;color:#14213a}.price{font-size:24px;color:#225fca;font-weight:900;margin:5px 0}.stock{font-size:13px;color:#64748b;margin:5px 0 14px}.desc{font-size:14px;color:#536176;white-space:pre-wrap}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:auto;padding-top:22px;width:100%}button{font:inherit;cursor:pointer;border:0;border-radius:11px;padding:11px 17px;font-weight:700}.primary{background:linear-gradient(110deg,#2563eb,#089dbd);color:white}.secondary{background:#eef2f7;color:#34445b}.primary:disabled{opacity:.5;cursor:not-allowed}.hint{font-size:11px;color:#8190a5;margin-top:15px}.state{background:white;border:1px solid #e5eaf2;border-radius:16px;padding:25px;text-align:center;color:#64748b;margin:25px auto;max-width:650px}.error{color:#b42318}footer{text-align:center;color:#8a95a7;font-size:11px;padding:28px 0}@media(max-width:700px){.card{grid-template-columns:1fr;gap:16px}.visual{min-height:230px;max-height:300px}.visual img{max-height:290px}.info{min-height:280px}.name{font-size:22px}.price{font-size:21px}.actions button{flex:1}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="brand" href="./">RAM TECH<small>کامپیوتر محمدی</small></a><a class="back" href="./">بازگشت به فروشگاه ←</a></div></header>
+<main class="wrap">
+<div class="crumb"><a href="./">صفحه اصلی</a> / <span id="crumbName">جزئیات محصول</span></div>
+<div id="state" class="state">در حال دریافت اطلاعات محصول...</div>
+<article id="productCard" class="card" hidden>
+<div class="visual"><img id="productImage" alt="" hidden><span id="productEmoji" class="emoji">📦</span></div>
+<div class="info"><span id="productCategory" class="cat">محصول</span><h1 id="productName" class="name"></h1><div id="productPrice" class="price"></div><div id="productStock" class="stock"></div><p id="productDescription" class="desc"></p><div class="actions"><button id="addToCart" class="primary">افزودن به سبد خرید</button><button id="shareProduct" class="secondary">اشتراک‌گذاری محصول</button></div><div class="hint">ثبت سفارش در رام‌تک بدون پرداخت آنلاین انجام می‌شود؛ هماهنگی نهایی توسط فروشگاه صورت می‌گیرد.</div></div>
+</article>
+</main>
+<footer>© فروشگاه کامپیوتر محمدی | RAM TECH</footer>
+<script>
+const SUPABASE_URL="https://fgfeiilkzoajguabzuex.supabase.co";
+const SUPABASE_KEY="sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+const fa=n=>Number(n||0).toLocaleString("fa-IR");
+const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function emojiFor(p){const n=(p.name+" "+(p.categories?.name||"")).toLowerCase();if(/هندز|هدفون|هدست|ایرپاد/.test(n))return"🎧";if(/شارژ|آداپتور|کابل/.test(n))return"🔌";if(/ماوس|موس/.test(n))return"🖱️";if(/کیبورد/.test(n))return"⌨️";if(/پاوربانک/.test(n))return"🔋";if(/موبایل|گوشی|قاب|گلس/.test(n))return"📱";if(/لپ.?تاپ|کامپیوتر/.test(n))return"💻";return"📦"}
+async function init(){
+ const id=new URLSearchParams(location.search).get("id");
+ if(!id){$("state").innerHTML='<span class="error">شناسه محصول در لینک وجود ندارد.</span>';return}
+ const {data:p,error}=await db.from("products").select("id,name,slug,sku,description,price,stock_quantity,image_url,is_active,categories(name)").eq("id",id).eq("is_active",true).maybeSingle();
+ if(error||!p){$("state").innerHTML='<span class="error">این محصول پیدا نشد یا دیگر فعال نیست.</span>';return}
+ const url=location.origin+location.pathname+"?id="+encodeURIComponent(p.id);
+ const description=(p.description||("مشاهده قیمت و مشخصات "+p.name+" در فروشگاه رام‌تک.")).slice(0,155);
+ document.title=p.name+" | خرید از رام‌تک";
+ document.querySelector('meta[name="description"]').content=description;
+ document.querySelector('link[rel="canonical"]').href=url;
+ document.querySelector('meta[property="og:url"]')?.setAttribute("content",url);
+ document.querySelector('meta[property="og:title"]').content=p.name+" | رام‌تک";
+ document.querySelector('meta[property="og:description"]').content=description;
+ if(p.image_url)document.querySelector('meta[property="og:image"]').content=p.image_url;
+ const schema={"@context":"https://schema.org","@type":"Product",name:p.name,description,image:p.image_url?[p.image_url]:undefined,sku:p.sku||undefined,offers:{"@type":"Offer",priceCurrency:"IRR",price:String(Math.round(Number(p.price)*10)),availability:p.stock_quantity>0?"https://schema.org/InStock":"https://schema.org/OutOfStock",url}};
+ const ld=document.createElement("script");ld.type="application/ld+json";ld.textContent=JSON.stringify(schema);document.head.appendChild(ld);
+ $("crumbName").textContent=p.name;$("productName").textContent=p.name;$("productCategory").textContent=p.categories?.name||"سایر کالاها";$("productPrice").textContent=fa(p.price)+" تومان";$("productStock").textContent=p.stock_quantity>0?"موجودی: "+fa(p.stock_quantity)+" عدد":"فعلاً ناموجود";$("productDescription").textContent=p.description||"توضیحی برای این کالا ثبت نشده است.";
+ $("productEmoji").textContent=emojiFor(p);
+ if(p.image_url){$("productImage").src=p.image_url;$("productImage").alt=p.name;$("productImage").hidden=false;$("productEmoji").hidden=true;$("productImage").onerror=()=>{$("productImage").hidden=true;$("productEmoji").hidden=false}}
+ $("addToCart").disabled=Number(p.stock_quantity)<1;
+ $("addToCart").onclick=()=>{let cart={};try{cart=JSON.parse(localStorage.getItem("mohammadiCart")||"{}")}catch(e){}cart[String(p.id)]=Math.min(Number(p.stock_quantity),Number(cart[p.id]||0)+1);localStorage.setItem("mohammadiCart",JSON.stringify(cart));location.href="./?openCart=1"};
+ $("shareProduct").onclick=async()=>{try{if(navigator.share)await navigator.share({title:p.name,text:"مشاهده محصول در رام‌تک",url});else{await navigator.clipboard.writeText(url);$("shareProduct").textContent="لینک کپی شد"}}catch(e){}};
+ $("state").hidden=true;$("productCard").hidden=false;
+}
+init().catch(e=>{$("state").textContent="بارگذاری محصول با خطا روبه‌رو شد. لطفاً دوباره تلاش کنید."});
+</script>
+</body></html>
