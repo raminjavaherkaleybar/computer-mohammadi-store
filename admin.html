@@ -117,8 +117,10 @@ async function loadInventory(){
  $('inventoryRows').innerHTML=data?.length?data.map(x=>'<tr><td>'+safe(x.products?.name||'کالای حذف‌شده')+'</td><td>'+fa(x.quantity_change)+'</td><td>'+safe(x.reason)+'</td><td>'+safe(x.note||'—')+'</td><td>'+new Date(x.created_at).toLocaleString('fa-IR')+'</td></tr>').join(''):'<tr><td colspan="5">هنوز سابقه‌ای ثبت نشده است.</td></tr>';
 }
 function downloadCSV(filename,rows){
- const csv='\\uFEFF'+rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\\r\\n');
- const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download=filename;a.click();URL.revokeObjectURL(url);
+ const csv='\uFEFF'+rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+ const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+ const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+ window.setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function exportProducts(){downloadCSV('ram-tech-products.csv',[['نام کالا','کد کالا','دسته‌بندی','قیمت تومان','موجودی','فعال','ویژه'],...products.map(p=>[p.name,p.sku,p.categories?.name,p.price,p.stock_quantity,p.is_active?'بله':'خیر',p.is_featured?'بله':'خیر'])]);}
 function exportCustomers(){const q=($('customerSearch').value||'').trim().toLocaleLowerCase('fa');db.from('customers').select('full_name,phone,email,province,city,created_at').order('created_at',{ascending:false}).limit(500).then(({data,error})=>{if(error){message('customerMsg','خروجی مشتریان ناموفق بود: '+error.message);return}const rows=(data||[]).filter(x=>!q||[x.full_name,x.phone].join(' ').toLocaleLowerCase('fa').includes(q));downloadCSV('ram-tech-customers.csv',[['نام','موبایل','ایمیل','استان','شهر','تاریخ ثبت'],...rows.map(x=>[x.full_name,x.phone,x.email,x.province,x.city,x.created_at])]);});}
