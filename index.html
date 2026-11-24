@@ -865,6 +865,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .compare-table tbody th{background:#f7f9fc;white-space:nowrap}
 @media(max-width:600px){.compare-bar{bottom:8px;gap:6px;padding:9px;font-size:11px}.compare-bar button{padding:7px 8px;font-size:10px}.compare-card{padding:12px}.compare-table th,.compare-table td{padding:8px;font-size:11px}}
 
+
+/* Storefront usability additions */
+.stock-only-control{display:inline-flex;align-items:center;gap:7px;color:#a9bdd6;background:#101f34;border:1px solid #304761;border-radius:10px;padding:8px 11px;font-size:12px;white-space:nowrap}
+.stock-only-control input{accent-color:#278cff;width:16px;height:16px}
+.faq-list{display:grid;gap:10px;max-width:900px;margin:auto}
+.faq-list details{background:linear-gradient(145deg,#13243a,#0c1728);border:1px solid #263d59;border-radius:14px;padding:0 16px;color:#eaf3ff}
+.faq-list summary{cursor:pointer;list-style:none;padding:14px 28px 14px 0;font-weight:700;position:relative}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary:before{content:"＋";position:absolute;right:0;color:#55d9ef}
+.faq-list details[open] summary:before{content:"−"}
+.faq-list details p{margin:0;padding:0 0 15px;color:#b8c9df;font-size:13px;line-height:2}
+#backToTop{position:fixed;left:18px;bottom:20px;z-index:25;width:44px;height:44px;border:1px solid #3c9fe0;border-radius:14px;background:linear-gradient(135deg,#176ff0,#0da8c5);color:white;font-size:24px;font-weight:bold;box-shadow:0 8px 24px #0005;opacity:0;pointer-events:none;transform:translateY(12px);transition:.2s}
+#backToTop.visible{opacity:1;pointer-events:auto;transform:translateY(0)}
+@media(max-width:600px){.stock-only-control{font-size:11px;padding:7px 9px}.faq-list summary{font-size:12px}#backToTop{left:12px;bottom:14px;width:40px;height:40px}}
 </style>
 
 
@@ -898,14 +912,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 </div></section>
 <section class="section wrap" id="categories"><div class="section-head"><div><h2>دسته‌بندی محصولات</h2><p>سریع‌تر محصول موردنظرت را پیدا کن</p></div></div><div class="categories" id="categoryGrid"></div></section>
 <section class="section wrap" id="products"><div class="section-head"><div><h2>محصولات فروشگاه</h2><p id="productCount">محصولات و قیمت‌ها مستقیماً از موجودی واقعی فروشگاه خوانده می‌شوند</p></div></div>
- <div class="toolbar"><div class="filters" id="filters"></div><select class="sort" id="sort"><option value="default">مرتب‌سازی پیش‌فرض</option><option value="name">نام محصول</option><option value="price-asc">ارزان‌ترین</option><option value="price-desc">گران‌ترین</option><option value="stock">بیشترین موجودی</option></select></div>
+ <div class="toolbar"><div class="filters" id="filters"></div><label class="stock-only-control"><input type="checkbox" id="inStockOnly"> فقط کالاهای موجود</label><select class="sort" id="sort"><option value="default">مرتب‌سازی پیش‌فرض</option><option value="name">نام محصول</option><option value="price-asc">ارزان‌ترین</option><option value="price-desc">گران‌ترین</option><option value="stock">بیشترین موجودی</option></select></div>
  <div class="products" id="productGrid"></div>
  <div class="note">قیمت و موجودی کالاها از پایگاه داده اختصاصی فروشگاه خوانده می‌شود. ثبت درخواست سفارش فعال است؛ هزینه ارسال و شیوه پرداخت پس از هماهنگی با فروشگاه نهایی می‌شود.</div>
 </section>
 <section class="section wrap" id="benefits"><div class="section-head"><div><h2>تجربه خرید بهتر</h2><p>فروشگاه برای استفاده راحت در موبایل و کامپیوتر طراحی شده است</p></div></div><div class="features"><div class="feature"><i>🛍️</i><div><strong>تنوع محصولات</strong><small>دسته‌بندی منظم کالاها</small></div></div><div class="feature"><i>📦</i><div><strong>بررسی موجودی</strong><small>نمایش وضعیت موجودی پس از راه‌اندازی</small></div></div><div class="feature"><i>🔒</i><div><strong>خرید مطمئن</strong><small>اتصال امن در مرحله نهایی</small></div></div><div class="feature"><i>📱</i><div><strong>طراحی واکنش‌گرا</strong><small>مناسب موبایل و دسکتاپ</small></div></div></div></section>
+<section class="section wrap" id="faq"><div class="section-head"><div><h2>سوالات متداول خرید</h2><p>پاسخ پرسش‌های مهم پیش از ثبت سفارش</p></div></div><div class="faq-list"><details><summary>چطور سفارش خودم را ثبت کنم؟</summary><p>کالای موردنظر را به سبد خرید اضافه کنید، اطلاعات تماس و نشانی را وارد کنید و درخواست سفارش را ثبت کنید. سفارش ابتدا برای بررسی فروشگاه ارسال می‌شود.</p></details><details><summary>آیا پرداخت آنلاین فعال است؟</summary><p>در حال حاضر پرداخت آنلاین فعال نیست. پس از بررسی سفارش، مبلغ نهایی و روش پرداخت از طرف فروشگاه با شما هماهنگ می‌شود؛ پیش از تأیید فروشگاه وجهی واریز نکنید.</p></details><details><summary>هزینه ارسال چقدر است؟</summary><p>هزینه ارسال بر اساس مقصد و روش انتخابی (پست یا تیپاکس) پس از بررسی سفارش اعلام و با شما هماهنگ می‌شود.</p></details><details><summary>چطور از وضعیت سفارش باخبر شوم؟</summary><p>پس از ثبت درخواست، برای تأیید سفارش و هماهنگی ارسال با شماره موبایلی که وارد کرده‌اید با شما تماس گرفته می‌شود.</p></details><details><summary>اگر کالایی ناموجود باشد چه می‌شود؟</summary><p>موجودی نمایش‌داده‌شده از اطلاعات ثبت‌شده در فروشگاه خوانده می‌شود. سفارش کالاهای ناموجود قابل ثبت نیست؛ برای اطمینان نهایی، موجودی هنگام تأیید سفارش بررسی می‌شود.</p></details></div></section>
 </main>
-<footer id="contact"><div class="wrap"><div class="footgrid"><div><h3>کامپیوتر محمدی</h3><p>فروشگاه لوازم جانبی موبایل و کامپیوتر؛ همراه شما برای انتخاب و تهیه تجهیزات دیجیتال.</p><p><a href="mailto:raminmkaleybar1363@gmail.com">ایمیل پشتیبانی</a></p></div><div><h3>دسترسی سریع</h3><p><a href="#home">صفحه اصلی</a></p><p><a href="#products">مشاهده محصولات</a></p><p><a href="#categories">دسته‌بندی کالاها</a></p><p><a href="#benefits">راهنمای خرید و مزایا</a></p><p><a href="admin.html">ورود مدیر فروشگاه</a></p></div><div><h3>تماس با ما</h3><p>آذربایجان شرقی، شهرستان کلیبر، خیابان معلم</p><p>موبایل: <a href="tel:+989387893112">09387893112</a></p><p>تلفن ثابت: <a href="tel:+984144446002">04144446002</a></p><p>اینستاگرام: <a href="https://www.instagram.com/ramin_javaherkaleybar/" target="_blank" rel="noopener noreferrer">ramin_javaherkaleybar</a></p><p>تلگرام: <a href="https://t.me/ramin_javaherkaleybar/" target="_blank" rel="noopener noreferrer">ramin_javaherkaleybar</a></p></div></div><div class="copyright">© تمامی حقوق برای فروشگاه کامپیوتر محمدی محفوظ است.</div></div></footer>
+<footer id="contact"><div class="wrap"><div class="footgrid"><div><h3>کامپیوتر محمدی</h3><p>فروشگاه لوازم جانبی موبایل و کامپیوتر؛ همراه شما برای انتخاب و تهیه تجهیزات دیجیتال.</p><p><a href="mailto:raminmkaleybar1363@gmail.com">ایمیل پشتیبانی</a></p></div><div><h3>دسترسی سریع</h3><p><a href="#home">صفحه اصلی</a></p><p><a href="#products">مشاهده محصولات</a></p><p><a href="#categories">دسته‌بندی کالاها</a></p><p><a href="#benefits">راهنمای خرید و مزایا</a></p><p><a href="#faq">سوالات متداول</a></p><p><a href="admin.html">ورود مدیر فروشگاه</a></p></div><div><h3>تماس با ما</h3><p>آذربایجان شرقی، شهرستان کلیبر، خیابان معلم</p><p>موبایل: <a href="tel:+989387893112">09387893112</a></p><p>تلفن ثابت: <a href="tel:+984144446002">04144446002</a></p><p>اینستاگرام: <a href="https://www.instagram.com/ramin_javaherkaleybar/" target="_blank" rel="noopener noreferrer">ramin_javaherkaleybar</a></p><p>تلگرام: <a href="https://t.me/ramin_javaherkaleybar/" target="_blank" rel="noopener noreferrer">ramin_javaherkaleybar</a></p></div></div><div class="copyright">© تمامی حقوق برای فروشگاه کامپیوتر محمدی محفوظ است.</div></div></footer>
 </main>
+<button type="button" id="backToTop" aria-label="بازگشت به بالای صفحه" title="بازگشت به بالا">↑</button>
 <div id="compareBar" class="compare-bar" aria-live="polite"><span id="compareSummary">۰ محصول برای مقایسه انتخاب شده</span><button type="button" id="compareOpen" disabled>مقایسه محصولات</button><button type="button" id="compareClear">پاک کردن</button></div>
 <div id="compareModal" class="compare-modal" role="dialog" aria-modal="true" aria-label="مقایسه محصولات"><div class="compare-card"><div class="compare-head"><strong>مقایسه محصولات</strong><button type="button" id="compareClose" class="close">بستن ✕</button></div><div id="compareContent"></div></div></div>
 <div id="productDetailModal" role="dialog" aria-modal="true" aria-label="جزئیات محصول"><div class="detail-card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px"><strong>جزئیات محصول</strong><button type="button" class="close" id="detailClose">بستن ✕</button></div><div id="detailContent"></div></div></div>
@@ -993,7 +1009,7 @@ function renderFilters(){
 }
 function renderProducts(){
  const q=$("search").value.trim().toLocaleLowerCase("fa");
- let list=products.filter(p=>(active==="all"||p.cat===active)&&(!favoriteOnly||favorites.includes(String(p.id)))&&(!q||normalizeSearch([p.name,p.label,p.description].join(" ")).includes(normalizeSearch(q))));
+ let list=products.filter(p=>(active==="all"||p.cat===active)&&(!favoriteOnly||favorites.includes(String(p.id)))&&(!$("inStockOnly").checked||p.stock_quantity>0)&&(!q||normalizeSearch([p.name,p.label,p.description].join(" ")).includes(normalizeSearch(q))));
  const sort=$("sort").value;if(sort==="name")list.sort((a,b)=>a.name.localeCompare(b.name,"fa"));else if(sort==="price-asc")list.sort((a,b)=>a.price-b.price);else if(sort==="price-desc")list.sort((a,b)=>b.price-a.price);else if(sort==="stock")list.sort((a,b)=>b.stock_quantity-a.stock_quantity);
  $("productCount").textContent="نمایش "+fa(list.length)+" کالا از "+fa(products.length)+" محصول فروشگاه";
  $("productGrid").innerHTML=list.length?list.map(p=>{const fallback=productEmojiFor(p);const src=(typeof p.image_url==="string"&&(p.image_url.trim().startsWith("https://")||p.image_url.trim().startsWith("http://")))?p.image_url.trim():productImageFor(p);return '<article class="product"><div class="product-visual"><button type="button" class="favorite-toggle" data-favorite="'+p.id+'" aria-label="افزودن به علاقه‌مندی‌ها" title="علاقه‌مندی‌ها">♡</button><img src="'+safe(src)+'" alt="'+safe(p.name)+'" loading="lazy" decoding="async" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'"><span class="emoji image-fallback" style="display:none">'+fallback+'</span></div><div class="product-body"><span class="product-cat">'+safe(p.label)+'</span><h3>'+safe(p.name)+'</h3><div class="price">'+fa(p.price)+' تومان</div><div class="product-cat">موجودی: '+fa(p.stock_quantity)+'</div><div class="product-actions"><button type="button" class="compare-toggle" data-compare="'+p.id+'">مقایسه</button><button class="add" data-add="'+p.id+'" '+(p.stock_quantity<1?"disabled":"")+'>افزودن به سبد</button><button class="detail" data-detail="'+p.id+'">جزئیات</button></div></div></article>';}).join(""):(favoriteOnly?'<div class="empty">هنوز محصولی به علاقه‌مندی‌های شما اضافه نشده است.</div>':'<div class="empty">در حال حاضر کالای فعالی برای نمایش ثبت نشده است.</div>');
@@ -1076,6 +1092,11 @@ $("checkoutForm").onsubmit=async e=>{
 };
 $("search").addEventListener("input",renderProducts);
 $("sort").addEventListener("change",renderProducts);
+$("inStockOnly").addEventListener("change",renderProducts);
+const backToTop=$("backToTop");
+window.addEventListener("scroll",()=>backToTop.classList.toggle("visible",window.scrollY>420),{passive:true});
+backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;closeCompare();$("productDetailModal").classList.remove("open");resetHomeSEO();$("drawerBack").classList.remove("open");document.querySelector(".drawer").classList.remove("open");});
 const openCart=()=>{$("drawerBack").classList.add("open");document.querySelector(".drawer").classList.add("open");renderCart();};
 $("cartBtn").onclick=openCart;
 $("utilityCartBtn").onclick=openCart;
