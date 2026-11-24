@@ -17,6 +17,12 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 @media(max-width:380px){.wrap{width:calc(100% - 20px)}.card{padding:12px}.summary{grid-template-columns:1fr}.card h1{font-size:18px}}
 
 </style>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0b1220">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/svg+xml" href="./assets/ram-tech-app-icon.svg">
 </head>
 <body>
 <header><div class="wrap"><a class="brand" href="./">RAM TECH<small>کامپیوتر محمدی</small></a><a class="back" href="./">بازگشت به فروشگاه ←</a></div></header>
@@ -50,5 +56,11 @@ $("trackForm").onsubmit=async e=>{
  catch(err){$("result").innerHTML='<div class="notice error">فعلاً امکان دریافت وضعیت سفارش وجود ندارد. کمی بعد دوباره تلاش کنید.</div>'}
  finally{$("submit").disabled=false;$("submit").textContent="بررسی وضعیت سفارش"}
 };
+</script>
+
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {}));
+}
 </script>
 </body></html>
