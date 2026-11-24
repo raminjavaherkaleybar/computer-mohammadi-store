@@ -19,7 +19,7 @@
 </section>
 <section id="appPanel" class="hidden">
 <div class="panel"><div class="headrow"><div><h2>خلاصه فروشگاه</h2><p class="muted">آمار کالاهای ثبت‌شده در پایگاه داده اختصاصی</p></div><span id="who" class="muted"></span></div><div class="stats"><div class="stat"><strong id="totalProducts">۰</strong><span>کل کالاها</span></div><div class="stat"><strong id="activeProducts">۰</strong><span>کالاهای فعال در سایت</span></div><div class="stat"><strong id="lowStock">۰</strong><span>کالای کم‌موجودی (۳ عدد یا کمتر)</span></div></div></div>
-<div class="panel"><h2 id="formTitle">ثبت کالای جدید</h2><form id="productForm"><input type="hidden" id="productId"><div class="grid">
+<div class="panel"><h2>گزارش فروش</h2><p class="muted">خلاصه سفارش‌های ثبت‌شده در پایگاه داده فروشگاه</p><div class="stats"><div class="stat"><strong id="reportOrders">۰</strong><span>تعداد سفارش‌ها</span></div><div class="stat"><strong id="reportRevenue">۰</strong><span>مجموع مبلغ سفارش‌ها (تومان)</span></div><div class="stat"><strong id="reportDelivered">۰</strong><span>سفارش‌های تحویل‌شده</span></div></div><div class="tablewrap" style="margin-top:14px"><table><thead><tr><th>ماه</th><th>تعداد سفارش</th><th>مجموع مبلغ (تومان)</th></tr></thead><tbody id="reportMonthly"><tr><td colspan="3">پس از دریافت سفارش‌ها نمایش داده می‌شود.</td></tr></tbody></table></div><p class="muted">این گزارش بر اساس سفارش‌های ثبت‌شده است و به معنی مبلغ پرداخت قطعی‌شده نیست.</p></div><div class="panel"><h2 id="formTitle">ثبت کالای جدید</h2><form id="productForm"><input type="hidden" id="productId"><div class="grid">
 <div class="field"><label for="name">نام کالا *</label><input id="name" required maxlength="150" placeholder="مثلاً شارژر فست"></div>
 <div class="field"><label for="category">دسته‌بندی *</label><select id="category" required></select></div>
 <div class="field"><label for="price">قیمت (تومان) *</label><input id="price" type="number" min="0" step="1" required placeholder="قیمت واقعی کالا"></div>
@@ -64,7 +64,7 @@ async function loadProducts(){
 async function loadOrders(){
  const {data,error}=await db.from('orders').select('id,order_number,customer_name,customer_phone,subtotal,shipping_fee,discount,total,status,shipping_method,shipping_tracking_code,created_at').order('created_at',{ascending:false}).limit(50);
  if(error){message('formMsg','خطا در دریافت سفارش‌ها: '+error.message);return}
- orders=data||[];renderOrders();
+ orders=data||[];renderOrders();renderSalesReport();
 }
 async function notifyOrder(orderId,baseMessage){
   const {data,error}=await db.functions.invoke('notify-shipping-update',{body:{order_id:orderId}});
@@ -74,7 +74,18 @@ async function notifyOrder(orderId,baseMessage){
   if(data.customer_linked)return {text:baseMessage+' پیام مدیر ارسال شد؛ ارسال پیام به مشتری ناموفق بود.',ok:false};
   return {text:baseMessage+' پیام مدیر ارسال شد؛ حساب روبیکای مشتری هنوز متصل نیست.',ok:true};
 }
-function renderOrders(){
+
+function renderSalesReport(){
+ const total=orders.reduce((s,o)=>s+Number(o.total||0),0);
+ $("reportOrders").textContent=fa(orders.length);
+ $("reportRevenue").textContent=fa(total);
+ $("reportDelivered").textContent=fa(orders.filter(o=>o.status==="delivered").length);
+ const months={};
+ orders.forEach(o=>{const d=new Date(o.created_at);if(Number.isNaN(d.getTime()))return;const key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");if(!months[key])months[key]={count:0,total:0};months[key].count++;months[key].total+=Number(o.total||0);});
+ const rows=Object.entries(months).sort((a,b)=>b[0].localeCompare(a[0]));
+ $("reportMonthly").innerHTML=rows.length?rows.map(([m,v])=>"<tr><td>"+safe(m)+"</td><td>"+fa(v.count)+"</td><td>"+fa(v.total)+"</td></tr>").join(""):'<tr><td colspan="3">هنوز سفارشی برای گزارش وجود ندارد.</td></tr>';
+}
+\nfunction renderOrders(){
  const labels={pending:'در انتظار بررسی',confirmed:'تأیید شده',processing:'در حال آماده‌سازی',shipped:'ارسال شده',delivered:'تحویل شده',cancelled:'لغو شده'};
  $('orderRows').innerHTML=orders.length?orders.map(o=>'<tr><td>'+safe(o.order_number)+'</td><td>'+safe(o.customer_name)+'</td><td>'+safe(o.customer_phone)+'</td><td>'+fa(o.total)+'</td><td>'+new Date(o.created_at).toLocaleString('fa-IR')+'</td><td><select data-order-status="'+o.id+'" aria-label="وضعیت سفارش" '+(o.status==='cancelled'?'disabled':'')+'>'+Object.entries(labels).map(([v,l])=>'<option value="'+v+'" '+(o.status===v?'selected':'')+'>'+l+'</option>').join('')+'</select></td><td><select data-ship-method="'+o.id+'"><option value="post" '+(o.shipping_method==='post'?'selected':'')+'>پست</option><option value="tipax" '+(o.shipping_method==='tipax'?'selected':'')+'>تیپاکس</option></select><input data-ship-fee="'+o.id+'" type="number" min="0" step="1" value="'+Number(o.shipping_fee||0)+'" placeholder="هزینه ارسال" style="width:105px;margin:4px"><input data-track="'+o.id+'" value="'+safe(o.shipping_tracking_code||'')+'" placeholder="کد رهگیری" style="width:130px;margin:4px"><button class="btn secondary" data-save-shipping="'+o.id+'">ذخیره</button></td></tr>').join(''):'<tr><td colspan="7">هنوز سفارشی ثبت نشده است.</td></tr>';
  document.querySelectorAll('[data-order-status]').forEach(el=>el.onchange=async()=>{const id=el.dataset.orderStatus,status=el.value;el.disabled=true;const {error}=await db.from('orders').update({status,updated_at:new Date().toISOString()}).eq('id',id);el.disabled=false;if(error){message('formMsg','تغییر وضعیت سفارش انجام نشد: '+error.message);await loadOrders();return}const base=status==='cancelled'?'لغو سفارش انجام شد و موجودی کالاها خودکار برگشت داده شد.':'وضعیت سفارش ذخیره شد.';const notice=await notifyOrder(id,base);message('formMsg',notice.text,notice.ok);await loadOrders()});
