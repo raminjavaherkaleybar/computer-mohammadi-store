@@ -8,11 +8,16 @@
 (function(){
   const viewport=document.querySelector('meta[name="viewport"]');
   function fitPageToScreen(){
-    const scale=Math.min(1,Math.max(0.25,screen.width/1200));
-    viewport.setAttribute('content','width=1200, initial-scale='+scale+', minimum-scale=0.25, maximum-scale=5, user-scalable=yes');
+    /* The site has a fixed 1200px layout and a global body zoom of 1.08.
+       Include that zoom in the fit calculation so the rendered page width
+       matches the phone screen exactly instead of overflowing. */
+    const screenWidth=window.screen.width || document.documentElement.clientWidth;
+    const scale=Math.min(1,Math.max(0.1,screenWidth/(1200*1.08)));
+    viewport.setAttribute('content','width=1200, initial-scale='+scale+', minimum-scale=0.1, maximum-scale=5, user-scalable=yes');
   }
   fitPageToScreen();
-  window.addEventListener('orientationchange',function(){setTimeout(fitPageToScreen,150);});
+  window.addEventListener('resize',fitPageToScreen);
+  window.addEventListener('orientationchange',function(){setTimeout(fitPageToScreen,200);});
 })();
 </script>
 <meta name="theme-color" content="#111827">
