@@ -18,6 +18,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  if (url.pathname.endsWith('/admin.html')) return;
   if (url.pathname.includes('/rest/v1/') || url.pathname.includes('/functions/v1/')) return;
   if (request.mode === 'navigate') {
     event.respondWith(fetch(request).then(response => {
@@ -26,7 +27,11 @@ self.addEventListener('fetch', event => {
         caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
       }
       return response;
-    }).catch(async () => (await caches.match(request)) || (await caches.match('./index.html'))));
+    }).catch(async () => {
+      const cleanUrl = new URL(request.url);
+      cleanUrl.search = '';
+      return (await caches.match(cleanUrl.href)) || (await caches.match('./index.html'));
+    }));
     return;
   }
   event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => {
