@@ -46,7 +46,23 @@
  </div>
  <h3>سوابق فاکتورهای خرید</h3><div class="tablewrap"><table><thead><tr><th>تاریخ</th><th>شماره فاکتور</th><th>تأمین‌کننده</th><th>تعداد قلم</th><th>جمع خرید (تومان)</th><th>یادداشت</th></tr></thead><tbody id="purchaseRows"><tr><td colspan="6">در حال دریافت...</td></tr></tbody></table></div>
  <h3>فهرست تأمین‌کنندگان</h3><div class="tablewrap"><table><thead><tr><th>نام</th><th>تماس</th><th>آدرس</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="supplierRows"><tr><td colspan="5">در حال دریافت...</td></tr></tbody></table></div>
- <p class="note">با ثبت نهایی هر فاکتور، موجودی هر کالا و گردش انبار به‌صورت اتمی ثبت می‌شود. آخرین بهای خرید برای محاسبه سود سفارش‌های بعدی ذخیره می‌شود؛ سوابق سفارش‌های قبلی تغییر نمی‌کنند.</p>
+ 
+ <hr><h3>ثبت پرداخت به تأمین‌کننده</h3>
+ <form id="supplierPaymentForm" class="field">
+  <div class="grid">
+   <div class="field"><label for="paymentSupplier">تأمین‌کننده *</label><select id="paymentSupplier" required><option value="">انتخاب تأمین‌کننده</option></select></div>
+   <div class="field"><label for="paymentPurchase">اختصاص پرداخت به فاکتور (اختیاری)</label><select id="paymentPurchase"><option value="">پرداخت از کل بدهی تأمین‌کننده</option></select></div>
+   <div class="field"><label for="supplierPaymentAmount">مبلغ پرداخت (تومان) *</label><input id="supplierPaymentAmount" type="number" min="1" step="1" required></div>
+   <div class="field"><label for="supplierPaymentDate">تاریخ پرداخت *</label><input id="supplierPaymentDate" type="date" required></div>
+   <div class="field"><label for="supplierPaymentMethod">روش پرداخت</label><select id="supplierPaymentMethod"><option value="cash">نقدی</option><option value="card">کارت‌به‌کارت / کارت‌خوان</option><option value="transfer">واریز بانکی</option><option value="other">سایر</option></select></div>
+   <div class="field"><label for="supplierPaymentRef">شماره پیگیری</label><input id="supplierPaymentRef" maxlength="120"></div>
+   <div class="field full"><label for="supplierPaymentNote">توضیحات</label><textarea id="supplierPaymentNote" maxlength="500"></textarea></div>
+  </div>
+  <button id="saveSupplierPayment" class="btn" type="submit">ثبت پرداخت</button><div id="supplierPaymentMsg" class="msg"></div>
+ </form>
+ <h3>مانده حساب تأمین‌کنندگان</h3><div class="tablewrap"><table><thead><tr><th>تأمین‌کننده</th><th>جمع فاکتورها</th><th>پرداخت‌شده</th><th>مانده بدهی</th></tr></thead><tbody id="supplierBalanceRows"><tr><td colspan="4">در حال دریافت...</td></tr></tbody></table></div>
+ <h3>تاریخچه پرداخت‌ها</h3><div class="tablewrap"><table><thead><tr><th>تاریخ</th><th>تأمین‌کننده</th><th>مبلغ</th><th>روش</th><th>فاکتور</th><th>شماره پیگیری</th><th>توضیحات</th></tr></thead><tbody id="supplierPaymentRows"><tr><td colspan="7">در حال دریافت...</td></tr></tbody></table></div>
+ <p class="note">مانده بدهی برابر مجموع فاکتورهای خرید ثبت‌شده منهای پرداخت‌های ثبت‌شده است. فاکتورهای بدون تأمین‌کننده در حساب بدهی اشخاص محاسبه نمی‌شوند.</p>
 </div>
 <div class="panel" id="productFormPanel"><h2 id="formTitle">ثبت کالای جدید</h2><form id="productForm"><input type="hidden" id="productId"><div class="grid">
 <div class="field"><label for="name">نام کالا *</label><input id="name" required maxlength="150" placeholder="مثلاً شارژر فست"></div>
@@ -329,6 +345,44 @@ async function toggleSupplier(id,active){
  if(error){message('supplierMsg','تغییر وضعیت انجام نشد: '+error.message);return}
  await loadSuppliers();message('supplierMsg','وضعیت تأمین‌کننده به‌روزرسانی شد.',true);
 }
+
+let supplierPurchases=[],supplierPayments=[];
+async function loadSupplierAccounts(){
+ const [pr,pa]=await Promise.all([
+  db.from('store_purchases').select('id,supplier_id,invoice_number,purchase_date,total_amount,store_suppliers(name)').not('supplier_id','is',null).order('purchase_date',{ascending:false}).limit(1000),
+  db.from('store_supplier_payments').select('id,supplier_id,purchase_id,amount,payment_date,payment_method,reference_number,note,store_suppliers(name),store_purchases(invoice_number)').order('payment_date',{ascending:false}).order('created_at',{ascending:false}).limit(1000)
+ ]);
+ if(pr.error)throw pr.error;if(pa.error)throw pa.error;
+ supplierPurchases=pr.data||[];supplierPayments=pa.data||[];
+ $('paymentSupplier').innerHTML='<option value="">انتخاب تأمین‌کننده</option>'+suppliers.map(s=>'<option value="'+s.id+'">'+safe(s.name)+'</option>').join('');
+ $('paymentPurchase').innerHTML='<option value="">پرداخت از کل بدهی تأمین‌کننده</option>'+supplierPurchases.map(p=>'<option value="'+p.id+'">'+safe(p.store_suppliers?.name||'')+' — '+safe(p.invoice_number||p.purchase_date)+' — '+fa(p.total_amount)+' تومان</option>').join('');
+ const rows=suppliers.map(s=>{
+  const bought=supplierPurchases.filter(p=>p.supplier_id===s.id).reduce((a,p)=>a+Number(p.total_amount||0),0);
+  const paid=supplierPayments.filter(p=>p.supplier_id===s.id).reduce((a,p)=>a+Number(p.amount||0),0);
+  return '<tr><td>'+safe(s.name)+'</td><td>'+fa(bought)+'</td><td>'+fa(paid)+'</td><td><strong>'+fa(bought-paid)+'</strong></td></tr>';
+ });
+ $('supplierBalanceRows').innerHTML=rows.length?rows.join(''):'<tr><td colspan="4">تأمین‌کننده‌ای ثبت نشده است.</td></tr>';
+ const methods={cash:'نقدی',card:'کارت / کارت‌خوان',transfer:'واریز بانکی',other:'سایر'};
+ $('supplierPaymentRows').innerHTML=supplierPayments.length?supplierPayments.map(p=>'<tr><td>'+safe(p.payment_date)+'</td><td>'+safe(p.store_suppliers?.name||'—')+'</td><td>'+fa(p.amount)+'</td><td>'+methods[p.payment_method]+'</td><td>'+safe(p.store_purchases?.invoice_number||'—')+'</td><td>'+safe(p.reference_number||'—')+'</td><td>'+safe(p.note||'—')+'</td></tr>').join(''):'<tr><td colspan="7">هنوز پرداختی ثبت نشده است.</td></tr>';
+}
+$('paymentSupplier').onchange=()=>{
+ const sid=$('paymentSupplier').value;
+ $('paymentPurchase').innerHTML='<option value="">پرداخت از کل بدهی تأمین‌کننده</option>'+supplierPurchases.filter(p=>p.supplier_id===sid).map(p=>'<option value="'+p.id+'">'+safe(p.invoice_number||p.purchase_date)+' — '+fa(p.total_amount)+' تومان</option>').join('');
+};
+$('supplierPaymentForm').onsubmit=async e=>{
+ e.preventDefault();
+ const supplierId=$('paymentSupplier').value, purchaseId=$('paymentPurchase').value||null, amount=Number($('supplierPaymentAmount').value);
+ if(!supplierId||!Number.isFinite(amount)||amount<=0){message('supplierPaymentMsg','تأمین‌کننده و مبلغ معتبر را وارد کنید.');return}
+ if(!confirm('پرداخت به مبلغ '+fa(amount)+' تومان ثبت شود؟'))return;
+ $('saveSupplierPayment').disabled=true;
+ const payload={supplier_id:supplierId,purchase_id:purchaseId,amount,payment_date:$('supplierPaymentDate').value,payment_method:$('supplierPaymentMethod').value,reference_number:$('supplierPaymentRef').value.trim()||null,note:$('supplierPaymentNote').value.trim()||null};
+ const {data,error}=await db.rpc('record_supplier_payment',{p_payload:payload});
+ $('saveSupplierPayment').disabled=false;
+ if(error){message('supplierPaymentMsg','ثبت پرداخت ناموفق بود: '+error.message);return}
+ $('supplierPaymentForm').reset();$('supplierPaymentDate').value=new Date().toISOString().slice(0,10);
+ await loadSupplierAccounts();
+ message('supplierPaymentMsg','پرداخت با موفقیت ثبت شد. شناسه ثبت: '+(data?.payment_id||''),true);
+};
 async function loadPurchases(){
  const {data,error}=await db.from('store_purchases').select('id,invoice_number,purchase_date,total_amount,note,store_suppliers(name),store_purchase_items(quantity)').order('purchase_date',{ascending:false}).order('created_at',{ascending:false}).limit(200);
  if(error){message('purchaseMsg','دریافت سوابق خرید ناموفق بود: '+error.message);return}
@@ -359,7 +413,7 @@ $('purchaseForm').onsubmit=async e=>{
  message('purchaseMsg','فاکتور خرید با موفقیت ثبت شد؛ موجودی کالاها افزایش یافت. شماره ثبت: '+(data?.purchase_id||''),true);
 };
 $('addPurchaseRow').onclick=addPurchaseRow;
-async function loadAll(){try{await loadCategories();await loadProducts();await loadOrders();await loadCustomers();await loadInventory();await loadReturns();await loadShippingSettings();await loadExpenses();await loadSuppliers();await loadPurchases()}catch(e){message('formMsg','خطا در دریافت اطلاعات: '+e.message)}}
+async function loadAll(){try{await loadCategories();await loadProducts();await loadOrders();await loadCustomers();await loadInventory();await loadReturns();await loadShippingSettings();await loadExpenses();await loadSuppliers();await loadPurchases();await loadSupplierAccounts()}catch(e){message('formMsg','خطا در دریافت اطلاعات: '+e.message)}}
 function clearForm(){$('productForm').reset();$('productId').value='';$('stock').value='0';$('purchasePrice').value='';$('formTitle').textContent='ثبت کالای جدید';$('save').textContent='ذخیره کالا'}
 function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;$('productId').value=p.id;$('name').value=p.name;$('category').value=p.category_id||'';$('price').value=p.price;$('purchasePrice').value=p.purchase_price??'';$('stock').value=p.stock_quantity;$('sku').value=p.sku||'';$('image').value=p.image_url||'';$('description').value=p.description||'';$('active').checked=p.is_active;$('featured').checked=!!p.is_featured;$('formTitle').textContent='ویرایش کالا';$('save').textContent='ذخیره تغییرات';window.scrollTo({top:0,behavior:'smooth'})}
 async function deleteProduct(id){const p=products.find(x=>x.id===id);if(!p||!confirm('کالای «'+p.name+'» حذف شود؟'))return;const {error}=await db.from('products').delete().eq('id',id);if(error){message('formMsg','حذف انجام نشد: '+error.message);return}await loadProducts();message('formMsg','کالا حذف شد.',true)}
@@ -379,9 +433,9 @@ $('customerSearch').oninput=loadCustomers;
 $('exportCustomers').onclick=exportCustomers;
 $('refreshInventory').onclick=loadInventory;
 $('stockProduct').onchange=updateStockCurrent;
-$('refreshReturns').onclick=loadReturns;$('refreshPurchases').onclick=async()=>{await loadSuppliers();await loadPurchases()};
+$('refreshReturns').onclick=loadReturns;$('refreshPurchases').onclick=async()=>{await loadSuppliers();await loadPurchases();await loadSupplierAccounts()};
 
-$('purchaseDate').value=new Date().toISOString().slice(0,10);addPurchaseRow();
+$('purchaseDate').value=new Date().toISOString().slice(0,10);$('supplierPaymentDate').value=new Date().toISOString().slice(0,10);addPurchaseRow();
 db.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')showLogin()});
 const {data:{session}}=await db.auth.getSession();if(session)await enter(session);
 </script>
