@@ -2200,6 +2200,49 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 }
 </script>
 <style id="ramtech-final-responsive-overrides">
+
+/* RAM TECH — show complete product photos without cropping or hover zoom */
+.product-visual{
+  display:grid!important;
+  place-items:center!important;
+  overflow:hidden!important;
+  height:clamp(170px,19vw,230px)!important;
+  min-height:170px!important;
+}
+.product-visual>img{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+  object-position:center center!important;
+  padding:12px!important;
+  transform:none!important;
+}
+.product:hover .product-visual>img{
+  transform:none!important;
+}
+@media(max-width:900px), (max-device-width:900px){
+  .product-visual{
+    height:clamp(150px,38vw,190px)!important;
+    min-height:150px!important;
+  }
+  .product-visual>img{
+    padding:10px!important;
+    object-fit:contain!important;
+    object-position:center center!important;
+    transform:none!important;
+  }
+}
+@media(max-width:380px), (max-device-width:380px){
+  .product-visual{
+    height:145px!important;
+    min-height:145px!important;
+  }
+  .product-visual>img{padding:8px!important}
+}
+
 /* RAM TECH — final single source of truth for responsive layout */
 html,body{max-width:100%;overflow-x:hidden}
 img{max-width:100%}
