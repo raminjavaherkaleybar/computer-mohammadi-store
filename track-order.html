@@ -16,6 +16,30 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 @media(max-width:600px){.wrap{width:calc(100% - 28px)}.card{padding:16px;margin:18px 0;border-radius:16px}.grid{grid-template-columns:minmax(0,1fr);gap:10px}.field.full{grid-column:auto}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.items{display:block;max-width:100%;overflow-x:auto;white-space:nowrap}}
 @media(max-width:380px){.wrap{width:calc(100% - 20px)}.card{padding:12px}.summary{grid-template-columns:1fr}.card h1{font-size:18px}}
 
+
+/* RAM TAK TOUCH-DESKTOP CONSISTENCY */
+
+/* Keep order tracking mobile-first on phones even in Chrome desktop mode */
+@media (hover:none) and (pointer:coarse) and (max-device-width:767px){
+ html,body{width:100%;max-width:100%;overflow-x:hidden}
+ .wrap{width:calc(100% - 28px)!important;max-width:100%!important}
+ header .wrap{display:flex;flex-wrap:nowrap;gap:8px}
+ .brand{font-size:17px;min-width:0}
+ .back{white-space:nowrap;font-size:11px}
+ .card{padding:16px!important;margin:18px 0!important;border-radius:16px!important}
+ .card h1{font-size:19px!important}
+ .grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+ .field,.field.full{grid-column:auto!important;min-width:0}
+ .field input{width:100%;max-width:100%;min-width:0}
+ .summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .items{display:block;max-width:100%;overflow-x:auto;white-space:nowrap}
+}
+@media (hover:none) and (pointer:coarse) and (max-device-width:380px){
+ .wrap{width:calc(100% - 20px)!important}
+ .card{padding:12px!important}
+ .summary{grid-template-columns:1fr!important}
+}
+
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#0b1220">
