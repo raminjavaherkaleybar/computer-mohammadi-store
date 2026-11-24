@@ -1186,6 +1186,7 @@ async function loadCatalog(){
  for(const id of Object.keys(cart))if(!products.some(p=>p.id===id))delete cart[id];
  localStorage.setItem("mohammadiCart",JSON.stringify(cart));
  renderCategories();renderFilters();renderProducts();renderCart();
+ const requestedProduct=new URLSearchParams(location.search).get("product");if(requestedProduct)openProductDetails(requestedProduct);else resetHomeSEO();
 }
 $("checkoutToggle").onclick=()=>{if(!Object.keys(cart).length){$("checkoutMessage").textContent="سبد خرید خالی است.";return}$("checkoutForm").classList.toggle("hidden");};
 $("checkoutForm").onsubmit=async e=>{
