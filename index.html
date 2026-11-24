@@ -1038,7 +1038,7 @@ async function loadCatalog(){
  });
  for(const id of Object.keys(cart)){const p=products.find(x=>String(x.id)===id);if(!p||p.stock_quantity<1)delete cart[id];else cart[id]=Math.min(Number(cart[id])||0,Number(p.stock_quantity));}
  localStorage.setItem("mohammadiCart",JSON.stringify(cart));
- renderCategories();renderFilters();renderProducts();renderCart();
+ renderCategories();renderFilters();renderProducts();renderCart();renderCompareBar();
  const requestedProduct=new URLSearchParams(location.search).get("product");if(requestedProduct)openProductDetails(requestedProduct);else resetHomeSEO();
 }
 $("checkoutToggle").onclick=()=>{if(!Object.keys(cart).length){$("checkoutMessage").textContent="سبد خرید خالی است.";return}$("checkoutForm").classList.toggle("hidden");};
