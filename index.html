@@ -3,6 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<script>
+/* Detect a real touch device even if Chrome sends the desktop user-agent. */
+(function(){
+  var touchDevice = (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
+                    ('ontouchstart' in window) ||
+                    (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  if(touchDevice){
+    document.documentElement.classList.add('ramtech-force-mobile');
+    var vp=document.querySelector('meta[name="viewport"]');
+    if(vp) vp.setAttribute('content','width=device-width, initial-scale=1, viewport-fit=cover');
+  }
+})();
+</script>
+
 <meta name="theme-color" content="#111827">
 <title>فروشگاه اینترنتی کامپیوتر محمدی | RAM TECH</title>
 <meta name="description" content="فروشگاه آنلاین کامپیوتر محمدی؛ لوازم جانبی موبایل و کامپیوتر، کابل، شارژر، هندزفری، کیبورد و ماوس.">
@@ -1443,6 +1458,42 @@ footer{
  .filter{flex:0 0 auto!important;white-space:nowrap!important}
  .footgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
+
+
+/* Final touch-device override: independent of Chrome's desktop-mode viewport width */
+html.ramtech-force-mobile body{font-size:14px!important;overflow-x:hidden!important}
+html.ramtech-force-mobile .wrap,
+html.ramtech-force-mobile .topline .wrap,
+html.ramtech-force-mobile header .wrap,
+html.ramtech-force-mobile main>.section.wrap{width:calc(100% - 20px)!important;max-width:100%!important;margin-left:auto!important;margin-right:auto!important}
+html.ramtech-force-mobile header .head{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:8px!important}
+html.ramtech-force-mobile header .brand{flex:1 1 120px!important;min-width:0!important;max-width:65%!important}
+html.ramtech-force-mobile header .brand-logo{width:auto!important;max-width:145px!important;height:auto!important;max-height:48px!important}
+html.ramtech-force-mobile header .head-actions{display:flex!important;flex:0 0 auto!important;margin-inline-start:auto!important}
+html.ramtech-force-mobile nav .navlinks{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-start!important;overflow-x:auto!important;white-space:nowrap!important;gap:5px!important;width:calc(100% - 12px)!important}
+html.ramtech-force-mobile nav .navlinks a{flex:0 0 auto!important;font-size:11px!important;padding:8px 10px!important}
+html.ramtech-force-mobile .hero{width:100%!important;padding:10px 0!important;margin:0 auto 12px!important}
+html.ramtech-force-mobile .hero-box{display:flex!important;flex-direction:column!important;min-height:0!important;padding:18px 12px!important;gap:8px!important}
+html.ramtech-force-mobile .hero-copy{width:100%!important;text-align:center!important}
+html.ramtech-force-mobile .hero-copy h1{font-size:clamp(22px,6vw,29px)!important}
+html.ramtech-force-mobile .hero-art{display:none!important}
+html.ramtech-force-mobile .categories{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+html.ramtech-force-mobile .cat{min-width:0!important;padding:8px 4px!important}
+html.ramtech-force-mobile .cat-art{height:75px!important;min-width:0!important}
+html.ramtech-force-mobile .cat-art img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;padding:5px!important}
+html.ramtech-force-mobile .cat strong{font-size:10px!important;overflow-wrap:anywhere!important}
+html.ramtech-force-mobile .products{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+html.ramtech-force-mobile .product{min-width:0!important}
+html.ramtech-force-mobile .product-visual{height:clamp(125px,34vw,165px)!important;overflow:hidden!important}
+html.ramtech-force-mobile .product-visual>img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important;object-position:center!important;padding:8px!important}
+html.ramtech-force-mobile .product-body{min-width:0!important;padding:9px!important}
+html.ramtech-force-mobile .product h3{font-size:11px!important;line-height:1.65!important;overflow-wrap:anywhere!important}
+html.ramtech-force-mobile .product-actions{display:flex!important;flex-wrap:wrap!important;gap:4px!important}
+html.ramtech-force-mobile .product-actions button{flex:1 1 28%!important;min-width:0!important;font-size:9px!important;padding:7px 3px!important}
+html.ramtech-force-mobile .toolbar{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+html.ramtech-force-mobile .filters{max-width:100%!important;overflow-x:auto!important;flex-wrap:nowrap!important}
+html.ramtech-force-mobile .filter{flex:0 0 auto!important;white-space:nowrap!important}
+html.ramtech-force-mobile .footgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 
 </style>
 
