@@ -21,14 +21,14 @@
 })();
 </script>
 <meta name="theme-color" content="#111827">
-<title>فروشگاه اینترنتی لوازم جانبی موبایل و کامپیوتر رام آنلاین | کامپیوتر محمدی</title>
+<title>فروشگاه اینترنتی کامپیوتر محمدی | RAM TECH</title>
 <meta name="description" content="فروشگاه آنلاین کامپیوتر محمدی؛ لوازم جانبی موبایل و کامپیوتر، کابل، شارژر، هندزفری، کیبورد و ماوس.">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://raminjavaherkaleybar.github.io/computer-mohammadi-store/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fa_IR">
-<meta property="og:site_name" content="کامپیوتر محمدی | رام آنلاین">
-<meta property="og:title" content="فروشگاه اینترنتی لوازم جانبی موبایل و کامپیوتر | رام آنلاین">
+<meta property="og:site_name" content="کامپیوتر محمدی | RAM TECH">
+<meta property="og:title" content="فروشگاه اینترنتی کامپیوتر محمدی | RAM TECH">
 <meta property="og:description" content="خرید لوازم جانبی موبایل و کامپیوتر از فروشگاه کامپیوتر محمدی؛ مشاهده محصولات و ثبت درخواست سفارش.">
 <meta property="og:url" content="https://raminjavaherkaleybar.github.io/computer-mohammadi-store/">
 <meta name="twitter:card" content="summary_large_image">
@@ -1229,7 +1229,23 @@ $("closeCart").onclick=()=>{$("drawerBack").classList.remove("open");document.qu
 $("drawerBack").onclick=e=>{if(e.target.id==="drawerBack"){e.currentTarget.classList.remove("open");document.querySelector(".drawer").classList.remove("open");}};
 
 function normalizeSearch(value){return String(value||"").toLocaleLowerCase("fa-IR").replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[\u064B-\u065F\u0670]/g,"").replace(/\s+/g," ").trim();}
-function openProductDetails(id){
+function updateProductSEO(p){
+ document.title=p.name+' | کامپیوتر محمدی RAM TECH';
+ const description=String(p.description||('خرید '+p.name+' از فروشگاه کامپیوتر محمدی')).slice(0,155);
+ const meta=document.querySelector('meta[name="description"]');if(meta)meta.content=description;
+ const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.origin+location.pathname+'?product='+encodeURIComponent(p.id);
+ const old=document.getElementById('productSeoSchema');if(old)old.remove();
+ const schema=document.createElement('script');schema.id='productSeoSchema';schema.type='application/ld+json';
+ schema.textContent=JSON.stringify({'@context':'https://schema.org','@type':'Product',name:p.name,description,image:p.image_url?[p.image_url]:undefined,offers:{'@type':'Offer',priceCurrency:'IRR',price:String(Math.round(Number(p.price)*10)),availability:p.stock_quantity>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',url:location.href}});
+ document.head.appendChild(schema);
+}
+function resetHomeSEO(){
+ document.title='فروشگاه اینترنتی کامپیوتر محمدی | RAM TECH';
+ const meta=document.querySelector('meta[name="description"]');if(meta)meta.content='فروشگاه آنلاین کامپیوتر محمدی؛ لوازم جانبی موبایل و کامپیوتر، کابل، شارژر، هندزفری، کیبورد و ماوس.';
+ const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href='https://raminjavaherkaleybar.github.io/computer-mohammadi-store/';
+ const old=document.getElementById('productSeoSchema');if(old)old.remove();
+}
+
  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
  const image=p.image_url?'<img class="detail-image" src="'+safe(p.image_url)+'" alt="'+safe(p.name)+'">':'<div class="detail-image" style="height:240px;display:grid;place-items:center;font-size:60px">📦</div>';
  $("detailContent").innerHTML='<div class="detail-layout"><div>'+image+'</div><div><span class="product-cat">'+safe(p.label)+'</span><h2>'+safe(p.name)+'</h2><div class="detail-price">'+fa(p.price)+' تومان</div><p>موجودی: '+fa(p.stock_quantity)+' عدد</p><div class="detail-desc">'+safe(p.description||"توضیحی برای این کالا ثبت نشده است.")+'</div><div class="detail-actions"><button class="detail-add" '+(p.stock_quantity<1?'disabled':'')+' id="detailAddToCart">افزودن به سبد خرید</button><button class="detail-share" id="detailShare">اشتراک‌گذاری</button></div></div></div>';
@@ -1237,8 +1253,8 @@ function openProductDetails(id){
  $("detailAddToCart").onclick=()=>{addToCart(String(p.id));$("productDetailModal").classList.remove("open");};
  $("detailShare").onclick=async()=>{const url=location.origin+location.pathname+"?product="+encodeURIComponent(p.id);try{if(navigator.share)await navigator.share({title:p.name,text:"مشاهده محصول در رام‌تک",url});else if(navigator.clipboard){await navigator.clipboard.writeText(url);$("detailShare").textContent="لینک کپی شد";}}catch(e){}};
 }
-$("detailClose").onclick=()=>$("productDetailModal").classList.remove("open");
-$("productDetailModal").onclick=e=>{if(e.target.id==="productDetailModal")e.currentTarget.classList.remove("open");};
+$("detailClose").onclick=()=>{$("productDetailModal").classList.remove("open");resetHomeSEO();};
+$("productDetailModal").onclick=e=>{if(e.target.id==="productDetailModal"){e.currentTarget.classList.remove("open");resetHomeSEO();}};
 function initProvinceCity(){
  const province=$("province"),city=$("city");
  fetch("./iran-locations.json").then(r=>{if(!r.ok)throw new Error("فهرست شهرها در دسترس نیست");return r.json();}).then(data=>{
