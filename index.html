@@ -1221,8 +1221,19 @@ $("checkoutForm").onsubmit=async e=>{
   botLink.style.cssText="display:inline-block;margin:8px 4px;color:#087443;font-weight:800;text-decoration:underline";
   $("checkoutMessage").append(botLink);
   $("checkoutMessage").style.color="#087443";
-  await initProvinceCity();\n
-function normalizeSearch(value){return String(value||"").toLocaleLowerCase("fa-IR").replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[\\u064B-\\u065F\\u0670]/g,"").replace(/\\s+/g," ").trim();}
+  await loadCatalog();
+ }catch(err){
+  $("checkoutMessage").textContent=err.message||"ثبت سفارش انجام نشد؛ لطفاً دوباره تلاش کنید.";
+  $("checkoutMessage").style.color="#b42318";
+ }finally{btn.disabled=false;btn.textContent="ثبت درخواست سفارش";}
+};
+$("search").addEventListener("input",renderProducts);
+$("sort").addEventListener("change",renderProducts);
+$("cartBtn").onclick=()=>{$("drawerBack").classList.add("open");document.querySelector(".drawer").classList.add("open");renderCart();};
+$("closeCart").onclick=()=>{$("drawerBack").classList.remove("open");document.querySelector(".drawer").classList.remove("open");};
+$("drawerBack").onclick=e=>{if(e.target.id==="drawerBack"){e.currentTarget.classList.remove("open");document.querySelector(".drawer").classList.remove("open");}};
+
+function normalizeSearch(value){return String(value||"").toLocaleLowerCase("fa-IR").replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[\u064B-\u065F\u0670]/g,"").replace(/\s+/g," ").trim();}
 function openProductDetails(id){
  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
  const image=p.image_url?'<img class="detail-image" src="'+safe(p.image_url)+'" alt="'+safe(p.name)+'">':'<div class="detail-image" style="height:240px;display:grid;place-items:center;font-size:60px">📦</div>';
@@ -1238,19 +1249,10 @@ function initProvinceCity(){
  fetch("./iran-locations.json").then(r=>{if(!r.ok)throw new Error("فهرست شهرها در دسترس نیست");return r.json();}).then(data=>{
   province.innerHTML='<option value="">انتخاب استان</option>'+data.provinces.map(p=>'<option value="'+safe(p.name)+'" data-id="'+Number(p.id)+'">'+safe(p.name)+'</option>').join("");
   province.onchange=()=>{const id=province.options[province.selectedIndex]?.dataset.id;const cities=data.cities[id]||[];city.disabled=!cities.length;city.innerHTML='<option value="">انتخاب شهر</option>'+cities.map(c=>'<option value="'+safe(c)+'">'+safe(c)+'</option>').join("");};
- }).catch(()=>{province.innerHTML='<option value="">فهرست استان‌ها بارگذاری نشد</option>';city.innerHTML='<option value="">ورود دستی شهر ممکن نیست؛ صفحه را تازه کنید</option>';});
+ }).catch(()=>{province.innerHTML='<option value="">فهرست استان‌ها بارگذاری نشد</option>';city.innerHTML='<option value="">فهرست شهرها بارگذاری نشد</option>';});
 }
-\nloadCatalog();
- }catch(err){
-  $("checkoutMessage").textContent=err.message||"ثبت سفارش انجام نشد؛ لطفاً دوباره تلاش کنید.";
-  $("checkoutMessage").style.color="#b42318";
- }finally{btn.disabled=false;btn.textContent="ثبت درخواست سفارش";}
-};
-$("search").addEventListener("input",renderProducts);
-$("sort").addEventListener("change",renderProducts);
-$("cartBtn").onclick=()=>{$("drawerBack").classList.add("open");document.querySelector(".drawer").classList.add("open");renderCart();};
-$("closeCart").onclick=()=>{$("drawerBack").classList.remove("open");document.querySelector(".drawer").classList.remove("open");};
-$("drawerBack").onclick=e=>{if(e.target.id==="drawerBack"){e.currentTarget.classList.remove("open");document.querySelector(".drawer").classList.remove("open");}};
+
+initProvinceCity();
 loadCatalog();
 </script>
 </body></html>
