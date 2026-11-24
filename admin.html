@@ -536,6 +536,10 @@ $('purchaseForm').onsubmit=async e=>{
  $('savePurchase').disabled=false;
  if(error){message('purchaseMsg','ثبت خرید انجام نشد: '+error.message);return}
  $('purchaseForm').reset();
+$('purchaseDate').value=new Date().toISOString().slice(0,10);$('purchaseItems').innerHTML='';addPurchaseRow();updatePurchaseTotal();
+await Promise.all([loadProducts(),loadInventory(),loadPurchases()]);await loadFinancialDashboard();
+message('purchaseMsg','فاکتور خرید با موفقیت ثبت شد؛ موجودی کالاها افزایش یافت. شماره ثبت: '+(data?.purchase_id||''),true);
+};
 $('applyFinanceFilter').onclick=loadFinancialDashboard;$('clearFinanceFilter').onclick=()=>{$('financeFrom').value='';$('financeTo').value='';loadFinancialDashboard()};$('refreshFinancialDashboard').onclick=loadFinancialDashboard;$('openingDate').value=new Date().toISOString().slice(0,10);
 $('cashOpeningForm').onsubmit=async e=>{e.preventDefault();const cash=Number($('openingCash').value),bank=Number($('openingBank').value),date=$('openingDate').value;if(!Number.isSafeInteger(cash)||cash<0||!Number.isSafeInteger(bank)||bank<0||!date){message('cashOpeningMsg','مبالغ و تاریخ مبنا را درست وارد کنید.');return}if(!confirm('موجودی اول دوره صندوق و بانک با این مقادیر ذخیره/جایگزین شود؟'))return;$('saveCashOpening').disabled=true;const {data:userData}=await db.auth.getUser();const payload=[{account:'cash',amount:cash,as_of_date:date,note:$('openingNote').value.trim()||null,updated_by:userData?.user?.id||null},{account:'bank',amount:bank,as_of_date:date,note:$('openingNote').value.trim()||null,updated_by:userData?.user?.id||null}];const {error}=await db.from('store_cash_opening_balances').upsert(payload,{onConflict:'account'});$('saveCashOpening').disabled=false;if(error){message('cashOpeningMsg','ذخیره موجودی اولیه ناموفق بود: '+error.message);return}message('cashOpeningMsg','موجودی اول دوره با موفقیت ذخیره شد.',true);await loadCashLedger();};
 $('cashDate').value=new Date().toISOString().slice(0,10);
@@ -544,10 +548,7 @@ $('cashTransactionForm').onsubmit=async e=>{e.preventDefault();const direction=$
 $('cashLedgerRows').addEventListener('click',async e=>{const b=e.target.closest('[data-delete-cash]');if(!b||!confirm('این گردش مالی حذف شود؟'))return;const {error}=await db.from('store_cash_transactions').delete().eq('id',b.dataset.deleteCash);if(error){message('cashLedgerMsg','حذف ناموفق بود: '+error.message);return}message('cashLedgerMsg','گردش حذف شد.',true);await loadCashLedger();await loadFinancialDashboard()});
 $('refreshCashLedger').onclick=loadCashLedger;
 $('cashDirection').onchange();
-$('exportFinanceExcel').onclick=exportFinanceExcel;$('printFinancePdf').onclick=printFinancePdf;\n$('purchaseDate').value=new Date().toISOString().slice(0,10);$('purchaseItems').innerHTML='';addPurchaseRow();updatePurchaseTotal();
- await Promise.all([loadProducts(),loadInventory(),loadPurchases()]);await loadFinancialDashboard();
- message('purchaseMsg','فاکتور خرید با موفقیت ثبت شد؛ موجودی کالاها افزایش یافت. شماره ثبت: '+(data?.purchase_id||''),true);
-};
+$('exportFinanceExcel').onclick=exportFinanceExcel;$('printFinancePdf').onclick=printFinancePdf;
 $('addPurchaseRow').onclick=addPurchaseRow;
 async function loadAll(){try{await loadCategories();await loadProducts();await loadOrders();await loadCustomers();await loadInventory();await loadReturns();await loadShippingSettings();await loadExpenses();await loadSuppliers();await loadPurchases();await loadSupplierAccounts();await loadCashLedger();await loadFinancialDashboard()}catch(e){message('formMsg','خطا در دریافت اطلاعات: '+e.message)}}
 function clearForm(){$('productForm').reset();$('productId').value='';$('stock').value='0';$('purchasePrice').value='';$('formTitle').textContent='ثبت کالای جدید';$('save').textContent='ذخیره کالا'}
