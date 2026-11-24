@@ -1358,6 +1358,53 @@ footer{
   background:linear-gradient(135deg,#ffffff 0%,#e8ebef 46%,#c2cad3 100%)!important;
 }
 
+
+/* RAM TECH RESPONSIVE REPAIR — Chrome desktop mode + complete product images */
+@media (min-width:651px) and (max-width:1100px){
+  .head{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:12px!important}
+  .brand{flex:0 0 160px!important;min-width:0!important}
+  .brand-logo{width:100%!important;height:56px!important;max-height:56px!important}
+  .search{display:block!important;order:initial!important;flex:1 1 auto!important;width:auto!important;max-width:none!important;margin:0!important}
+  .head-actions{display:flex!important;flex:0 0 auto!important;margin:0!important}
+  .hero-box{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)!important;padding:clamp(20px,3vw,34px)!important}
+  .hero-art{min-height:210px!important}
+  .categories{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  .products{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
+  .product-visual{height:clamp(150px,19vw,190px)!important}
+  .product-visual img{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important;padding:10px!important}
+  .product-body{min-width:0;padding:12px!important}
+  .product-actions{display:flex!important;flex-wrap:wrap!important}
+  .product-actions button{flex:1 1 28%!important;min-width:0!important}
+}
+/* Chrome on phones can request a desktop viewport; keep the touch layout readable. */
+@media (hover:none) and (pointer:coarse) and (max-width:1100px){
+  html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+  .wrap,.topline .wrap,header .wrap,.navlinks{width:calc(100% - 28px)!important;max-width:100%!important;margin-inline:auto!important}
+  .head{display:flex!important;flex-wrap:wrap!important;gap:9px!important}
+  .brand{flex:1 1 120px!important;min-width:0!important}
+  .brand-logo{width:auto!important;max-width:min(140px,40vw)!important;height:auto!important;max-height:46px!important}
+  .head-actions{flex:0 0 auto!important;margin-inline-start:auto!important}
+  .search{display:block!important;order:3!important;flex:1 0 100%!important;width:100%!important;max-width:none!important;margin:0!important}
+  .search input{width:100%!important}
+  .hero-box{display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:18px 15px!important}
+  .hero-art{display:none!important}
+  .categories{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+  .products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .product{min-width:0!important}
+  .product-visual{height:clamp(125px,34vw,165px)!important;min-width:0!important}
+  .product-visual img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important;object-position:center!important;padding:9px!important}
+  .product-body{min-width:0!important;padding:9px!important}
+  .product h3{overflow-wrap:anywhere!important}
+  .product-actions{display:flex!important;flex-wrap:wrap!important;gap:5px!important}
+  .product-actions button{flex:1 1 28%!important;min-width:0!important;font-size:10px!important;padding:8px 4px!important}
+  .filters{max-width:100%!important;overflow-x:auto!important;flex-wrap:nowrap!important}
+  .filter{flex:0 0 auto!important;white-space:nowrap!important}
+  .footgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .product,.product-visual img,.cat,.navlinks a{transition:none!important}
+}
+
 </style>
 
 
@@ -1469,14 +1516,14 @@ try{
 function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function productImageFor(p){
  const n=(String(p?.name||"")+" "+String(p?.label||"")).toLocaleLowerCase("fa");
- if(/بازی|گیم|کنسول/.test(n))return "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=520&q=70";
- if(/هندز|هدفون|هدست|ایرپاد/.test(n))return "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=520&q=70";
- if(/پاوربانک|پاور بانک/.test(n))return "https://images.unsplash.com/photo-1609592424857-4f6c6e6b9f5b?auto=format&fit=crop&w=520&q=70";
- if(/شارژ|آداپتور|کابل/.test(n))return "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=520&q=70";
- if(/ماوس|موس|کیبورد|صفحه.?کلید/.test(n))return "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=520&q=70";
- if(/لپ.?تاپ|کامپیوتر/.test(n))return "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=520&q=70";
- if(/موبایل|گوشی|قاب|گلس/.test(n))return "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=520&q=70";
- return "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=520&q=70";
+ if(/بازی|گیم|کنسول/.test(n))return "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=420&q=65";
+ if(/هندز|هدفون|هدست|ایرپاد/.test(n))return "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=420&q=65";
+ if(/پاوربانک|پاور بانک/.test(n))return "https://images.unsplash.com/photo-1609592424857-4f6c6e6b9f5b?auto=format&fit=crop&w=420&q=65";
+ if(/شارژ|آداپتور|کابل/.test(n))return "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=420&q=65";
+ if(/ماوس|موس|کیبورد|صفحه.?کلید/.test(n))return "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=420&q=65";
+ if(/لپ.?تاپ|کامپیوتر/.test(n))return "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=420&q=65";
+ if(/موبایل|گوشی|قاب|گلس/.test(n))return "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=420&q=65";
+ return "https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=420&q=65";
 }
 function productEmojiFor(p){
  const n=(String(p?.name||"")+" "+String(p?.label||"")).toLocaleLowerCase("fa");
