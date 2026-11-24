@@ -955,6 +955,43 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   .cat strong{font-size:9px}
 }
 
+
+/* Targeted mobile contrast and compact hero corrections */
+header .head-actions .btn-ghost{
+  background:linear-gradient(135deg,#176fe0,#0e8fc5)!important;
+  color:#fff!important;
+  border:1px solid #55c8ef!important;
+  box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+header .head-actions .btn-ghost:active{filter:brightness(.92)}
+header .head-actions .cart-count{
+  background:#fff!important;color:#1557a8!important;
+}
+@media(max-width:650px){
+  .hero{padding:11px 0 13px!important}
+  .hero-box{
+    min-height:0!important;
+    padding:15px 14px!important;
+    border-radius:15px!important;
+    gap:8px!important;
+  }
+  .hero-box:after{inset:6px!important;border-radius:10px!important}
+  .hero-copy{min-width:0}
+  .hero .eyebrow{font-size:9px!important;padding:3px 9px!important}
+  .hero h1{font-size:22px!important;line-height:1.45!important;margin:6px 0 1px!important}
+  .hero-brand-name{font-size:17px!important;line-height:1.5!important}
+  .hero-benefits{display:flex;flex-wrap:wrap;gap:5px 10px!important;margin:5px 0 9px!important}
+  .hero-benefits span{font-size:10px!important;line-height:1.6!important}
+  .hero-cta{gap:6px!important}
+  .hero-cta .btn{min-height:34px!important;padding:6px 11px!important;font-size:10px!important;border-radius:9px!important}
+}
+@media(max-width:380px){
+  header .head-actions .btn-ghost{padding:7px 8px!important;font-size:10px!important}
+  .hero-box{padding:13px 12px!important}
+  .hero h1{font-size:20px!important}
+  .hero-benefits span{font-size:9px!important}
+}
+
 </style>
 
 
