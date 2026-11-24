@@ -280,7 +280,7 @@ $('refreshInventory').onclick=loadInventory;
 $('stockProduct').onchange=updateStockCurrent;
 $('refreshReturns').onclick=loadReturns;
 
-db.auth.onAuthStateChange((_event,session)=>{if(session)enter(session);else showLogin()});
+db.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')showLogin()});
 const {data:{session}}=await db.auth.getSession();if(session)await enter(session);
 </script>
 </body></html>
