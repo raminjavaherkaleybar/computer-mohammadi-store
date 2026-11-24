@@ -1252,6 +1252,58 @@ button,input,select,textarea{max-width:100%;min-width:0}
  .footgrid{grid-template-columns:1fr}
  .footgrid>div:first-child{grid-column:auto}
 }
+
+/* RAM TAK — مستقل‌سازی چیدمان دسکتاپ و موبایل */
+@media (min-width:901px){
+  .wrap{width:min(1200px,calc(100% - 56px))}
+  .head{display:flex;flex-wrap:nowrap;align-items:center;gap:20px;padding:14px 0}
+  .brand{flex:0 0 205px;min-width:0}
+  .brand-logo{width:205px;height:62px;max-width:100%}
+  .search{order:initial;flex:1 1 auto;width:auto;max-width:480px;margin-inline:auto}
+  .head-actions{flex:0 0 auto;margin:0}
+  .navlinks{overflow:visible;flex-wrap:wrap}
+  .hero-box{grid-template-columns:minmax(0,1.3fr) minmax(0,.7fr)}
+  .hero-art{display:grid}
+  .categories{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .products{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .features{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (min-width:651px) and (max-width:900px){
+  .wrap{width:calc(100% - 40px)}
+  .head{display:flex;flex-wrap:wrap;gap:12px}
+  .brand{flex:0 0 auto}
+  .search{order:3;flex:1 0 100%;width:100%;max-width:520px;margin-inline:auto}
+  .head-actions{margin-inline-start:auto}
+  .categories{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .products{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .features{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero-box{grid-template-columns:minmax(0,1fr) minmax(180px,.65fr)}
+}
+@media (max-width:650px){
+  .wrap{width:calc(100% - 28px)}
+  .head{display:flex;flex-wrap:wrap;gap:9px;padding:10px 0}
+  .brand{flex:1 1 120px;min-width:0}
+  .brand-logo{width:auto;max-width:min(148px,42vw);height:auto;max-height:48px}
+  .head-actions{display:flex;flex:0 0 auto;margin-inline-start:auto;gap:6px}
+  .search{display:block;order:3;flex:1 0 100%;width:100%;max-width:none;margin:0}
+  .search input{width:100%;min-height:44px}
+  .navlinks{display:flex;flex-wrap:nowrap;overflow-x:auto}
+  .hero-box{display:grid;grid-template-columns:minmax(0,1fr);padding:22px 18px}
+  .hero-art{display:none}
+  .categories{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .products{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .features{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .product-visual{height:clamp(112px,34vw,140px)}
+  .product-actions{display:flex;flex-wrap:wrap}
+  .product-actions button{flex:1 1 28%;min-width:0}
+  .footgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:380px){
+  .wrap{width:calc(100% - 20px)}
+  .head-actions .btn{padding:7px 8px;font-size:10px}
+  .products{gap:7px}
+  .product-actions button{font-size:9px;padding:7px 3px}
+}
 </style>
 
 </body></html>
