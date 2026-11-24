@@ -1247,6 +1247,7 @@ function resetHomeSEO(){
  const old=document.getElementById('productSeoSchema');if(old)old.remove();
 }
 
+function openProductDetails(id){
  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
  updateProductSEO(p);
  const image=p.image_url?'<img class="detail-image" src="'+safe(p.image_url)+'" alt="'+safe(p.name)+'">':'<div class="detail-image" style="height:240px;display:grid;place-items:center;font-size:60px">📦</div>';
