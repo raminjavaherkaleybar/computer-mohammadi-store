@@ -1049,6 +1049,22 @@ footer{padding-top:34px!important}
 }
 
 </style>
+
+<style>
+/* قابلیت‌های منتقل‌شده از فروشگاه قبلی؛ بدون تغییر چیدمان اصلی */
+#productDetailModal{position:fixed;inset:0;z-index:60;background:#020711d9;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)}
+#productDetailModal.open{display:flex}
+#productDetailModal .detail-card{width:min(760px,96vw);max-height:92vh;overflow:auto;background:#0d192b;color:#eef6ff;border:1px solid #36516f;border-radius:20px;padding:20px;box-shadow:0 25px 80px #000b}
+#productDetailModal .detail-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+#productDetailModal .detail-image{width:100%;max-height:360px;object-fit:contain;border-radius:14px;background:#14243a}
+#productDetailModal .detail-price{font-size:22px;font-weight:900;color:#59d9ed;margin:12px 0}
+#productDetailModal .detail-desc{white-space:pre-wrap;color:#bdcde2;line-height:2;font-size:13px}
+#productDetailModal .detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+#productDetailModal button{border:0;border-radius:10px;padding:10px 14px;font-weight:700}
+#productDetailModal .detail-add{background:linear-gradient(110deg,#176ff0,#0da8c5);color:#fff}
+#productDetailModal .detail-share{background:#1b2c43;color:#dcecff;border:1px solid #344b67}
+@media(max-width:600px){#productDetailModal .detail-layout{grid-template-columns:1fr}#productDetailModal .detail-image{max-height:240px}}
+</style>
 </head>
 <body>
 <div class="topline"><div class="wrap utility-links">
@@ -1081,7 +1097,7 @@ footer{padding-top:34px!important}
 </div></section>
 <section class="section wrap" id="categories"><div class="section-head"><div><h2>دسته‌بندی محصولات</h2><p>سریع‌تر محصول موردنظرت را پیدا کن</p></div></div><div class="categories" id="categoryGrid"></div></section>
 <section class="section wrap" id="products"><div class="section-head"><div><h2>محصولات فروشگاه</h2><p>محصولات و قیمت‌ها مستقیماً از موجودی واقعی فروشگاه خوانده می‌شوند</p></div></div>
- <div class="toolbar"><div class="filters" id="filters"></div><select class="sort" id="sort"><option value="default">مرتب‌سازی پیش‌فرض</option><option value="name">نام محصول</option></select></div>
+ <div class="toolbar"><div class="filters" id="filters"></div><select class="sort" id="sort"><option value="default">مرتب‌سازی پیش‌فرض</option><option value="name">نام محصول</option><option value="price-asc">ارزان‌ترین</option><option value="price-desc">گران‌ترین</option><option value="stock">بیشترین موجودی</option></select></div>
  <div class="products" id="productGrid"></div>
  <div class="note">قیمت و موجودی کالاها از پایگاه داده اختصاصی فروشگاه خوانده می‌شود. ثبت درخواست سفارش فعال است؛ هزینه ارسال و شیوه پرداخت پس از هماهنگی با فروشگاه نهایی می‌شود.</div>
 </section>
@@ -1089,14 +1105,16 @@ footer{padding-top:34px!important}
 </main>
 <footer id="contact"><div class="wrap"><div class="footgrid"><div><h3>کامپیوتر محمدی</h3><p>فروشگاه لوازم جانبی موبایل و کامپیوتر. هدف ما فراهم کردن تجربه‌ای ساده و قابل اعتماد برای خرید تجهیزات دیجیتال است.</p></div><div><h3>دسترسی سریع</h3><p><a href="#products">مشاهده محصولات</a></p><p><a href="#categories">دسته‌بندی کالاها</a></p></div><div><h3>اطلاعات فروشگاه</h3><p>آدرس و شماره تماس پس از تأیید اطلاعات فروشگاه درج خواهد شد.</p></div></div><div class="copyright">© تمامی حقوق برای فروشگاه کامپیوتر محمدی محفوظ است.</div></div></footer>
 </main>
+
+<div id="productDetailModal" role="dialog" aria-modal="true" aria-label="جزئیات محصول"><div class="detail-card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px"><strong>جزئیات محصول</strong><button type="button" class="close" id="detailClose">بستن ✕</button></div><div id="detailContent"></div></div></div>
 <div class="drawer-back" id="drawerBack"><aside class="drawer"><div class="drawer-head"><h3>سبد خرید</h3><button class="close" id="closeCart">بستن</button></div><div id="cartItems"></div><div id="cartSummary" class="cart-row"><strong>جمع کالاها</strong><strong id="cartTotal">۰ تومان</strong></div>
 <button id="checkoutToggle" class="btn btn-primary" style="width:100%;margin-top:12px">ادامه و ثبت سفارش</button>
 <form id="checkoutForm" class="hidden" style="margin-top:16px">
 <h3>اطلاعات تحویل سفارش</h3>
 <label>نام و نام خانوادگی *</label><input id="customerName" required maxlength="120" autocomplete="name" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px">
 <label>شماره موبایل *</label><input id="customerPhone" required inputmode="tel" autocomplete="tel" maxlength="16" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px">
-<label>استان</label><input id="province" maxlength="80" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px">
-<label>شهر *</label><input id="city" required maxlength="80" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px">
+<label>استان</label><select id="province" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"><option value="">انتخاب استان</option></select>
+<label>شهر *</label><select id="city" required disabled style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"><option value="">ابتدا استان را انتخاب کنید</option></select>
 <label>نشانی کامل *</label><textarea id="shippingAddress" required minlength="8" maxlength="600" rows="3" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"></textarea>
 <label>کد پستی</label><input id="postalCode" inputmode="numeric" maxlength="20" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px">
 <label>روش ارسال *</label><select id="shippingMethod" required style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"><option value="">انتخاب روش ارسال</option><option value="post">پست جمهوری اسلامی ایران</option><option value="tipax">تیپاکس</option></select>
@@ -1139,11 +1157,11 @@ function renderFilters(){
 }
 function renderProducts(){
  const q=$("search").value.trim().toLocaleLowerCase("fa");
- let list=products.filter(p=>(active==="all"||p.cat===active)&&(!q||(p.name+" "+p.label).toLocaleLowerCase("fa").includes(q)));
- if($("sort").value==="name")list.sort((a,b)=>a.name.localeCompare(b.name,"fa"));
+ let list=products.filter(p=>(active==="all"||p.cat===active)&&(!q||normalizeSearch([p.name,p.label,p.description].join(" ")).includes(normalizeSearch(q))));
+ const sort=$("sort").value;if(sort==="name")list.sort((a,b)=>a.name.localeCompare(b.name,"fa"));else if(sort==="price-asc")list.sort((a,b)=>a.price-b.price);else if(sort==="price-desc")list.sort((a,b)=>b.price-a.price);else if(sort==="stock")list.sort((a,b)=>b.stock_quantity-a.stock_quantity);
  $("productGrid").innerHTML=list.length?list.map(p=>'<article class="product"><div class="product-visual">'+(p.image_url?'<img src="'+safe(p.image_url)+'" alt="'+safe(p.name)+'" style="max-width:100%;max-height:100%;object-fit:contain">':'<span class="emoji">'+p.emoji+'</span>')+'</div><div class="product-body"><span class="product-cat">'+safe(p.label)+'</span><h3>'+safe(p.name)+'</h3><div class="price">'+fa(p.price)+' تومان</div><div class="product-cat">موجودی: '+fa(p.stock_quantity)+'</div><div class="product-actions"><button class="add" data-add="'+p.id+'" '+(p.stock_quantity<1?"disabled":"")+'>افزودن به سبد</button><button class="detail" data-detail="'+p.id+'">جزئیات</button></div></div></article>').join(""):'<div class="empty">در حال حاضر کالای فعالی برای نمایش ثبت نشده است.</div>';
  document.querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>addToCart(b.dataset.add));
- document.querySelectorAll("[data-detail]").forEach(b=>b.onclick=()=>{const p=products.find(x=>x.id===b.dataset.detail);if(p)alert(p.name+"\n"+(p.description||"توضیحی ثبت نشده است")+"\nقیمت: "+fa(p.price)+" تومان\nموجودی: "+fa(p.stock_quantity));});
+ document.querySelectorAll("[data-detail]").forEach(b=>b.onclick=()=>openProductDetails(b.dataset.detail));
 }
 function setCategory(c){active=c;renderFilters();renderProducts();}
 function addToCart(id){const p=products.find(x=>x.id===id);if(!p||p.stock_quantity<1)return;cart[id]=Math.min(p.stock_quantity,(cart[id]||0)+1);localStorage.setItem("mohammadiCart",JSON.stringify(cart));renderCart();}
@@ -1214,6 +1232,27 @@ $("sort").addEventListener("change",renderProducts);
 $("cartBtn").onclick=()=>{$("drawerBack").classList.add("open");document.querySelector(".drawer").classList.add("open");renderCart();};
 $("closeCart").onclick=()=>{$("drawerBack").classList.remove("open");document.querySelector(".drawer").classList.remove("open");};
 $("drawerBack").onclick=e=>{if(e.target.id==="drawerBack"){e.currentTarget.classList.remove("open");document.querySelector(".drawer").classList.remove("open");}};
+
+function normalizeSearch(value){return String(value||"").toLocaleLowerCase("fa-IR").replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[\u064B-\u065F\u0670]/g,"").replace(/\s+/g," ").trim();}
+function openProductDetails(id){
+ const p=products.find(x=>String(x.id)===String(id));if(!p)return;
+ const image=p.image_url?'<img class="detail-image" src="'+safe(p.image_url)+'" alt="'+safe(p.name)+'">':'<div class="detail-image" style="height:240px;display:grid;place-items:center;font-size:60px">📦</div>';
+ $("detailContent").innerHTML='<div class="detail-layout"><div>'+image+'</div><div><span class="product-cat">'+safe(p.label)+'</span><h2>'+safe(p.name)+'</h2><div class="detail-price">'+fa(p.price)+' تومان</div><p>موجودی: '+fa(p.stock_quantity)+' عدد</p><div class="detail-desc">'+safe(p.description||"توضیحی برای این کالا ثبت نشده است.")+'</div><div class="detail-actions"><button class="detail-add" '+(p.stock_quantity<1?'disabled':'')+' id="detailAddToCart">افزودن به سبد خرید</button><button class="detail-share" id="detailShare">اشتراک‌گذاری</button></div></div></div>';
+ $("productDetailModal").classList.add("open");
+ $("detailAddToCart").onclick=()=>{addToCart(String(p.id));$("productDetailModal").classList.remove("open");};
+ $("detailShare").onclick=async()=>{const url=location.origin+location.pathname+"?product="+encodeURIComponent(p.id);try{if(navigator.share)await navigator.share({title:p.name,text:"مشاهده محصول در رام‌تک",url});else if(navigator.clipboard){await navigator.clipboard.writeText(url);$("detailShare").textContent="لینک کپی شد";}}catch(e){}};
+}
+$("detailClose").onclick=()=>$("productDetailModal").classList.remove("open");
+$("productDetailModal").onclick=e=>{if(e.target.id==="productDetailModal")e.currentTarget.classList.remove("open");};
+function initProvinceCity(){
+ const province=$("province"),city=$("city");
+ fetch("./iran-locations.json").then(r=>{if(!r.ok)throw new Error("فهرست شهرها در دسترس نیست");return r.json();}).then(data=>{
+  province.innerHTML='<option value="">انتخاب استان</option>'+data.provinces.map(p=>'<option value="'+safe(p.name)+'" data-id="'+Number(p.id)+'">'+safe(p.name)+'</option>').join("");
+  province.onchange=()=>{const id=province.options[province.selectedIndex]?.dataset.id;const cities=data.cities[id]||[];city.disabled=!cities.length;city.innerHTML='<option value="">انتخاب شهر</option>'+cities.map(c=>'<option value="'+safe(c)+'">'+safe(c)+'</option>').join("");};
+ }).catch(()=>{province.innerHTML='<option value="">فهرست استان‌ها بارگذاری نشد</option>';city.innerHTML='<option value="">فهرست شهرها بارگذاری نشد</option>';});
+}
+
+initProvinceCity();
 loadCatalog();
 </script>
 </body></html>
