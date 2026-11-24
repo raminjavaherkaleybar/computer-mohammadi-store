@@ -27,6 +27,12 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 @media(max-width:380px){.wrap{width:calc(100% - 20px)}.card{padding:12px}.actions{grid-template-columns:1fr}.visual{min-height:190px}}
 
 </style>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0b1220">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/svg+xml" href="./assets/ram-tech-app-icon.svg">
 </head>
 <body>
 <header><div class="wrap"><a class="brand" href="./">RAM TECH<small>کامپیوتر محمدی</small></a><a class="back" href="./">بازگشت به فروشگاه ←</a></div></header>
@@ -72,5 +78,11 @@ async function init(){
  $("state").hidden=true;$("productCard").hidden=false;
 }
 init().catch(e=>{$("state").textContent="بارگذاری محصول با خطا روبه‌رو شد. لطفاً دوباره تلاش کنید."});
+</script>
+
+<script>
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {}));
+}
 </script>
 </body></html>
