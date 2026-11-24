@@ -711,7 +711,13 @@ const fa=n=>new Intl.NumberFormat("fa-IR").format(Number(n||0));
 let categories=[["all","همه کالاها","🛒"]];
 let products=[];
 let active="all";
-let cart=JSON.parse(localStorage.getItem("mohammadiCart")||"{}");
+let cart={};
+try{
+ const savedCart=JSON.parse(localStorage.getItem("mohammadiCart")||"{}");
+ if(savedCart&&typeof savedCart==="object"&&!Array.isArray(savedCart)){
+  cart=Object.fromEntries(Object.entries(savedCart).filter(([id,q])=>typeof id==="string"&&Number.isInteger(Number(q))&&Number(q)>0).map(([id,q])=>[id,Number(q)]));
+ }
+}catch(e){localStorage.removeItem("mohammadiCart");}
 function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 function renderCategories(){
  const imageFor=name=>{
@@ -744,7 +750,7 @@ function renderProducts(){
  document.querySelectorAll("[data-detail]").forEach(b=>b.onclick=()=>openProductDetails(b.dataset.detail));
 }
 function setCategory(c){active=c;renderFilters();renderProducts();}
-function addToCart(id){const p=products.find(x=>x.id===id);if(!p||p.stock_quantity<1)return;cart[id]=Math.min(p.stock_quantity,(cart[id]||0)+1);localStorage.setItem("mohammadiCart",JSON.stringify(cart));renderCart();}
+function addToCart(id){id=String(id);const p=products.find(x=>String(x.id)===id);if(!p||p.stock_quantity<1)return;cart[id]=Math.min(Number(p.stock_quantity),Number(cart[id]||0)+1);localStorage.setItem("mohammadiCart",JSON.stringify(cart));renderCart();}
 function renderCart(){
  const rows=Object.entries(cart).filter(([id,q])=>q>0&&products.some(p=>p.id===id));
  $("cartItems").innerHTML=rows.length?rows.map(([id,q])=>{const p=products.find(x=>x.id===id);return '<div class="cart-row"><div><strong>'+safe(p.name)+'</strong><small>'+fa(p.price)+' تومان × '+fa(q)+'</small></div><div><button class="close" data-dec="'+id+'">−</button> '+fa(q)+' <button class="close" data-inc="'+id+'">+</button></div></div>';}).join(""):'<div class="empty">سبد خرید شما خالی است.</div>';
@@ -764,7 +770,7 @@ async function loadCatalog(){
  if(cr.error||pr.error){$("productGrid").innerHTML='<div class="empty">دریافت محصولات با مشکل روبه‌رو شد. لطفاً بعداً دوباره تلاش کنید.</div>';return;}
  categories=[["all","همه کالاها","🛒"],...(cr.data||[]).map(c=>[c.slug,c.name,"📦"])];
  products=(pr.data||[]).map(p=>({id:p.id,name:p.name,cat:p.categories?.slug||"all",label:p.categories?.name||"سایر کالاها",emoji:"📦",price:Number(p.price),stock_quantity:Number(p.stock_quantity),image_url:p.image_url,description:p.description}));
- for(const id of Object.keys(cart))if(!products.some(p=>p.id===id))delete cart[id];
+ for(const id of Object.keys(cart)){const p=products.find(x=>String(x.id)===id);if(!p||p.stock_quantity<1)delete cart[id];else cart[id]=Math.min(Number(cart[id])||0,Number(p.stock_quantity));}
  localStorage.setItem("mohammadiCart",JSON.stringify(cart));
  renderCategories();renderFilters();renderProducts();renderCart();
  const requestedProduct=new URLSearchParams(location.search).get("product");if(requestedProduct)openProductDetails(requestedProduct);else resetHomeSEO();
