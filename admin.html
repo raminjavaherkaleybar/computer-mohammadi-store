@@ -143,6 +143,24 @@ async function notifyOrder(orderId,baseMessage){
 }
 
 let currentSalesReport=null;
+
+function financeRows(){
+ const v=id=>$(id)?.textContent||'۰';
+ return [['گزارش مالی رام‌تک','مقدار'],['از تاریخ',$('financeFrom').value||'ابتدای سوابق'],['تا تاریخ',$('financeTo').value||'امروز'],['فروش سفارش‌های پرداخت‌شده (تومان)',v('finRevenue')],['تعداد سفارش پرداخت‌شده',v('finOrders')],['سود ناخالص قابل محاسبه (تومان)',v('finGross')],['هزینه‌های ثبت‌شده (تومان)',v('finExpenses')],['سود خالص قابل محاسبه (تومان)',v('finNet')],['خرید ثبت‌شده در بازه (تومان)',v('finPurchases')],['پرداخت به تأمین‌کنندگان در بازه (تومان)',v('finPayments')],['خرید بدون تأمین‌کننده (تومان)',v('finUnassigned')],['مانده بدهی تأمین‌کنندگان تا امروز (تومان)',v('finDebt')],['ارزش تقریبی موجودی به آخرین بهای خرید (تومان)',v('finStock')],['تعداد واحد موجود',v('finStockUnits')],['خالص جریان نقدی تقریبی (تومان)',v('cashflowNet')],['یادداشت','جریان نقدی تخمینی است؛ بر مبنای سفارش پرداخت‌شده منهای پرداخت تأمین‌کننده و هزینه ثبت‌شده.']];
+}
+function exportFinanceExcel(){
+ const rows=financeRows();
+ const html='<html><head><meta charset="utf-8"></head><body><table>'+rows.map((r,i)=>'<tr>'+r.map(c=>'<'+(i===0?'th':'td')+'>'+safe(c)+'</'+(i===0?'th':'td')+'>').join('')+'</tr>').join('')+'</table></body></html>';
+ const blob=new Blob(['\ufeff',html],{type:'application/vnd.ms-excel;charset=utf-8'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ramtech-financial-report.xls';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+function printFinancePdf(){
+ const rows=financeRows(),w=window.open('','_blank');
+ if(!w){$('financeStatus').textContent='پنجره چاپ مسدود شد؛ اجازه بازشدن پنجره را بدهید.';return}
+ const table=rows.map((r,i)=>'<tr>'+r.map(c=>'<'+(i===0?'th':'td')+'>'+safe(c)+'</'+(i===0?'th':'td')+'>').join('')+'</tr>').join('');
+ w.document.write('<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><title>گزارش مالی رام‌تک</title><style>body{font-family:Tahoma,Arial,sans-serif;padding:24px;color:#172338}table{border-collapse:collapse;width:100%;margin-top:20px}td,th{border:1px solid #cbd5e1;padding:10px;text-align:right}th{background:#edf3fb}@media print{body{padding:0}}</style></head><body><h2>گزارش مالی رام‌تک</h2><p>تاریخ تهیه: '+new Date().toLocaleDateString('fa-IR')+'</p><table>'+table+'</table></body></html>');
+ w.document.close();w.focus();w.print();
+}
 async function loadFinancialDashboard(){
  const from=$('financeFrom').value||null,to=$('financeTo').value||null;
  if(from&&to&&from>to){$('financeStatus').textContent='تاریخ شروع نباید بعد از تاریخ پایان باشد.';return}
@@ -163,7 +181,6 @@ async function loadFinancialDashboard(){
  const bought=sum(purchases.data,'total_amount'),paidPeriod=sum(payments.data,'amount');
  const unassigned=sum((purchases.data||[]).filter(x=>!x.supplier_id),'total_amount');
  const debt=Math.max(0,sum(allPurchases.data,'total_amount')-sum(allPayments.data,'amount'));
- const stockValue=sum(stock.data||[],'__unused');
  const value=(stock.data||[]).reduce((n,p)=>n+Number(p.stock_quantity||0)*Number(p.purchase_price||0),0);
  const units=sum(stock.data,'stock_quantity');
  $('finRevenue').textContent=fa(r.revenue||0);$('finOrders').textContent=fa(r.order_count||0);
@@ -171,6 +188,9 @@ async function loadFinancialDashboard(){
  $('finNet').textContent=fa(r.net_profit_known_only||0);$('finPurchases').textContent=fa(bought);
  $('finPayments').textContent=fa(paidPeriod);$('finUnassigned').textContent=fa(unassigned);
  $('finDebt').textContent=fa(debt);$('finStock').textContent=fa(value);$('finStockUnits').textContent=fa(units);
+ const cashNet=Number(r.revenue||0)-paidPeriod-sum(expenses.data,'amount');
+ $('cashflowRows').innerHTML=[['دریافتی سفارش‌های پرداخت‌شده',Number(r.revenue||0),0],['پرداخت به تأمین‌کنندگان',0,paidPeriod],['هزینه‌های ثبت‌شده',0,sum(expenses.data,'amount')]].map(x=>'<tr><td>'+safe(x[0])+'</td><td>'+fa(x[1])+'</td><td>'+fa(x[2])+'</td></tr>').join('');
+ $('cashflowNet').textContent=fa(cashNet)+' تومان';
  $('financeStatus').textContent='گزارش با موفقیت به‌روزرسانی شد.'+(Number(r.orders_missing_cost||0)?' تعداد '+fa(r.orders_missing_cost)+' سفارش فاقد بهای خرید کامل از سود قطعی کنار گذاشته شده است.':'');
 }
 async function renderSalesReport(){
@@ -458,7 +478,8 @@ $('purchaseForm').onsubmit=async e=>{
  const {data,error}=await db.rpc('record_store_purchase',{p_payload:payload});
  $('savePurchase').disabled=false;
  if(error){message('purchaseMsg','ثبت خرید انجام نشد: '+error.message);return}
- $('purchaseForm').reset();$('applyFinanceFilter').onclick=loadFinancialDashboard;$('clearFinanceFilter').onclick=()=>{$('financeFrom').value='';$('financeTo').value='';loadFinancialDashboard()};$('refreshFinancialDashboard').onclick=loadFinancialDashboard;\n$('purchaseDate').value=new Date().toISOString().slice(0,10);$('purchaseItems').innerHTML='';addPurchaseRow();updatePurchaseTotal();
+ $('purchaseForm').reset();
+$('applyFinanceFilter').onclick=loadFinancialDashboard;$('clearFinanceFilter').onclick=()=>{$('financeFrom').value='';$('financeTo').value='';loadFinancialDashboard()};$('refreshFinancialDashboard').onclick=loadFinancialDashboard;$('exportFinanceExcel').onclick=exportFinanceExcel;$('printFinancePdf').onclick=printFinancePdf;\n$('purchaseDate').value=new Date().toISOString().slice(0,10);$('purchaseItems').innerHTML='';addPurchaseRow();updatePurchaseTotal();
  await Promise.all([loadProducts(),loadInventory(),loadPurchases()]);await loadFinancialDashboard();
  message('purchaseMsg','فاکتور خرید با موفقیت ثبت شد؛ موجودی کالاها افزایش یافت. شماره ثبت: '+(data?.purchase_id||''),true);
 };
