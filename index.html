@@ -1083,6 +1083,7 @@ $("checkoutForm").onsubmit=async e=>{
   cart={};localStorage.removeItem("mohammadiCart");
   $("checkoutForm").reset();$("checkoutForm").classList.add("hidden");
   $("checkoutMessage").textContent="سفارش شماره "+fa(data.order_number)+" با موفقیت ثبت شد. روش ارسال: "+(selectedShippingMethod==="tipax"?"تیپاکس":"پست")+". سفارش شما در انتظار بررسی فروشگاه است. برای دریافت اطلاعات پرداخت و تأیید هزینه ارسال، لطفاً با فروشگاه هماهنگ کنید. تا زمان تأیید فروشگاه وجهی واریز نکنید.";
+  const trackingLink=document.createElement("a");trackingLink.href="track-order.html";trackingLink.textContent="پیگیری سفارش";trackingLink.style.cssText="display:inline-block;margin:8px 8px 0 0;color:#55d9ef;font-weight:800";$("checkoutMessage").append(document.createTextNode(" "),trackingLink);
 
   $("checkoutMessage").style.color="#087443";
   await loadCatalog();
