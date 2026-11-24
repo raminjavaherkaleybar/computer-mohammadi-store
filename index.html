@@ -951,6 +951,103 @@ body :is(.hero-copy h1,.hero-copy .eyebrow,.hero-brand-name,.navlinks a,
 #home .hero-copy .hero-brand-name{font-size:68px!important;font-weight:900!important;-webkit-text-stroke:.8px currentColor;line-height:1.4!important}
 #home .hero-copy .hero-benefits{font-size:17px!important;line-height:1.7!important}
 #home .hero-copy .hero-cta .btn-primary{font-size:16px!important}
+
+/* RAM TECH VISUAL POLISH — preserve the approved page geometry */
+:root{
+ --rt-ink:#202b3b;--rt-muted:#778397;--rt-line:#e3e8ef;
+ --rt-blue:#1769d2;--rt-blue-soft:#edf4ff;--rt-shadow:0 9px 26px rgba(24,39,61,.07)
+}
+html{scroll-behavior:smooth}
+body{color:var(--rt-ink)}
+a,button,select,input,textarea{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+ outline:3px solid #77aef5!important;outline-offset:3px!important
+}
+.topline{letter-spacing:0}
+header{box-shadow:0 5px 20px rgba(25,39,60,.07)!important}
+.search input{transition:border-color .2s,box-shadow .2s,background .2s}
+.search input:focus{border-color:#8eadd9!important;box-shadow:0 0 0 4px rgba(37,99,235,.09)!important}
+.cart-header{transition:transform .18s,box-shadow .18s,border-color .18s}
+.cart-header:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(25,39,60,.1);border-color:#b9c8dc!important}
+.navlinks a{transition:background .18s,color .18s}
+.hero-box{box-shadow:0 12px 30px rgba(25,39,60,.09)!important}
+.hero-copy .eyebrow{letter-spacing:0}
+.hero-cta .btn-primary{box-shadow:0 7px 17px rgba(20,35,55,.16)!important;transition:transform .2s,box-shadow .2s}
+.hero-cta .btn-primary:hover{transform:translateY(-2px);box-shadow:0 11px 22px rgba(20,35,55,.2)!important}
+#categories .section-head{display:flex!important;align-items:center!important;justify-content:space-between!important;margin:0 0 14px!important;padding:0 2px!important}
+#categories .section-head h2,#products .section-head h2,#benefits .section-head h2{
+ font-size:21px!important;font-weight:900!important;color:#202b3b!important;letter-spacing:-.35px
+}
+#categories .section-head p,#products .section-head p,#benefits .section-head p{
+ color:#778397!important;font-size:12px!important
+}
+.categories{gap:12px!important}
+.cat{
+ position:relative!important;overflow:hidden!important;min-height:166px!important;
+ border:1px solid #e1e6ed!important;border-radius:13px!important;
+ background:linear-gradient(155deg,#fff 0%,#f8f9fb 100%)!important;
+ box-shadow:0 5px 16px rgba(28,43,64,.055)!important;
+ transition:transform .2s,border-color .2s,box-shadow .2s!important
+}
+.cat:after{content:"";position:absolute;inset:auto 15% 0;height:3px;border-radius:3px 3px 0 0;background:#8c9aab;opacity:0;transition:opacity .2s}
+.cat:hover{transform:translateY(-3px)!important;border-color:#b8c9df!important;box-shadow:0 12px 25px rgba(28,43,64,.1)!important}
+.cat:hover:after{opacity:1}
+.cat-art{background:linear-gradient(145deg,#f4f6f9,#e9edf3)!important;border:1px solid #e8ebf0!important;border-radius:9px!important}
+.cat-art img{transition:transform .25s}
+.cat:hover .cat-art img{transform:scale(1.045)}
+.cat strong{font-size:14px!important;font-weight:800!important;color:#273447!important}
+.toolbar{margin:20px 0 14px!important}
+.filter{transition:background .18s,border-color .18s,color .18s,transform .18s}
+.filter:hover{transform:translateY(-1px);border-color:#aebed3!important}
+.sort{min-height:38px!important;cursor:pointer}
+.products{gap:15px!important}
+.product{
+ border:1px solid #e2e7ee!important;border-radius:15px!important;
+ box-shadow:0 7px 20px rgba(25,39,60,.055)!important;
+ transition:transform .2s,border-color .2s,box-shadow .2s!important
+}
+.product:hover{transform:translateY(-3px)!important;border-color:#c4d1e1!important;box-shadow:0 14px 28px rgba(25,39,60,.1)!important}
+.product-visual{position:relative!important;background:linear-gradient(145deg,#f7f9fc,#edf1f6)!important}
+.product-visual img{transition:transform .25s}
+.product:hover .product-visual img{transform:scale(1.04)}
+.product-body{gap:2px}
+.product-cat{font-weight:700!important;letter-spacing:0}
+.product h3{font-size:14px!important;line-height:1.75!important;font-weight:800!important}
+.price{font-size:15px!important;font-weight:900!important;color:#334155!important}
+.product-actions button{min-height:36px!important;transition:filter .18s,transform .18s,background .18s}
+.product-actions button:hover{transform:translateY(-1px);filter:brightness(1.04)}
+.product-actions button:disabled{opacity:.48;cursor:not-allowed;transform:none}
+.add{background:linear-gradient(120deg,#303b49,#667487)!important}
+.detail{border-radius:9px!important}
+.note{border-radius:12px!important;line-height:1.9!important}
+.features{gap:12px!important}
+.feature{border-radius:14px!important;box-shadow:0 6px 18px rgba(25,39,60,.045)!important;transition:transform .2s,border-color .2s}
+.feature:hover{transform:translateY(-2px);border-color:#cbd4df!important}
+.feature i{border-radius:12px!important}
+footer{padding-top:34px!important}
+.footgrid h3{font-size:15px!important;font-weight:900!important}
+.footgrid a{transition:color .18s}
+.drawer{border-radius:18px 0 0 18px!important}
+.drawer-head{padding-bottom:12px!important;border-bottom:1px solid #e7ebf0!important}
+.drawer input,.drawer textarea,.drawer select{border-radius:9px!important;min-height:40px}
+#checkoutForm label{display:block;font-size:12px;font-weight:800;color:inherit;margin-top:4px}
+#checkoutForm button:disabled{opacity:.65;cursor:wait}
+@media(max-width:760px){
+ #categories .section-head{display:flex!important;margin-bottom:9px!important}
+ #categories .section-head h2,#products .section-head h2,#benefits .section-head h2{font-size:16px!important}
+ #categories .section-head p,#products .section-head p,#benefits .section-head p{font-size:9px!important}
+ .cat{min-height:0!important}
+ .cat strong{font-size:11px!important}
+ .product{border-radius:10px!important}
+ .product h3{font-size:10px!important}
+ .price{font-size:10px!important}
+ .feature:hover,.product:hover,.cat:hover{transform:none!important}
+ footer{padding-top:20px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+
 </style>
 </head>
 <body>
