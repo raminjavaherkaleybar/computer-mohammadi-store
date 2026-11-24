@@ -2,24 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=1200, initial-scale=1, minimum-scale=0.25, maximum-scale=5, user-scalable=yes">
-<script>
-/* Keep the existing 1200px desktop layout, but scale it to the actual phone width. */
-(function(){
-  const viewport=document.querySelector('meta[name="viewport"]');
-  function fitPageToScreen(){
-    /* The site has a fixed 1200px layout and a global body zoom of 1.08.
-       Include that zoom in the fit calculation so the rendered page width
-       matches the phone screen exactly instead of overflowing. */
-    const screenWidth=window.screen.width || document.documentElement.clientWidth;
-    const scale=Math.min(1,Math.max(0.1,screenWidth/(1200*1.08)));
-    viewport.setAttribute('content','width=1200, initial-scale='+scale+', minimum-scale=0.1, maximum-scale=5, user-scalable=yes');
-  }
-  fitPageToScreen();
-  window.addEventListener('resize',fitPageToScreen);
-  window.addEventListener('orientationchange',function(){setTimeout(fitPageToScreen,200);});
-})();
-</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111827">
 <title>فروشگاه اینترنتی کامپیوتر محمدی | RAM TECH</title>
 <meta name="description" content="فروشگاه آنلاین کامپیوتر محمدی؛ لوازم جانبی موبایل و کامپیوتر، کابل، شارژر، هندزفری، کیبورد و ماوس.">
