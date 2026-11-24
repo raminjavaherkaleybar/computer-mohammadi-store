@@ -276,7 +276,8 @@ $('bulkPriceApply').onclick=bulkIncreasePrices;
 $('refreshCustomers').onclick=loadCustomers;
 $('customerSearch').oninput=loadCustomers;
 $('exportCustomers').onclick=exportCustomers;
-$('refreshInventory').onclick=loadInventory;\n$('stockProduct').onchange=updateStockCurrent;
+$('refreshInventory').onclick=loadInventory;
+$('stockProduct').onchange=updateStockCurrent;
 $('refreshReturns').onclick=loadReturns;
 
 db.auth.onAuthStateChange((_event,session)=>{if(session)enter(session);else showLogin()});
