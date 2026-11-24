@@ -1506,6 +1506,38 @@ button,input,select,textarea{max-width:100%;min-width:0}
   .products{gap:7px}
   .product-actions button{font-size:9px;padding:7px 3px}
 }
+
+
+/* RAM TECH mobile correction: restore hero photography and keep navigation legible */
+@media (hover:none) and (pointer:coarse) and (max-device-width:767px){
+  .hero.wrap{width:100%!important;margin:10px auto 16px!important;padding:0!important}
+  .hero-box{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;padding:16px 14px!important;min-height:0!important;border-radius:16px!important}
+  .hero-copy{display:block!important;order:0!important;width:100%!important;text-align:center!important;padding:8px 5px!important}
+  .hero-copy .eyebrow{display:inline-flex!important}
+  .hero-copy h1{display:block!important;font-size:clamp(25px,7vw,32px)!important;line-height:1.45!important;margin:9px 0 3px!important}
+  .hero-brand-name{display:inline-block!important;margin:0 0 8px!important}
+  .hero-benefits{display:flex!important;justify-content:center!important;flex-wrap:wrap!important;gap:7px!important}
+  .hero-cta{justify-content:center!important}
+  .hero-art{display:block!important;order:1!important;position:relative!important;width:100%!important;min-height:160px!important;height:160px!important;grid-column:auto!important;grid-row:auto!important}
+  .hero-products{display:block!important;position:relative!important;inset:auto!important;width:100%!important;height:160px!important;min-height:160px!important;overflow:hidden!important}
+  .hero-products img{display:block!important;position:absolute!important;object-fit:contain!important;max-width:none!important;filter:drop-shadow(0 9px 8px #172b4633)!important}
+  .hero-laptop{left:1%!important;bottom:5%!important;width:57%!important;height:78%!important;object-fit:cover!important}
+  .hero-phone{left:37%!important;top:12%!important;width:17%!important;height:72%!important}
+  .hero-headphones{left:57%!important;top:14%!important;width:30%!important;height:70%!important}
+  .hero-keyboard{left:34%!important;top:0!important;width:35%!important;height:43%!important}
+  .hero-mouse{left:53%!important;bottom:0!important;width:20%!important;height:27%!important}
+  .hero-earbuds{left:22%!important;bottom:0!important;width:17%!important;height:26%!important}
+  .navlinks{display:flex!important;flex-wrap:nowrap!important;justify-content:flex-start!important;align-items:stretch!important;gap:0!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none!important}
+  .navlinks a{display:flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:center!important;min-height:48px!important;padding:0 14px!important;background:transparent!important;color:#f5f7fb!important;border:0!important;border-left:1px solid #ffffff18!important;border-radius:0!important;font-size:12px!important;font-weight:700!important;white-space:nowrap!important}
+  .navlinks a.nav-home{background:#0869ed!important;color:#fff!important;border-radius:0 12px 12px 0!important}
+  .navlinks a:hover{background:#343e50!important;color:#fff!important}
+}
+@media (hover:none) and (pointer:coarse) and (max-device-width:380px){
+  .hero-art,.hero-products{height:140px!important;min-height:140px!important}
+  .hero-products{height:140px!important}
+  .hero-laptop{width:58%!important}
+  .navlinks a{padding-inline:11px!important;font-size:11px!important}
+}
 </style>
 
 
