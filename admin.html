@@ -307,13 +307,13 @@ async function loadCashLedger(){
  if(from&&to&&from>to)throw new Error('در گردش صندوق، تاریخ شروع نباید بعد از تاریخ پایان باشد.');
  let q=db.from('store_cash_transactions').select('id,transaction_date,direction,category,account,amount,description,reference_number').order('transaction_date',{ascending:false}).limit(5000);
  if(from)q=q.gte('transaction_date',from);if(to)q=q.lte('transaction_date',to);
- const [ledger,opening,allLedger]=await Promise.all([q,db.from('store_cash_opening_balances').select('account,amount,as_of_date'),db.from('store_cash_transactions').select('direction,account,amount').limit(10000)]);
+ const [ledger,opening,allLedger]=await Promise.all([q,db.from('store_cash_opening_balances').select('account,amount,as_of_date,note'),db.from('store_cash_transactions').select('direction,account,amount,transaction_date').limit(10000)]);
  const failed=[ledger,opening,allLedger].find(x=>x.error);
  if(failed){$('cashLedgerRows').innerHTML='<tr><td colspan="7">دریافت گردش ناموفق بود: '+safe(failed.error.message)+'</td></tr>';throw new Error('دریافت گردش صندوق ناموفق بود: '+failed.error.message)}
  const rows=ledger.data||[],opens=opening.data||[],all=allLedger.data||[];
  const sum=(a,fn)=>a.filter(fn).reduce((n,x)=>n+Number(x.amount||0),0);
  const openingFor=account=>Number(opens.find(x=>x.account===account)?.amount||0);
- const net=account=>openingFor(account)+sum(all,x=>x.account===account&&x.direction==='in')-sum(all,x=>x.account===account&&x.direction==='out');
+ const net=account=>{const opening=opens.find(x=>x.account===account),since=opening?.as_of_date;return Number(opening?.amount||0)+sum(all,x=>x.account===account&&x.direction==='in'&&(!since||x.transaction_date>=since))-sum(all,x=>x.account===account&&x.direction==='out'&&(!since||x.transaction_date>=since));};
  $('cashBalanceCash').textContent=fa(net('cash'));$('cashBalanceBank').textContent=fa(net('bank'));
  const labels={sale_receipt:'وصول فروش',other_income:'سایر درآمد',other_expense:'سایر پرداخت'},accounts={cash:'صندوق',bank:'بانک'};
  $('cashLedgerRows').innerHTML=rows.length?rows.map(x=>'<tr><td>'+safe(x.transaction_date)+'</td><td>'+safe(labels[x.category]||x.category)+'</td><td>'+safe(x.description)+(x.reference_number?'<small> · '+safe(x.reference_number)+'</small>':'')+'</td><td>'+accounts[x.account]+'</td><td>'+fa(x.direction==='in'?x.amount:0)+'</td><td>'+fa(x.direction==='out'?x.amount:0)+'</td><td><button class="btn danger" type="button" data-delete-cash="'+x.id+'">حذف</button></td></tr>').join(''):'<tr><td colspan="7">در این بازه گردش ثبت‌شده‌ای وجود ندارد.</td></tr>';
