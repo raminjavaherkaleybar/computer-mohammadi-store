@@ -412,7 +412,26 @@ function renderOrders(){
   detail.innerHTML='<td colspan="8"><div style="padding:12px;background:#f5f8fc;border-radius:10px"><strong>اقلام سفارش</strong><div class="tablewrap"><table style="min-width:500px"><thead><tr><th>کالا</th><th>کد</th><th>تعداد</th><th>قیمت واحد</th><th>جمع</th></tr></thead><tbody>'+(cells||'<tr><td colspan="5">برای این سفارش قلمی ثبت نشده است.</td></tr>')+'</tbody></table></div></div></td>';
   row.after(detail);
  });
- document.querySelectorAll('[data-order-status]').forEach(el=>el.onchange=async()=>{const id=el.dataset.orderStatus,status=el.value;el.disabled=true;const {error}=await db.from('orders').update({status,updated_at:new Date().toISOString()}).eq('id',id);el.disabled=false;if(error){message('formMsg','تغییر وضعیت سفارش انجام نشد: '+error.message);await loadOrders();return}const base=status==='cancelled'?'لغو سفارش انجام شد و موجودی کالاها خودکار برگشت داده شد.':'وضعیت سفارش ذخیره شد.';const notice=await notifyOrder(id,base);message('formMsg',notice.text,notice.ok);await loadOrders()});
+ document.querySelectorAll('[data-order-status]').forEach(el=>el.onchange=async()=>{
+  const id=el.dataset.orderStatus,status=el.value,previous=orders.find(x=>x.id===id)?.status;
+  const labels={pending:'در انتظار بررسی',confirmed:'تأیید شده',processing:'در حال آماده‌سازی',shipped:'ارسال شده',delivered:'تحویل شده',cancelled:'لغو شده'};
+  if(!previous||previous===status)return;
+  if(status==='cancelled'&&!confirm('آیا از لغو سفارش مطمئن هستید؟ در صورت مجاز بودن، موجودی کالاها به‌صورت خودکار برمی‌گردد.')){el.value=previous;return}
+  el.disabled=true;
+  try{
+   const {error}=await db.from('orders').update({status,updated_at:new Date().toISOString()}).eq('id',id).eq('status',previous);
+   if(error)throw error;
+   message('formMsg','وضعیت سفارش #'+fa(orders.find(x=>x.id===id)?.order_number||'')+' به «'+(labels[status]||status)+'» تغییر کرد.',true);
+   if(status!=='cancelled'){
+    try{const notice=await notifyOrder(id,'وضعیت سفارش به «'+(labels[status]||status)+'» تغییر کرد.');if(!notice.ok)message('formMsg','وضعیت سفارش ذخیره شد؛ ارسال پیام اطلاع‌رسانی انجام نشد: '+(notice.text||''),true)}
+    catch(notifyError){message('formMsg','وضعیت سفارش ذخیره شد؛ اما اطلاع‌رسانی ناموفق بود. '+(notifyError?.message||''),true)}
+   }
+   try{await loadOrders()}catch(refreshError){message('formMsg','وضعیت سفارش در سرور ذخیره شد؛ اما تازه‌سازی فهرست ناموفق بود. صفحه را تازه‌سازی کنید.',true)}
+  }catch(error){
+   el.value=previous;
+   message('formMsg','تغییر وضعیت سفارش انجام نشد؛ وضعیت قبلی حفظ شد: '+(error?.message||error));
+  }finally{el.disabled=false}
+ });
  document.querySelectorAll('[data-save-shipping]').forEach(b=>b.onclick=async()=>{const id=b.dataset.saveShipping;const method=document.querySelector('[data-ship-method="'+id+'"]').value;const fee=Number(document.querySelector('[data-ship-fee="'+id+'"]').value);const tracking=document.querySelector('[data-track="'+id+'"]').value.trim();const order=orders.find(x=>x.id===id);if(!Number.isFinite(fee)||fee<0){message('formMsg','هزینه ارسال معتبر نیست.');return}b.disabled=true;const patch={shipping_method:method,shipping_fee:fee,shipping_tracking_code:tracking||null,total:Number(order.subtotal||0)-Number(order.discount||0)+fee,updated_at:new Date().toISOString()};const {error}=await db.from('orders').update(patch).eq('id',id);b.disabled=false;if(error){message('formMsg','ذخیره اطلاعات ارسال ناموفق بود: '+error.message);return}const notice=await notifyOrder(id,'اطلاعات ارسال ذخیره شد.');message('formMsg',notice.text,notice.ok);await loadOrders()});
 }
 function populateStockProducts(){
