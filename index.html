@@ -1798,25 +1798,14 @@ function renderCart(){
  $("checkoutToggle").disabled=!rows.length;
 }
 async function loadCatalog(){
- const grid=$("productGrid");
- grid.innerHTML='<div class="empty">در حال دریافت محصولات فروشگاه...</div>';
- let cr,pr,lastError=null;
- for(let attempt=1;attempt<=2;attempt++){
-  try{
-   const timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error("مهلت اتصال به پایگاه داده تمام شد")),12000));
-   [cr,pr]=await Promise.race([Promise.all([
-    db.from("categories").select("id,name,slug").eq("is_active",true).order("sort_order"),
-    db.from("products").select("id,name,price,stock_quantity,image_url,description,category_id").eq("is_active",true).order("created_at",{ascending:false})
-   ]),timeout]);
-   if(!cr.error&&!pr.error)break;
-   lastError=cr.error||pr.error;
-  }catch(err){lastError=err;}
-  if(attempt===1){grid.innerHTML='<div class="empty">اتصال برقرار نشد؛ در حال تلاش دوباره برای دریافت محصولات...</div>';}
- }
- if(!cr||!pr||cr.error||pr.error){
-  console.error("RAM TECH catalog load failed:",lastError);
-  grid.innerHTML='<div class="empty">بارگذاری محصولات انجام نشد. اتصال اینترنت را بررسی کنید و دکمه تلاش دوباره را بزنید. <button type="button" id="retryCatalog" class="btn btn-primary" style="margin:12px auto 0">تلاش دوباره</button></div>';
-  $("retryCatalog")?.addEventListener("click",loadCatalog);
+ $("productGrid").innerHTML='<div class="empty">در حال دریافت محصولات فروشگاه...</div>';
+ const [cr,pr]=await Promise.all([
+  db.from("categories").select("id,name,slug").eq("is_active",true).order("sort_order"),
+  db.from("products").select("id,name,price,stock_quantity,image_url,description,category_id").eq("is_active",true).order("created_at",{ascending:false})
+ ]);
+ if(cr.error||pr.error){
+  console.error("Catalog load error:",cr.error||pr.error);
+  $("productGrid").innerHTML='<div class="empty">دریافت محصولات با مشکل روبه‌رو شد. لطفاً صفحه را تازه‌سازی کنید.</div>';
   return;
  }
  const categoryById=new Map((cr.data||[]).map(c=>[String(c.id),c]));
