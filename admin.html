@@ -177,13 +177,16 @@ function renderCategories(){
 $('categoryForm').onsubmit=async e=>{
  e.preventDefault();const id=$('categoryId').value,name=$('categoryName').value.trim(),description=$('categoryDescription').value.trim()||null;
  if(name.length<2){message('categoryMsg','نام دسته‌بندی باید حداقل دو حرف باشد.');return}
- const button=$('saveCategory');button.disabled=true;
- let result;
- if(id)result=await db.from('categories').update({name,description,is_active:$('categoryActive').checked,updated_at:new Date().toISOString()}).eq('id',id);
- else{const sortOrder=Math.max(0,...categories.map(c=>Number(c.sort_order)||0))+1;result=await db.from('categories').insert({name,slug:'category-'+Date.now().toString(36),description,sort_order:sortOrder,is_active:$('categoryActive').checked});}
- button.disabled=false;
- if(result.error){message('categoryMsg','ذخیره دسته‌بندی ناموفق بود: '+result.error.message);return}
- clearCategoryForm();await loadCategories();message('categoryMsg',id?'دسته‌بندی ویرایش شد.':'دسته‌بندی جدید ثبت شد.',true);
+ const button=$('saveCategory');if(button.disabled)return;button.disabled=true;let saved=false;
+ try{
+  let result;
+  if(id)result=await db.from('categories').update({name,description,is_active:$('categoryActive').checked,updated_at:new Date().toISOString()}).eq('id',id);
+  else{const sortOrder=Math.max(0,...categories.map(c=>Number(c.sort_order)||0))+1;result=await db.from('categories').insert({name,slug:'category-'+Date.now().toString(36),description,sort_order:sortOrder,is_active:$('categoryActive').checked});}
+  if(result.error)throw result.error;saved=true;clearCategoryForm();
+  try{await loadCategories();message('categoryMsg',id?'دسته‌بندی ویرایش شد.':'دسته‌بندی جدید ثبت شد.',true)}
+  catch(refreshError){message('categoryMsg','دسته‌بندی ذخیره شد؛ اما فهرست تازه نشد. صفحه را تازه‌سازی کنید.',true)}
+ }catch(error){message('categoryMsg',saved?'دسته‌بندی ذخیره شد، اما تازه‌سازی کامل نشد.':'نتیجه ذخیره دسته‌بندی مشخص نیست؛ پیش از ثبت دوباره، فهرست را تازه‌سازی و بررسی کنید. '+(error?.message||''))}
+ finally{button.disabled=false}
 };
 $('resetCategoryForm').onclick=clearCategoryForm;$('cancelCategoryEdit').onclick=clearCategoryForm;
 async function loadProducts(){
@@ -362,7 +365,19 @@ async function renderSalesReport(){
 const expenseLabels={rent:'اجاره',salary:'حقوق و دستمزد',shipping:'حمل‌ونقل',packaging:'بسته‌بندی',marketing:'تبلیغات',utilities:'قبوض و خدمات',other:'سایر'};
 async function loadExpenses(){const {data,error}=await db.from('store_expenses').select('id,title,category,amount,expense_date,note').order('expense_date',{ascending:false}).limit(300);if(error)throw new Error('دریافت هزینه‌ها ناموفق بود: '+error.message);$('expenseRows').innerHTML=data?.length?data.map(x=>'<tr><td>'+safe(x.title)+'</td><td>'+safe(expenseLabels[x.category]||x.category)+'</td><td>'+fa(x.amount)+'</td><td>'+safe(x.expense_date)+'</td><td>'+safe(x.note||'—')+'</td><td><button class="btn danger" data-delete-expense="'+x.id+'">حذف</button></td></tr>').join(''):'<tr><td colspan="6">هنوز هزینه‌ای ثبت نشده است.</td></tr>';$('expenseRows').querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('این هزینه حذف شود؟'))return;const {error}=await db.from('store_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){message('expenseMsg','حذف ناموفق بود: '+error.message);return}message('expenseMsg','هزینه حذف شد.',true);await loadExpenses();await renderSalesReport();await loadFinancialDashboard()})}
 $('expenseDate').value=new Date().toISOString().slice(0,10);
-$('expenseForm').onsubmit=async e=>{e.preventDefault();const title=$('expenseTitle').value.trim(),amount=Number($('expenseAmount').value),date=$('expenseDate').value;if(title.length<2||!Number.isFinite(amount)||amount<=0||!date){message('expenseMsg','اطلاعات هزینه معتبر نیست.');return}$('saveExpense').disabled=true;const {error}=await db.from('store_expenses').insert({title,category:$('expenseCategory').value,amount,expense_date:date,note:$('expenseNote').value.trim()||null});$('saveExpense').disabled=false;if(error){message('expenseMsg','ثبت هزینه ناموفق بود: '+error.message);return}$('expenseForm').reset();$('expenseDate').value=new Date().toISOString().slice(0,10);message('expenseMsg','هزینه ثبت شد.',true);await loadExpenses();await renderSalesReport()};
+$('expenseForm').onsubmit=async e=>{
+ e.preventDefault();const title=$('expenseTitle').value.trim(),amount=Number($('expenseAmount').value),date=$('expenseDate').value;
+ if(title.length<2||!Number.isSafeInteger(amount)||amount<=0||!date){message('expenseMsg','عنوان، مبلغ صحیح و تاریخ معتبر وارد کنید.');return}
+ const button=$('saveExpense');if(button.disabled)return;button.disabled=true;let saved=false;
+ try{
+  const {error}=await db.from('store_expenses').insert({title,category:$('expenseCategory').value,amount,expense_date:date,note:$('expenseNote').value.trim()||null});
+  if(error)throw error;saved=true;$('expenseForm').reset();$('expenseDate').value=new Date().toISOString().slice(0,10);
+  message('expenseMsg','هزینه ثبت شد.',true);
+  try{await loadExpenses();await renderSalesReport()}
+  catch(refreshError){message('expenseMsg','هزینه در سرور ثبت شد؛ اما گزارش تازه نشد. صفحه را تازه‌سازی کنید و هزینه را دوباره ثبت نکنید.',true)}
+ }catch(error){message('expenseMsg',saved?'هزینه ثبت شد، اما نمایش اطلاعات کامل نشد.':'نتیجه ثبت هزینه مشخص نیست؛ پیش از ثبت دوباره، فهرست هزینه‌ها را تازه‌سازی و بررسی کنید. '+(error?.message||''))}
+ finally{button.disabled=false}
+};
 $("applyReportFilter").onclick=renderSalesReport;
 $("clearReportFilter").onclick=()=>{$("reportFrom").value="";$("reportTo").value="";renderSalesReport()};
 $("exportProfitReport").onclick=()=>{
