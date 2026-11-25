@@ -199,9 +199,13 @@ async function loadProducts(){
  products=all;render();
 }
 async function loadOrders(){
- const {data,error}=await db.from('orders').select('id,order_number,customer_name,customer_phone,shipping_address,city,province,postal_code,subtotal,shipping_fee,discount,total,status,payment_status,payment_method,customer_note,admin_note,shipping_method,shipping_tracking_code,created_at').order('created_at',{ascending:false}).limit(500);
- if(error)throw new Error('دریافت سفارش‌ها ناموفق بود: '+error.message);
- orders=data||[];renderOrders();renderSalesReport();$('pendingOrders').textContent=fa(orders.filter(o=>o.status==='pending').length);$('unpaidOrders').textContent=fa(orders.filter(o=>o.payment_status!=='paid'&&o.status!=='cancelled').length);
+ const all=[];let offset=0;const pageSize=1000;
+ while(true){
+  const {data,error}=await db.from('orders').select('id,order_number,customer_name,customer_phone,shipping_address,city,province,postal_code,subtotal,shipping_fee,discount,total,status,payment_status,payment_method,customer_note,admin_note,shipping_method,shipping_tracking_code,created_at').order('created_at',{ascending:false}).order('id',{ascending:true}).range(offset,offset+pageSize-1);
+  if(error)throw new Error('دریافت سفارش‌ها ناموفق بود: '+error.message);
+  const batch=data||[];all.push(...batch);if(batch.length<pageSize)break;offset+=pageSize;
+ }
+ orders=all;renderOrders();renderSalesReport();$('pendingOrders').textContent=fa(orders.filter(o=>o.status==='pending').length);$('unpaidOrders').textContent=fa(orders.filter(o=>o.payment_status!=='paid'&&o.status!=='cancelled').length);
 }
 let paymentReceipts=[];
 const receiptStatusLabel={received:'در انتظار بررسی',approved:'تأیید شده',rejected:'رد شده'};
