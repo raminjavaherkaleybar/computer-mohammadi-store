@@ -556,12 +556,19 @@ async function toggleSupplier(id,active){
 
 let supplierPurchases=[],supplierPayments=[];
 async function loadSupplierAccounts(){
- const [pr,pa]=await Promise.all([
-  db.from('store_purchases').select('id,supplier_id,invoice_number,purchase_date,total_amount,store_suppliers(name)').not('supplier_id','is',null).order('purchase_date',{ascending:false}).limit(1000),
-  db.from('store_supplier_payments').select('id,supplier_id,purchase_id,amount,payment_date,payment_method,reference_number,note,store_suppliers(name),store_purchases(invoice_number)').order('payment_date',{ascending:false}).order('created_at',{ascending:false}).limit(1000)
- ]);
- if(pr.error)throw pr.error;if(pa.error)throw pa.error;
- supplierPurchases=pr.data||[];supplierPayments=pa.data||[];
+ async function fetchAll(query,label){
+  const collected=[];let offset=0;const pageSize=1000;
+  while(true){
+   const result=await query().range(offset,offset+pageSize-1);
+   if(result.error)throw new Error('دریافت '+label+' ناموفق بود: '+result.error.message);
+   const batch=result.data||[];collected.push(...batch);
+   if(batch.length<pageSize)break;
+   offset+=pageSize;
+  }
+  return collected;
+ }
+ supplierPurchases=await fetchAll(()=>db.from('store_purchases').select('id,supplier_id,invoice_number,purchase_date,total_amount,store_suppliers(name)').not('supplier_id','is',null).order('purchase_date',{ascending:false}).order('id',{ascending:true}),'فاکتورهای خرید تأمین‌کنندگان');
+ supplierPayments=await fetchAll(()=>db.from('store_supplier_payments').select('id,supplier_id,purchase_id,amount,payment_date,payment_method,reference_number,note,store_suppliers(name),store_purchases(invoice_number)').order('payment_date',{ascending:false}).order('id',{ascending:true}),'پرداخت‌های تأمین‌کنندگان');
  $('paymentSupplier').innerHTML='<option value="">انتخاب تأمین‌کننده</option>'+suppliers.map(s=>'<option value="'+s.id+'">'+safe(s.name)+'</option>').join('');
  $('paymentPurchase').innerHTML='<option value="">پرداخت از کل بدهی تأمین‌کننده</option>'+supplierPurchases.map(p=>'<option value="'+p.id+'">'+safe(p.store_suppliers?.name||'')+' — '+safe(p.invoice_number||p.purchase_date)+' — '+fa(p.total_amount)+' تومان</option>').join('');
  const rows=suppliers.map(s=>{
