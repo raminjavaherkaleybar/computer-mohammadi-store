@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ramtech-shell-v2';
+const CACHE_NAME = 'ramtech-shell-v3';
 const APP_SHELL = [
   './index.html',
   './product.html',
