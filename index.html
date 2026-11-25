@@ -1888,6 +1888,7 @@ $("checkoutForm").onsubmit=async e=>{
  try{
   const {data,error}=await db.functions.invoke("create-store-order",{body:payload});
   if(error)throw error;
+  if(!data||data.order_number==null)throw new Error("پاسخ ثبت سفارش از سرور کامل دریافت نشد. ممکن است سفارش ثبت شده باشد؛ پیش از تلاش دوباره، با فروشگاه تماس بگیرید و از ثبت سفارش تکراری خودداری کنید.");
   cart={};localStorage.removeItem("mohammadiCart");
   $("checkoutForm").reset();$("checkoutForm").classList.add("hidden");
   $("checkoutMessage").textContent="سفارش شماره "+fa(data.order_number)+" با موفقیت ثبت شد. روش ارسال: "+(selectedShippingMethod==="tipax"?"تیپاکس":"پست")+". سفارش شما در انتظار بررسی فروشگاه است. برای دریافت اطلاعات پرداخت و تأیید هزینه ارسال، لطفاً با فروشگاه هماهنگ کنید. تا زمان تأیید فروشگاه وجهی واریز نکنید.";
