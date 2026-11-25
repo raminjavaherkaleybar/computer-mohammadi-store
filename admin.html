@@ -438,8 +438,9 @@ function renderOrders(){
   if(status==='cancelled'&&!confirm('آیا از لغو سفارش مطمئن هستید؟ در صورت مجاز بودن، موجودی کالاها به‌صورت خودکار برمی‌گردد.')){el.value=previous;return}
   el.disabled=true;
   try{
-   const {error}=await db.from('orders').update({status,updated_at:new Date().toISOString()}).eq('id',id).eq('status',previous);
+   const {data:updatedRows,error}=await db.from('orders').update({status,updated_at:new Date().toISOString()}).eq('id',id).eq('status',previous).select('id');
    if(error)throw error;
+   if(!updatedRows?.length)throw new Error('وضعیت سفارش تغییر کرده یا سفارش در دسترس نیست؛ فهرست را تازه‌سازی و دوباره بررسی کنید.');
    message('formMsg','وضعیت سفارش #'+fa(orders.find(x=>x.id===id)?.order_number||'')+' به «'+(labels[status]||status)+'» تغییر کرد.',true);
    if(status!=='cancelled'){
     try{const notice=await notifyOrder(id,'وضعیت سفارش به «'+(labels[status]||status)+'» تغییر کرد.');if(!notice.ok)message('formMsg','وضعیت سفارش ذخیره شد؛ ارسال پیام اطلاع‌رسانی انجام نشد: '+(notice.text||''),true)}
@@ -460,8 +461,9 @@ function renderOrders(){
   let saved=false;
   try{
    const patch={shipping_method:method,shipping_fee:fee,shipping_tracking_code:tracking||null,total:Number(order.subtotal||0)-Number(order.discount||0)+fee,updated_at:new Date().toISOString()};
-   const {error}=await db.from('orders').update(patch).eq('id',id).neq('status','cancelled');
+   const {data:updatedRows,error}=await db.from('orders').update(patch).eq('id',id).neq('status','cancelled').select('id');
    if(error)throw error;
+   if(!updatedRows?.length)throw new Error('سفارش لغو شده یا هم‌زمان تغییر کرده است؛ فهرست را تازه‌سازی و بررسی کنید.');
    saved=true;
    message('formMsg','اطلاعات ارسال و مبلغ نهایی سفارش ذخیره شد.',true);
    try{const notice=await notifyOrder(id,'اطلاعات ارسال ذخیره شد.');if(!notice.ok)message('formMsg','اطلاعات ارسال ذخیره شد؛ اما اطلاع‌رسانی کامل انجام نشد: '+(notice.text||''),true)}
