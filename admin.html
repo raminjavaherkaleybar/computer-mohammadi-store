@@ -133,12 +133,13 @@
 </div>
 </section>
 </main>
-<script type="module">
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.86.0';
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.86.0/dist/umd/supabase.js" onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2.86.0/dist/umd/supabase.js'"></script>
+<script>
+if(!window.supabase||typeof window.supabase.createClient!=="function"){document.body.innerHTML='<main style="padding:24px;font-family:Tahoma;direction:rtl">کتابخانه ورود مدیر بارگذاری نشد. اتصال اینترنت را بررسی و صفحه را دوباره باز کنید.</main>';throw new Error("Supabase browser library unavailable");}
 const SUPABASE_URL='https://fgfeiilkzoajguabzuex.supabase.co';
 const SUPABASE_KEY='sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB';
 const ADMIN_EMAIL='raminmkaleybar1363@gmail.com';
-const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const $=id=>document.getElementById(id), fa=n=>new Intl.NumberFormat('fa-IR').format(n||0);
 let categories=[],products=[],orders=[];
 function message(id,text,ok=false){$(id).textContent=text;$(id).className='msg '+(ok?'good':'bad')}
