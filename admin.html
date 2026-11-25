@@ -489,7 +489,20 @@ function downloadCSV(filename,rows){
 }
 function exportProducts(){downloadCSV('ram-tech-products.csv',[['نام کالا','کد کالا','دسته‌بندی','قیمت تومان','موجودی','فعال','ویژه'],...products.map(p=>[p.name,p.sku,p.categories?.name,p.price,p.stock_quantity,p.is_active?'بله':'خیر',p.is_featured?'بله':'خیر'])]);}
 function exportOrders(){downloadCSV('ram-tech-orders.csv',[['شماره سفارش','نام مشتری','موبایل','جمع کالاها تومان','هزینه ارسال تومان','تخفیف تومان','مبلغ کل تومان','وضعیت سفارش','وضعیت پرداخت','روش ارسال','کد رهگیری','تاریخ ثبت'],...orders.map(o=>[o.order_number,o.customer_name,o.customer_phone,o.subtotal,o.shipping_fee,o.discount,o.total,o.status,o.payment_status,o.shipping_method,o.shipping_tracking_code,o.created_at])]);}
-function exportCustomers(){const q=($('customerSearch').value||'').trim().toLocaleLowerCase('fa');db.from('customers').select('full_name,phone,email,province,city,created_at').order('created_at',{ascending:false}).limit(500).then(({data,error})=>{if(error){message('customerMsg','خروجی مشتریان ناموفق بود: '+error.message);return}const rows=(data||[]).filter(x=>!q||[x.full_name,x.phone].join(' ').toLocaleLowerCase('fa').includes(q));downloadCSV('ram-tech-customers.csv',[['نام','موبایل','ایمیل','استان','شهر','تاریخ ثبت'],...rows.map(x=>[x.full_name,x.phone,x.email,x.province,x.city,x.created_at])]);});}
+async function exportCustomers(){
+ const q=($('customerSearch').value||'').trim().toLocaleLowerCase('fa'),all=[];
+ let offset=0;const pageSize=1000;
+ try{
+  while(true){
+   const {data,error}=await db.from('customers').select('id,full_name,phone,email,province,city,created_at').order('created_at',{ascending:false}).order('id',{ascending:true}).range(offset,offset+pageSize-1);
+   if(error)throw error;
+   const batch=data||[];all.push(...batch);if(batch.length<pageSize)break;offset+=pageSize;
+  }
+  const rows=all.filter(x=>!q||[x.full_name,x.phone].join(' ').toLocaleLowerCase('fa').includes(q));
+  downloadCSV('ram-tech-customers.csv',[['نام','موبایل','ایمیل','استان','شهر','تاریخ ثبت'],...rows.map(x=>[x.full_name,x.phone,x.email,x.province,x.city,x.created_at])]);
+  message('customerMsg','خروجی '+fa(rows.length)+' مشتری آماده شد.',true);
+ }catch(error){message('customerMsg','خروجی کامل مشتریان ناموفق بود: '+(error?.message||error));}
+}
 async function bulkIncreasePrices(){
  const percent=Number($('bulkPricePercent').value);if(!Number.isFinite(percent)||percent<=0||percent>500){message('bulkPriceMsg','درصد باید بین ۰٫۱ تا ۵۰۰ باشد.');return}
  const filter=($('productCategoryFilter').value||'');const term=($('productSearch').value||'').trim().toLocaleLowerCase('fa');
