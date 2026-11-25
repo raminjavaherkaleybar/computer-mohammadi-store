@@ -367,7 +367,7 @@ async function renderSalesReport(){
 }
 
 const expenseLabels={rent:'اجاره',salary:'حقوق و دستمزد',shipping:'حمل‌ونقل',packaging:'بسته‌بندی',marketing:'تبلیغات',utilities:'قبوض و خدمات',other:'سایر'};
-async function loadExpenses(){const {data,error}=await db.from('store_expenses').select('id,title,category,amount,expense_date,note').order('expense_date',{ascending:false}).limit(300);if(error)throw new Error('دریافت هزینه‌ها ناموفق بود: '+error.message);$('expenseRows').innerHTML=data?.length?data.map(x=>'<tr><td>'+safe(x.title)+'</td><td>'+safe(expenseLabels[x.category]||x.category)+'</td><td>'+fa(x.amount)+'</td><td>'+safe(x.expense_date)+'</td><td>'+safe(x.note||'—')+'</td><td><button class="btn danger" data-delete-expense="'+x.id+'">حذف</button></td></tr>').join(''):'<tr><td colspan="6">هنوز هزینه‌ای ثبت نشده است.</td></tr>';$('expenseRows').querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('این هزینه حذف شود؟'))return;const {error}=await db.from('store_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){message('expenseMsg','حذف ناموفق بود: '+error.message);return}message('expenseMsg','هزینه حذف شد.',true);await loadExpenses();await renderSalesReport();await loadFinancialDashboard()})}
+async function loadExpenses(){const data=await fetchAllPages(db.from('store_expenses').select('id,title,category,amount,expense_date,note').order('expense_date',{ascending:false}).order('id',{ascending:true});$('expenseRows').innerHTML=data?.length?data.map(x=>'<tr><td>'+safe(x.title)+'</td><td>'+safe(expenseLabels[x.category]||x.category)+'</td><td>'+fa(x.amount)+'</td><td>'+safe(x.expense_date)+'</td><td>'+safe(x.note||'—')+'</td><td><button class="btn danger" data-delete-expense="'+x.id+'">حذف</button></td></tr>').join(''):'<tr><td colspan="6">هنوز هزینه‌ای ثبت نشده است.</td></tr>';$('expenseRows').querySelectorAll('[data-delete-expense]').forEach(b=>b.onclick=async()=>{if(!confirm('این هزینه حذف شود؟'))return;const {error}=await db.from('store_expenses').delete().eq('id',b.dataset.deleteExpense);if(error){message('expenseMsg','حذف ناموفق بود: '+error.message);return}message('expenseMsg','هزینه حذف شد.',true);await loadExpenses();await renderSalesReport();await loadFinancialDashboard()})}
 $('expenseDate').value=new Date().toISOString().slice(0,10);
 $('expenseForm').onsubmit=async e=>{
  e.preventDefault();const title=$('expenseTitle').value.trim(),amount=Number($('expenseAmount').value),date=$('expenseDate').value;
@@ -514,9 +514,10 @@ function render(){
  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>editProduct(b.dataset.edit));document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>deleteProduct(b.dataset.delete));
 }
 
+async function fetchAllPages(query){const all=[];const pageSize=1000;let offset=0;while(true){const {data,error}=await query.range(offset,offset+pageSize-1);if(error)throw error;const chunk=data||[];all.push(...chunk);if(chunk.length<pageSize)break;offset+=pageSize;}return all;}
 async function loadCustomers(){
- const {data,error}=await db.from('customers').select('id,full_name,phone,email,province,city,created_at').order('created_at',{ascending:false}).limit(500);
- if(error)throw new Error('دریافت مشتریان ناموفق بود: '+error.message);
+ const data=await fetchAllPages(db.from('customers').select('id,full_name,phone,email,province,city,created_at').order('created_at',{ascending:false}).order('id',{ascending:true});
+
  const q=($('customerSearch').value||'').trim().toLocaleLowerCase('fa');
  const rows=(data||[]).filter(x=>!q||[x.full_name,x.phone].join(' ').toLocaleLowerCase('fa').includes(q));
  $('customerRows').innerHTML=rows.length?rows.map(x=>'<tr><td>'+safe(x.full_name)+'</td><td><a href="tel:'+safe(x.phone)+'">'+safe(x.phone)+'</a></td><td>'+safe(x.email||'—')+'</td><td>'+safe([x.province,x.city].filter(Boolean).join(' / ')||'—')+'</td><td>'+new Date(x.created_at).toLocaleDateString('fa-IR')+'</td></tr>').join(''):'<tr><td colspan="5">مشتری‌ای مطابق جست‌وجو یافت نشد.</td></tr>';
@@ -533,8 +534,8 @@ async function loadReturnItems(){
 async function loadReturns(){
  const previousOrder=$('returnOrder').value;
  if(!previousOrder){$('returnOrder').innerHTML='<option value="">انتخاب سفارش</option>'+(orders||[]).map(o=>'<option value="'+o.id+'">#'+safe(o.order_number)+' — '+safe(o.customer_name)+'</option>').join('');}
- const {data,error}=await db.from('order_returns').select('id,order_id,order_item_id,return_type,quantity,reason,status,created_at,orders(order_number,customer_name),order_items(product_name)').order('created_at',{ascending:false}).limit(300);
- if(error)throw new Error('دریافت درخواست‌های مرجوعی ناموفق بود: '+error.message);
+ const data=await fetchAllPages(db.from('order_returns').select('id,order_id,order_item_id,return_type,quantity,reason,status,created_at,orders(order_number,customer_name),order_items(product_name)').order('created_at',{ascending:false}).order('id',{ascending:true});
+
  const labels={requested:'ثبت‌شده',approved:'تأییدشده',rejected:'ردشده',received:'کالا دریافت شد',refunded:'وجه مسترد شد',exchanged:'تعویض انجام شد'};
  $('returnRows').innerHTML=data?.length?data.map(x=>'<tr><td>'+safe(x.orders?.order_number||'—')+'</td><td>'+safe(x.orders?.customer_name||'—')+'</td><td>'+safe(x.order_items?.product_name||'—')+'</td><td>'+(x.return_type==='exchange'?'تعویض':'مرجوعی')+'</td><td>'+fa(x.quantity)+'</td><td>'+safe(x.reason)+'</td><td>'+new Date(x.created_at).toLocaleDateString('fa-IR')+'</td><td><select data-return-status="'+x.id+'">'+Object.entries(labels).map(([v,l])=>'<option value="'+v+'" '+(x.status===v?'selected':'')+'>'+l+'</option>').join('')+'</select></td></tr>').join(''):'<tr><td colspan="8">هنوز درخواست مرجوعی یا تعویضی ثبت نشده است.</td></tr>';
  document.querySelectorAll('[data-return-status]').forEach(el=>el.onchange=async()=>{const id=el.dataset.returnStatus,status=el.value;el.disabled=true;const {error}=await db.from('order_returns').update({status,updated_at:new Date().toISOString()}).eq('id',id);el.disabled=false;if(error){message('returnMsg','ذخیره وضعیت انجام نشد: '+error.message);await loadReturns();return}message('returnMsg','وضعیت درخواست به‌روزرسانی شد.',true);await loadReturns()});
@@ -560,8 +561,8 @@ $('returnForm').onsubmit=async e=>{
 };
 
 async function loadInventory(){
- const {data,error}=await db.from('inventory_movements').select('id,quantity_change,reason,note,created_at,products(name)').order('created_at',{ascending:false}).limit(200);
- if(error)throw new Error('دریافت گردش موجودی ناموفق بود: '+error.message);
+ const data=await fetchAllPages(db.from('inventory_movements').select('id,quantity_change,reason,note,created_at,products(name)').order('created_at',{ascending:false}).order('id',{ascending:true});
+
  $('inventoryRows').innerHTML=data?.length?data.map(x=>'<tr><td>'+safe(x.products?.name||'کالای حذف‌شده')+'</td><td>'+fa(x.quantity_change)+'</td><td>'+safe(x.reason)+'</td><td>'+safe(x.note||'—')+'</td><td>'+new Date(x.created_at).toLocaleString('fa-IR')+'</td></tr>').join(''):'<tr><td colspan="5">هنوز سابقه‌ای ثبت نشده است.</td></tr>';
 }
 function downloadCSV(filename,rows){
@@ -724,8 +725,8 @@ $('supplierPaymentForm').onsubmit=async e=>{
  finally{button.disabled=false}
 };
 async function loadPurchases(){
- const {data,error}=await db.from('store_purchases').select('id,invoice_number,purchase_date,total_amount,note,store_suppliers(name),store_purchase_items(quantity)').order('purchase_date',{ascending:false}).order('created_at',{ascending:false}).limit(200);
- if(error)throw new Error('دریافت سوابق خرید ناموفق بود: '+error.message);
+ const data=await fetchAllPages(db.from('store_purchases').select('id,invoice_number,purchase_date,total_amount,note,created_at,store_suppliers(name),store_purchase_items(quantity)').order('purchase_date',{ascending:false}).order('created_at',{ascending:false}).order('id',{ascending:true});
+
  $('purchaseRows').innerHTML=data?.length?data.map(p=>'<tr><td>'+safe(p.purchase_date)+'</td><td>'+safe(p.invoice_number||'—')+'</td><td>'+safe(p.store_suppliers?.name||'—')+'</td><td>'+fa((p.store_purchase_items||[]).length)+'</td><td>'+fa(p.total_amount)+'</td><td>'+safe(p.note||'—')+'</td></tr>').join(''):'<tr><td colspan="6">هنوز فاکتور خریدی ثبت نشده است.</td></tr>';
 }
 $('supplierForm').onsubmit=async e=>{
