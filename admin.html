@@ -537,8 +537,8 @@ async function loadReturns(){
  const data=await fetchAllPages(db.from('order_returns').select('id,order_id,order_item_id,return_type,quantity,reason,status,created_at,orders(order_number,customer_name),order_items(product_name)').order('created_at',{ascending:false}).order('id',{ascending:true}));
 
  const labels={requested:'ثبت‌شده',approved:'تأییدشده',rejected:'ردشده',received:'کالا دریافت شد',refunded:'وجه مسترد شد',exchanged:'تعویض انجام شد'};
- $('returnRows').innerHTML=data?.length?data.map(x=>'<tr><td>'+safe(x.orders?.order_number||'—')+'</td><td>'+safe(x.orders?.customer_name||'—')+'</td><td>'+safe(x.order_items?.product_name||'—')+'</td><td>'+(x.return_type==='exchange'?'تعویض':'مرجوعی')+'</td><td>'+fa(x.quantity)+'</td><td>'+safe(x.reason)+'</td><td>'+new Date(x.created_at).toLocaleDateString('fa-IR')+'</td><td><select data-return-status="'+x.id+'">'+Object.entries(labels).map(([v,l])=>'<option value="'+v+'" '+(x.status===v?'selected':'')+'>'+l+'</option>').join('')+'</select></td></tr>').join(''):'<tr><td colspan="8">هنوز درخواست مرجوعی یا تعویضی ثبت نشده است.</td></tr>';
- document.querySelectorAll('[data-return-status]').forEach(el=>el.onchange=async()=>{const id=el.dataset.returnStatus,status=el.value;el.disabled=true;const {error}=await db.from('order_returns').update({status,updated_at:new Date().toISOString()}).eq('id',id);el.disabled=false;if(error){message('returnMsg','ذخیره وضعیت انجام نشد: '+error.message);await loadReturns();return}message('returnMsg','وضعیت درخواست به‌روزرسانی شد.',true);await loadReturns()});
+ $('returnRows').innerHTML=data?.length?data.map(x=>'<tr><td>'+safe(x.orders?.order_number||'—')+'</td><td>'+safe(x.orders?.customer_name||'—')+'</td><td>'+safe(x.order_items?.product_name||'—')+'</td><td>'+(x.return_type==='exchange'?'تعویض':'مرجوعی')+'</td><td>'+fa(x.quantity)+'</td><td>'+safe(x.reason)+'</td><td>'+new Date(x.created_at).toLocaleDateString('fa-IR')+'</td><td><select data-return-status="'+x.id+'" data-current-status="'+safe(x.status)+'">'+Object.entries(labels).map(([v,l])=>'<option value="'+v+'" '+(x.status===v?'selected':'')+'>'+l+'</option>').join('')+'</select></td></tr>').join(''):'<tr><td colspan="8">هنوز درخواست مرجوعی یا تعویضی ثبت نشده است.</td></tr>';
+ document.querySelectorAll('[data-return-status]').forEach(el=>el.onchange=async()=>{const id=el.dataset.returnStatus,status=el.value,previous=el.dataset.currentStatus;el.disabled=true;try{const {data,error}=await db.from('order_returns').update({status,updated_at:new Date().toISOString()}).eq('id',id).eq('status',previous).select('id');if(error)throw error;if(!data?.length)throw new Error('درخواست هم‌زمان تغییر کرده یا پیدا نشد؛ فهرست را تازه‌سازی کنید.');el.dataset.currentStatus=status;message('returnMsg','وضعیت درخواست به‌روزرسانی شد.',true);await loadReturns()}catch(error){message('returnMsg','تغییر وضعیت تأیید نشد: '+error.message+'؛ فهرست را بررسی کنید.');try{await loadReturns()}catch(refreshError){message('returnMsg','وضعیت نامشخص است؛ فهرست را دستی تازه‌سازی کنید.')}}finally{el.disabled=false}});
 }
 $('returnOrder').onchange=loadReturnItems;
 $('returnForm').onsubmit=async e=>{
@@ -730,12 +730,9 @@ async function loadPurchases(){
  $('purchaseRows').innerHTML=data?.length?data.map(p=>'<tr><td>'+safe(p.purchase_date)+'</td><td>'+safe(p.invoice_number||'—')+'</td><td>'+safe(p.store_suppliers?.name||'—')+'</td><td>'+fa((p.store_purchase_items||[]).length)+'</td><td>'+fa(p.total_amount)+'</td><td>'+safe(p.note||'—')+'</td></tr>').join(''):'<tr><td colspan="6">هنوز فاکتور خریدی ثبت نشده است.</td></tr>';
 }
 $('supplierForm').onsubmit=async e=>{
- e.preventDefault();$('saveSupplier').disabled=true;
+ e.preventDefault();const button=$('saveSupplier');if(button.disabled)return;button.disabled=true;
  const row={name:$('supplierName').value.trim(),phone:$('supplierPhone').value.trim()||null,address:$('supplierAddress').value.trim()||null,note:$('supplierNote').value.trim()||null};
- const {error}=await db.from('store_suppliers').insert(row);
- $('saveSupplier').disabled=false;
- if(error){message('supplierMsg','ثبت تأمین‌کننده ناموفق بود: '+error.message);return}
- $('supplierForm').reset();await loadSuppliers();message('supplierMsg','تأمین‌کننده ثبت شد.',true);
+ try{const {error}=await db.from('store_suppliers').insert(row);if(error)throw error;$('supplierForm').reset();message('supplierMsg','تأمین‌کننده ثبت شد.',true);try{await loadSuppliers()}catch(refreshError){message('supplierMsg','ثبت انجام شد؛ اما تازه‌سازی فهرست خطا داشت. دوباره ثبت نکنید، فهرست را تازه‌سازی کنید.')}}catch(error){message('supplierMsg','ثبت تأمین‌کننده تأیید نشد: '+error.message+'؛ قبل از تلاش مجدد فهرست را بررسی کنید.')}finally{button.disabled=false}
 };
 $('purchaseForm').onsubmit=async e=>{
  e.preventDefault();
