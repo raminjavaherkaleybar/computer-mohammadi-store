@@ -273,15 +273,20 @@ async function loadFinancialDashboard(){
  if(from&&to&&from>to)throw new Error('در گزارش مالی، تاریخ شروع نباید بعد از تاریخ پایان باشد.');
  $('financeStatus').textContent='در حال محاسبه اطلاعات مالی...';
  const range=(q,col)=>{if(from)q=q.gte(col,from);if(to)q=q.lte(col,to);return q};
+ const fetchAll=async makeQuery=>{
+  const collected=[];let offset=0;const pageSize=1000;
+  while(true){const result=await makeQuery().order('id',{ascending:true}).range(offset,offset+pageSize-1);if(result.error)return result;const batch=result.data||[];collected.push(...batch);if(batch.length<pageSize)break;offset+=pageSize;}
+  return {data:collected,error:null};
+ };
  const [sales,purchases,payments,expenses,allPurchases,allPayments,stock,cashTx] = await Promise.all([
   db.rpc('get_store_sales_report',{p_from_date:from,p_to_date:to}),
-  range(db.from('store_purchases').select('total_amount,supplier_id,purchase_date'), 'purchase_date').limit(5000),
-  range(db.from('store_supplier_payments').select('amount,payment_date'), 'payment_date').limit(5000),
-  range(db.from('store_expenses').select('amount,expense_date'), 'expense_date').limit(5000),
-  db.from('store_purchases').select('total_amount,supplier_id').not('supplier_id','is',null).limit(5000),
-  db.from('store_supplier_payments').select('amount,supplier_id').limit(5000),
-  db.from('products').select('stock_quantity,purchase_price').limit(5000),
-  range(db.from('store_cash_transactions').select('direction,category,amount,transaction_date'), 'transaction_date').limit(5000)
+  fetchAll(()=>range(db.from('store_purchases').select('total_amount,supplier_id,purchase_date'),'purchase_date')),
+  fetchAll(()=>range(db.from('store_supplier_payments').select('amount,payment_date'),'payment_date')),
+  fetchAll(()=>range(db.from('store_expenses').select('amount,expense_date'),'expense_date')),
+  fetchAll(()=>db.from('store_purchases').select('total_amount,supplier_id').not('supplier_id','is',null)),
+  fetchAll(()=>db.from('store_supplier_payments').select('amount,supplier_id')),
+  fetchAll(()=>db.from('products').select('stock_quantity,purchase_price')),
+  fetchAll(()=>range(db.from('store_cash_transactions').select('direction,category,amount,transaction_date'),'transaction_date'))
  ]);
  const failed=[sales,purchases,payments,expenses,allPurchases,allPayments,stock,cashTx].find(x=>x.error);
  if(failed){$('financeStatus').textContent='دریافت بخشی از اطلاعات ناموفق بود: '+failed.error.message;throw new Error('گزارش مالی کامل دریافت نشد: '+failed.error.message)}
