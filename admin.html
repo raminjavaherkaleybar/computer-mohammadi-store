@@ -238,10 +238,17 @@ async function reviewPaymentReceipt(id,decision){
   : 'رسید سفارش #'+fa(receipt.order_number)+' رد شود؟ وضعیت سفارش پرداخت‌نشده باقی می‌ماند.';
  if(!confirm(promptText))return;
  const btn=document.querySelector('[data-receipt-'+(approved?'approve':'reject')+'="'+id+'"]');if(btn)btn.disabled=true;
- const {data,error}=await db.rpc('admin_review_payment_receipt',{p_receipt_id:id,p_decision:decision,p_note:null});
- if(error){if(btn)btn.disabled=false;message('paymentReceiptMsg','عملیات انجام نشد: '+error.message);return}
- message('paymentReceiptMsg',approved?'پرداخت سفارش #'+fa(data?.order_number||receipt.order_number)+' تأیید شد و وضعیت سفارش به «تأیید شده» تغییر کرد.':'رسید سفارش #'+fa(data?.order_number||receipt.order_number)+' رد شد؛ سفارش همچنان پرداخت‌نشده است.',true);
- await Promise.all([loadPaymentReceipts(),loadOrders()]);
+ let saved=false;
+ try{
+  const {data,error}=await db.rpc('admin_review_payment_receipt',{p_receipt_id:id,p_decision:decision,p_note:null});
+  if(error)throw error;
+  saved=true;
+  message('paymentReceiptMsg',approved?'پرداخت سفارش #'+fa(data?.order_number||receipt.order_number)+' تأیید شد.':'رسید سفارش #'+fa(data?.order_number||receipt.order_number)+' رد شد؛ سفارش همچنان پرداخت‌نشده است.',true);
+  try{await Promise.all([loadPaymentReceipts(),loadOrders()])}
+  catch(refreshError){message('paymentReceiptMsg','عملیات در سرور ثبت شد، اما تازه‌سازی فهرست‌ها ناموفق بود. صفحه را تازه‌سازی کنید. '+(refreshError?.message||''))}
+ }catch(error){
+  message('paymentReceiptMsg',(saved?'عملیات ثبت شد؛ ':'عملیات انجام نشد: ')+(error?.message||error));
+ }finally{if(btn)btn.disabled=false}
 }
 $('refreshPaymentReceipts').onclick=loadPaymentReceipts;
 
