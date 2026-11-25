@@ -647,6 +647,6 @@ $('refreshReturns').onclick=loadReturns;$('refreshPurchases').onclick=async()=>{
 
 $('purchaseDate').value=new Date().toISOString().slice(0,10);$('supplierPaymentDate').value=new Date().toISOString().slice(0,10);addPurchaseRow();
 db.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')showLogin()});
-const {data:{session}}=await db.auth.getSession();if(session)await enter(session);
+db.auth.getSession().then(({data:{session}})=>{if(session)return enter(session)}).catch(e=>{showLogin();message('loginMsg','بررسی نشست ورود ناموفق بود: '+(e?.message||e))});
 </script>
 </body></html>
