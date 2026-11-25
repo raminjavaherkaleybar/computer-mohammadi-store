@@ -468,13 +468,19 @@ $('stockAdjustForm').onsubmit=async e=>{
  e.preventDefault();
  const productId=$('stockProduct').value,delta=Number($('stockDelta').value),reason=$('stockReason').value,note=$('stockNote').value.trim();
  if(!productId||!Number.isInteger(delta)||delta===0||Math.abs(delta)>100000){message('stockAdjustMsg','کالا و تعداد تغییر معتبر را وارد کنید.');return}
- const btn=$('stockAdjustSave');btn.disabled=true;
- const {data,error}=await db.rpc('adjust_store_stock',{p_product_id:productId,p_quantity_change:delta,p_reason:reason,p_note:note||null});
- btn.disabled=false;
- if(error){message('stockAdjustMsg','ثبت تغییر موجودی ناموفق بود: '+error.message);return}
- $('stockDelta').value='';$('stockNote').value='';
- message('stockAdjustMsg','تغییر موجودی با موفقیت ثبت شد. موجودی جدید: '+fa(data.new_stock),true);
- await loadProducts();await loadInventory();
+ const btn=$('stockAdjustSave');if(btn.disabled)return;btn.disabled=true;
+ let committed=false;
+ try{
+  const {data,error}=await db.rpc('adjust_store_stock',{p_product_id:productId,p_quantity_change:delta,p_reason:reason,p_note:note||null});
+  if(error)throw error;
+  committed=true;
+  $('stockDelta').value='';$('stockNote').value='';
+  message('stockAdjustMsg','تغییر موجودی ثبت شد. موجودی جدید: '+fa(data?.new_stock??'—'),true);
+  try{await loadProducts();await loadInventory()}
+  catch(refreshError){message('stockAdjustMsg','تغییر موجودی در سرور ثبت شد؛ اما تازه‌سازی اطلاعات ناموفق بود. صفحه را تازه‌سازی کنید و تغییر را دوباره ثبت نکنید.',true)}
+ }catch(error){
+  message('stockAdjustMsg',committed?'تغییر ثبت شد، اما نمایش اطلاعات کامل نشد.':'نتیجه ثبت تغییر موجودی مشخص نیست؛ ممکن است سرور آن را ثبت کرده باشد. ابتدا گردش موجودی و موجودی کالا را تازه‌سازی کنید و تا بررسی، این تغییر را دوباره ثبت نکنید. '+(error?.message||''));
+ }finally{btn.disabled=false}
 };
 
 function render(){
