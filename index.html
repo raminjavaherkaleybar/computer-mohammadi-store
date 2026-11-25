@@ -1684,7 +1684,20 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 </form><div id="checkoutMessage" role="status" aria-live="polite" style="font-size:13px;margin-top:10px"></div>
 <div class="note">قیمت کالاها هنگام ثبت سفارش دوباره از پایگاه داده بررسی می‌شود و موجودی به‌صورت موقت برای سفارش رزرو می‌شود.</div></aside></div>
 <script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.86.0";
+let createClient;
+try {
+  ({ createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.86.0/+esm"));
+} catch (primaryError) {
+  console.warn("RAMTECH primary Supabase SDK CDN failed; trying fallback.", primaryError);
+  try {
+    ({ createClient } = await import("https://esm.sh/@supabase/supabase-js@2.86.0"));
+  } catch (fallbackError) {
+    console.error("RAMTECH Supabase SDK could not be loaded from either CDN.", fallbackError);
+    const grid = document.getElementById("productGrid");
+    if (grid) grid.innerHTML = '<div class="empty">اتصال فروشگاه برقرار نشد. لطفاً اینترنت را بررسی و صفحه را دوباره بارگذاری کنید.</div>';
+    throw fallbackError;
+  }
+}
 const db=createClient("https://fgfeiilkzoajguabzuex.supabase.co","sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB");
 const $=id=>document.getElementById(id);
 const fa=n=>new Intl.NumberFormat("fa-IR").format(Number(n||0));
