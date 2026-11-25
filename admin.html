@@ -329,11 +329,10 @@ async function loadFinancialDashboard(){
 async function loadCashLedger(){
  const from=$('cashLedgerFrom').value||null,to=$('cashLedgerTo').value||null;
  if(from&&to&&from>to)throw new Error('در گردش صندوق، تاریخ شروع نباید بعد از تاریخ پایان باشد.');
- let q=db.from('store_cash_transactions').select('id,transaction_date,direction,category,account,amount,description,reference_number').order('transaction_date',{ascending:false}).limit(5000);
+ let q=db.from('store_cash_transactions').select('id,transaction_date,direction,category,account,amount,description,reference_number').order('transaction_date',{ascending:false}).order('id',{ascending:true});
  if(from)q=q.gte('transaction_date',from);if(to)q=q.lte('transaction_date',to);
- const [ledger,opening]=await Promise.all([q,db.from('store_cash_opening_balances').select('account,amount,as_of_date,note')]);
- const failed=[ledger,opening].find(x=>x.error);
- if(failed){$('cashLedgerRows').innerHTML='<tr><td colspan="7">دریافت گردش ناموفق بود: '+safe(failed.error.message)+'</td></tr>';throw new Error('دریافت گردش صندوق ناموفق بود: '+failed.error.message)}
+ const [rows,opening]=await Promise.all([fetchAllPages(q),db.from('store_cash_opening_balances').select('account,amount,as_of_date,note')]);
+ if(opening.error){$('cashLedgerRows').innerHTML='<tr><td colspan="7">دریافت مانده افتتاحیه ناموفق بود: '+safe(opening.error.message)+'</td></tr>';throw new Error('دریافت مانده افتتاحیه ناموفق بود: '+opening.error.message)}
  const allLedgerRows=[];let offset=0;const pageSize=1000;
  while(true){
   const page=await db.from('store_cash_transactions').select('direction,account,amount,transaction_date').order('transaction_date',{ascending:true}).order('id',{ascending:true}).range(offset,offset+pageSize-1);
@@ -342,7 +341,7 @@ async function loadCashLedger(){
   if(batch.length<pageSize)break;
   offset+=pageSize;
  }
- const rows=ledger.data||[],opens=opening.data||[],all=allLedgerRows;
+ const opens=opening.data||[],all=allLedgerRows;
  const sum=(a,fn)=>a.filter(fn).reduce((n,x)=>n+Number(x.amount||0),0);
  const openingFor=account=>Number(opens.find(x=>x.account===account)?.amount||0);
  const net=account=>{const opening=opens.find(x=>x.account===account),since=opening?.as_of_date;return Number(opening?.amount||0)+sum(all,x=>x.account===account&&x.direction==='in'&&(!since||x.transaction_date>=since))-sum(all,x=>x.account===account&&x.direction==='out'&&(!since||x.transaction_date>=since));};
