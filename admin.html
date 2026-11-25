@@ -187,8 +187,13 @@ $('categoryForm').onsubmit=async e=>{
 };
 $('resetCategoryForm').onclick=clearCategoryForm;$('cancelCategoryEdit').onclick=clearCategoryForm;
 async function loadProducts(){
- const {data,error}=await db.from('products').select('id,name,slug,sku,description,price,purchase_price,stock_quantity,image_url,is_active,is_featured,category_id,categories(name)').order('created_at',{ascending:false});
- if(error)throw error;products=data||[];render();
+ const all=[];let offset=0;const pageSize=1000;
+ while(true){
+  const {data,error}=await db.from('products').select('id,name,slug,sku,description,price,purchase_price,stock_quantity,image_url,is_active,is_featured,category_id,categories(name)').order('created_at',{ascending:false}).order('id',{ascending:true}).range(offset,offset+pageSize-1);
+  if(error)throw new Error('دریافت کالاها ناموفق بود: '+error.message);
+  const batch=data||[];all.push(...batch);if(batch.length<pageSize)break;offset+=pageSize;
+ }
+ products=all;render();
 }
 async function loadOrders(){
  const {data,error}=await db.from('orders').select('id,order_number,customer_name,customer_phone,shipping_address,city,province,postal_code,subtotal,shipping_fee,discount,total,status,payment_status,payment_method,customer_note,admin_note,shipping_method,shipping_tracking_code,created_at').order('created_at',{ascending:false}).limit(500);
@@ -520,9 +525,21 @@ async function bulkIncreasePrices(){
  const selected=products.filter(p=>(!filter||p.category_id===filter)&&(!term||[p.name,p.sku||''].join(' ').toLocaleLowerCase('fa').includes(term)));
  if(!selected.length){message('bulkPriceMsg','کالایی برای تغییر قیمت انتخاب نشده است.');return}
  if(!confirm('قیمت '+selected.length+' کالا به میزان '+percent+' درصد افزایش یابد؟'))return;
- $('bulkPriceApply').disabled=true;let failed=0;
- for(const p of selected){const price=Math.round(Number(p.price)*(1+percent/100));const {error}=await db.from('products').update({price,updated_at:new Date().toISOString()}).eq('id',p.id);if(error)failed++;}
- $('bulkPriceApply').disabled=false;await loadProducts();message('bulkPriceMsg',failed?'افزایش قیمت انجام شد اما '+failed+' کالا به‌روزرسانی نشد.':'قیمت '+selected.length+' کالا به‌روزرسانی شد.',failed===0);
+ const button=$('bulkPriceApply');button.disabled=true;let succeeded=0,failed=0;const failures=[];
+ try{
+  for(const p of selected){
+   try{
+    const price=Math.round(Number(p.price)*(1+percent/100));
+    const {error}=await db.from('products').update({price,updated_at:new Date().toISOString()}).eq('id',p.id);
+    if(error)throw error;succeeded++;
+   }catch(error){failed++;failures.push(p.name+': '+(error?.message||'خطای نامشخص'));}
+  }
+  await loadProducts();
+  const summary='موفق: '+succeeded+' کالا؛ ناموفق: '+failed+' کالا.';
+  message('bulkPriceMsg',summary+(failures.length?' جزئیات: '+failures.slice(0,3).join(' | '):''),failed===0);
+ }catch(error){
+  message('bulkPriceMsg','قیمت‌ها پردازش شدند اما تازه‌سازی فهرست ناموفق بود؛ برای مشاهده وضعیت واقعی، فهرست کالاها را دوباره بارگذاری کنید. '+(error?.message||''));
+ }finally{button.disabled=false;}
 }
 
 
