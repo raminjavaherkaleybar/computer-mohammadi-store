@@ -524,12 +524,18 @@ $('returnForm').onsubmit=async e=>{
  const orderId=$('returnOrder').value,itemId=$('returnItem').value||null,quantity=Number($('returnQuantity').value),reason=$('returnReason').value.trim(),selected=$('returnItem').selectedOptions[0];
  if(!orderId||!Number.isInteger(quantity)||quantity<1||quantity>50||reason.length<3){message('returnMsg','اطلاعات درخواست را بررسی کنید.');return}
  if(itemId&&quantity>Number(selected.dataset.max)){message('returnMsg','تعداد درخواست از تعداد ثبت‌شده در سفارش بیشتر است.');return}
- const button=$('saveReturn');button.disabled=true;
- const {error}=await db.from('order_returns').insert({order_id:orderId,order_item_id:itemId,return_type:$('returnType').value,quantity,reason});
- button.disabled=false;
- if(error){message('returnMsg','ثبت درخواست ناموفق بود: '+error.message);return}
- $('returnReason').value='';$('returnQuantity').value='1';$('returnItem').value='';
- message('returnMsg','درخواست مرجوعی / تعویض ثبت شد.',true);await loadReturns();
+ const button=$('saveReturn');if(button.disabled)return;button.disabled=true;
+ let committed=false;
+ try{
+  const {error}=await db.from('order_returns').insert({order_id:orderId,order_item_id:itemId,return_type:$('returnType').value,quantity,reason});
+  if(error)throw error;
+  committed=true;
+  $('returnReason').value='';$('returnQuantity').value='1';$('returnItem').value='';
+  message('returnMsg','درخواست مرجوعی / تعویض ثبت شد.',true);
+  try{await loadReturns()}catch(refreshError){message('returnMsg','درخواست ثبت شد؛ اما فهرست مرجوعی‌ها تازه نشد. صفحه را تازه‌سازی کنید.',true)}
+ }catch(error){
+  message('returnMsg',committed?'درخواست ثبت شد، اما نمایش فهرست کامل نشد.':'نتیجه ثبت درخواست مشخص نیست؛ ممکن است درخواست در سرور ثبت شده باشد. پیش از ثبت دوباره، فهرست مرجوعی‌ها را تازه‌سازی و بررسی کنید. '+(error?.message||''));
+ }finally{button.disabled=false}
 };
 
 async function loadInventory(){
