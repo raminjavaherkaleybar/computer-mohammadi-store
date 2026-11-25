@@ -1683,14 +1683,39 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 <button id="submitOrder" type="submit" class="btn btn-primary" style="width:100%;margin-top:12px">ثبت درخواست سفارش</button>
 </form><div id="checkoutMessage" role="status" aria-live="polite" style="font-size:13px;margin-top:10px"></div>
 <div class="note">قیمت کالاها هنگام ثبت سفارش دوباره از پایگاه داده بررسی می‌شود و موجودی به‌صورت موقت برای سفارش رزرو می‌شود.</div></aside></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.86.0/dist/umd/supabase.js" onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2.86.0/dist/umd/supabase.js'"></script>
 <script>
-if(!window.supabase||typeof window.supabase.createClient!=="function"){
- const grid=document.getElementById("productGrid");
- if(grid)grid.innerHTML='<div class="empty">کتابخانه اتصال فروشگاه بارگذاری نشد. اینترنت را بررسی و دوباره تلاش کنید.</div>';
- throw new Error("Supabase browser library unavailable");
+/* Lightweight native Supabase REST client: no third-party JS CDN is needed. */
+const SUPABASE_URL="https://fgfeiilkzoajguabzuex.supabase.co";
+const SUPABASE_KEY="sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB";
+const apiHeaders={"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY};
+function restQuery(table){
+ const params=new URLSearchParams();
+ let controller=null;
+ const query={
+  select(columns){params.set("select",columns);return query;},
+  eq(column,value){params.append(column,"eq."+String(value));return query;},
+  order(column,options={}){params.set("order",column+"."+(options.ascending===false?"desc":"asc"));return query;},
+  abortSignal(signal){controller=signal;return query;},
+  then(resolve,reject){
+   const url=SUPABASE_URL+"/rest/v1/"+encodeURIComponent(table)+"?"+params.toString();
+   return fetch(url,{method:"GET",headers:apiHeaders,signal:controller||undefined})
+    .then(async response=>{const data=await response.json().catch(()=>null);if(!response.ok)return {data:null,error:{message:data?.message||data?.details||("HTTP "+response.status),status:response.status,details:data}};return {data,error:null};})
+    .then(resolve,reject);
+  }
+ };
+ return query;
 }
-const db=window.supabase.createClient("https://fgfeiilkzoajguabzuex.supabase.co","sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB");
+const db={
+ from:restQuery,
+ functions:{invoke:async(name,options={})=>{
+  try{
+   const response=await fetch(SUPABASE_URL+"/functions/v1/"+encodeURIComponent(name),{method:"POST",headers:{...apiHeaders,"Content-Type":"application/json"},body:JSON.stringify(options.body||{})});
+   const data=await response.json().catch(()=>null);
+   if(!response.ok)return {data:null,error:{message:data?.error||data?.message||("HTTP "+response.status),status:response.status,details:data}};
+   return {data,error:null};
+  }catch(error){return {data:null,error};}
+ }}
+};
 const $=id=>document.getElementById(id);
 const fa=n=>new Intl.NumberFormat("fa-IR").format(Number(n||0));
 let categories=[["all","همه کالاها","🛒"]];
