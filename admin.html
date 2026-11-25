@@ -432,7 +432,26 @@ function renderOrders(){
    message('formMsg','تغییر وضعیت سفارش انجام نشد؛ وضعیت قبلی حفظ شد: '+(error?.message||error));
   }finally{el.disabled=false}
  });
- document.querySelectorAll('[data-save-shipping]').forEach(b=>b.onclick=async()=>{const id=b.dataset.saveShipping;const method=document.querySelector('[data-ship-method="'+id+'"]').value;const fee=Number(document.querySelector('[data-ship-fee="'+id+'"]').value);const tracking=document.querySelector('[data-track="'+id+'"]').value.trim();const order=orders.find(x=>x.id===id);if(!Number.isFinite(fee)||fee<0){message('formMsg','هزینه ارسال معتبر نیست.');return}b.disabled=true;const patch={shipping_method:method,shipping_fee:fee,shipping_tracking_code:tracking||null,total:Number(order.subtotal||0)-Number(order.discount||0)+fee,updated_at:new Date().toISOString()};const {error}=await db.from('orders').update(patch).eq('id',id);b.disabled=false;if(error){message('formMsg','ذخیره اطلاعات ارسال ناموفق بود: '+error.message);return}const notice=await notifyOrder(id,'اطلاعات ارسال ذخیره شد.');message('formMsg',notice.text,notice.ok);await loadOrders()});
+ document.querySelectorAll('[data-save-shipping]').forEach(b=>b.onclick=async()=>{
+  const id=b.dataset.saveShipping,method=document.querySelector('[data-ship-method="'+id+'"]')?.value,fee=Number(document.querySelector('[data-ship-fee="'+id+'"]')?.value),tracking=document.querySelector('[data-track="'+id+'"]')?.value.trim()||'',order=orders.find(x=>x.id===id);
+  if(!order){message('formMsg','سفارش در فهرست فعلی پیدا نشد؛ فهرست را تازه‌سازی کنید.');return}
+  if(!['post','tipax'].includes(method)||!Number.isFinite(fee)||fee<0||!Number.isSafeInteger(fee)){message('formMsg','روش ارسال یا هزینه ارسال معتبر نیست.');return}
+  if(order.status==='cancelled'){message('formMsg','برای سفارش لغوشده امکان تغییر اطلاعات ارسال وجود ندارد.');return}
+  b.disabled=true;
+  let saved=false;
+  try{
+   const patch={shipping_method:method,shipping_fee:fee,shipping_tracking_code:tracking||null,total:Number(order.subtotal||0)-Number(order.discount||0)+fee,updated_at:new Date().toISOString()};
+   const {error}=await db.from('orders').update(patch).eq('id',id).neq('status','cancelled');
+   if(error)throw error;
+   saved=true;
+   message('formMsg','اطلاعات ارسال و مبلغ نهایی سفارش ذخیره شد.',true);
+   try{const notice=await notifyOrder(id,'اطلاعات ارسال ذخیره شد.');if(!notice.ok)message('formMsg','اطلاعات ارسال ذخیره شد؛ اما اطلاع‌رسانی کامل انجام نشد: '+(notice.text||''),true)}
+   catch(notifyError){message('formMsg','اطلاعات ارسال ذخیره شد؛ اما اطلاع‌رسانی ناموفق بود.',true)}
+   try{await loadOrders()}catch(refreshError){message('formMsg','اطلاعات ارسال در سرور ذخیره شد؛ اما فهرست تازه نشد. صفحه را تازه‌سازی کنید.',true)}
+  }catch(error){
+   message('formMsg',saved?'اطلاعات ذخیره شد، اما مرحله بعدی کامل نشد.':'ذخیره اطلاعات ارسال ناموفق بود: '+(error?.message||error));
+  }finally{b.disabled=false}
+ });
 }
 function populateStockProducts(){
  const select=$('stockProduct'),previous=select.value;
