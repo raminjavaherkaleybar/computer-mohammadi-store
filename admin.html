@@ -707,14 +707,15 @@ $('supplierPaymentForm').onsubmit=async e=>{
  const supplierId=$('paymentSupplier').value, purchaseId=$('paymentPurchase').value||null, amount=Number($('supplierPaymentAmount').value);
  if(!supplierId||!Number.isFinite(amount)||amount<=0){message('supplierPaymentMsg','تأمین‌کننده و مبلغ معتبر را وارد کنید.');return}
  if(!confirm('پرداخت به مبلغ '+fa(amount)+' تومان ثبت شود؟'))return;
- $('saveSupplierPayment').disabled=true;
+ const button=$('saveSupplierPayment');if(button.disabled)return;button.disabled=true;let saved=false;
  const payload={supplier_id:supplierId,purchase_id:purchaseId,amount,payment_date:$('supplierPaymentDate').value,payment_method:$('supplierPaymentMethod').value,reference_number:$('supplierPaymentRef').value.trim()||null,note:$('supplierPaymentNote').value.trim()||null};
- const {data,error}=await db.rpc('record_supplier_payment',{p_payload:payload});
- $('saveSupplierPayment').disabled=false;
- if(error){message('supplierPaymentMsg','ثبت پرداخت ناموفق بود: '+error.message);return}
- $('supplierPaymentForm').reset();$('supplierPaymentDate').value=new Date().toISOString().slice(0,10);
- await loadSupplierAccounts();
- message('supplierPaymentMsg','پرداخت با موفقیت ثبت شد. شناسه ثبت: '+(data?.payment_id||''),true);
+ try{
+  const {data,error}=await db.rpc('record_supplier_payment',{p_payload:payload});if(error)throw error;saved=true;
+  $('supplierPaymentForm').reset();$('supplierPaymentDate').value=new Date().toISOString().slice(0,10);
+  message('supplierPaymentMsg','پرداخت ثبت شد. شناسه ثبت: '+(data?.payment_id||''),true);
+  try{await loadSupplierAccounts()}catch(refreshError){message('supplierPaymentMsg','پرداخت ثبت شد؛ اما مانده حساب تازه نشد. صفحه را تازه‌سازی کنید و پرداخت را دوباره ثبت نکنید.',true)}
+ }catch(error){message('supplierPaymentMsg',saved?'پرداخت ثبت شد، اما تازه‌سازی کامل نشد.':'نتیجه ثبت پرداخت مشخص نیست؛ پیش از ثبت دوباره، حساب تأمین‌کننده و سوابق پرداخت را بررسی کنید. '+(error?.message||''))}
+ finally{button.disabled=false}
 };
 async function loadPurchases(){
  const {data,error}=await db.from('store_purchases').select('id,invoice_number,purchase_date,total_amount,note,store_suppliers(name),store_purchase_items(quantity)').order('purchase_date',{ascending:false}).order('created_at',{ascending:false}).limit(200);
@@ -736,15 +737,17 @@ $('purchaseForm').onsubmit=async e=>{
  if(new Set(items.map(x=>x.product_id)).size!==items.length){message('purchaseMsg','هر کالا را فقط یک‌بار در فاکتور وارد کنید؛ تعداد همان ردیف را اصلاح کنید.');return}
  const total=items.reduce((s,x)=>s+x.quantity*x.unit_cost,0);
  if(!confirm('فاکتور با جمع '+fa(total)+' تومان ثبت شود و موجودی کالاها افزایش یابد؟'))return;
- $('savePurchase').disabled=true;
+ const button=$('savePurchase');if(button.disabled)return;
  const payload={supplier_id:$('purchaseSupplier').value||null,invoice_number:$('purchaseInvoice').value.trim()||null,purchase_date:$('purchaseDate').value,note:$('purchaseNote').value.trim()||null,items};
- const {data,error}=await db.rpc('record_store_purchase',{p_payload:payload});
- $('savePurchase').disabled=false;
- if(error){message('purchaseMsg','ثبت خرید انجام نشد: '+error.message);return}
- $('purchaseForm').reset();
-$('purchaseDate').value=new Date().toISOString().slice(0,10);$('purchaseItems').innerHTML='';addPurchaseRow();updatePurchaseTotal();
-await Promise.all([loadProducts(),loadInventory(),loadPurchases()]);await loadFinancialDashboard();
-message('purchaseMsg','فاکتور خرید با موفقیت ثبت شد؛ موجودی کالاها افزایش یافت. شماره ثبت: '+(data?.purchase_id||''),true);
+ button.disabled=true;let saved=false;
+ try{
+  const {data,error}=await db.rpc('record_store_purchase',{p_payload:payload});if(error)throw error;saved=true;
+  $('purchaseForm').reset();$('purchaseDate').value=new Date().toISOString().slice(0,10);$('purchaseItems').innerHTML='';addPurchaseRow();updatePurchaseTotal();
+  message('purchaseMsg','فاکتور خرید ثبت شد و موجودی کالاها افزایش یافت. شماره ثبت: '+(data?.purchase_id||''),true);
+  try{await Promise.all([loadProducts(),loadInventory(),loadPurchases()]);await loadFinancialDashboard()}
+  catch(refreshError){message('purchaseMsg','فاکتور خرید در سرور ثبت شد و موجودی افزایش یافت؛ اما بعضی گزارش‌ها تازه نشدند. صفحه را تازه‌سازی کنید و فاکتور را دوباره ثبت نکنید.',true)}
+ }catch(error){message('purchaseMsg',saved?'خرید ثبت شد، اما تازه‌سازی کامل نشد.':'نتیجه ثبت خرید مشخص نیست؛ پیش از ثبت دوباره، سوابق خرید و موجودی کالاها را بررسی کنید. '+(error?.message||''))}
+ finally{button.disabled=false}
 };
 $('applyFinanceFilter').onclick=loadFinancialDashboard;$('clearFinanceFilter').onclick=()=>{$('financeFrom').value='';$('financeTo').value='';loadFinancialDashboard()};$('refreshFinancialDashboard').onclick=loadFinancialDashboard;$('openingDate').value=new Date().toISOString().slice(0,10);
 $('cashOpeningForm').onsubmit=async e=>{e.preventDefault();const cash=Number($('openingCash').value),bank=Number($('openingBank').value),date=$('openingDate').value;if(!Number.isSafeInteger(cash)||cash<0||!Number.isSafeInteger(bank)||bank<0||!date){message('cashOpeningMsg','مبالغ و تاریخ مبنا را درست وارد کنید.');return}if(!confirm('موجودی اول دوره صندوق و بانک با این مقادیر ذخیره/جایگزین شود؟'))return;$('saveCashOpening').disabled=true;const {data:userData}=await db.auth.getUser();const payload=[{account:'cash',amount:cash,as_of_date:date,note:$('openingNote').value.trim()||null,updated_by:userData?.user?.id||null},{account:'bank',amount:bank,as_of_date:date,note:$('openingNote').value.trim()||null,updated_by:userData?.user?.id||null}];const {error}=await db.from('store_cash_opening_balances').upsert(payload,{onConflict:'account'});$('saveCashOpening').disabled=false;if(error){message('cashOpeningMsg','ذخیره موجودی اولیه ناموفق بود: '+error.message);return}message('cashOpeningMsg','موجودی اول دوره با موفقیت ذخیره شد.',true);await loadCashLedger();};
