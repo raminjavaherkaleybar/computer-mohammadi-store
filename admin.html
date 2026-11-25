@@ -488,7 +488,18 @@ function downloadCSV(filename,rows){
  window.setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function exportProducts(){downloadCSV('ram-tech-products.csv',[['نام کالا','کد کالا','دسته‌بندی','قیمت تومان','موجودی','فعال','ویژه'],...products.map(p=>[p.name,p.sku,p.categories?.name,p.price,p.stock_quantity,p.is_active?'بله':'خیر',p.is_featured?'بله':'خیر'])]);}
-function exportOrders(){downloadCSV('ram-tech-orders.csv',[['شماره سفارش','نام مشتری','موبایل','جمع کالاها تومان','هزینه ارسال تومان','تخفیف تومان','مبلغ کل تومان','وضعیت سفارش','وضعیت پرداخت','روش ارسال','کد رهگیری','تاریخ ثبت'],...orders.map(o=>[o.order_number,o.customer_name,o.customer_phone,o.subtotal,o.shipping_fee,o.discount,o.total,o.status,o.payment_status,o.shipping_method,o.shipping_tracking_code,o.created_at])]);}
+async function exportOrders(){
+ const all=[];let offset=0;const pageSize=1000;
+ try{
+  while(true){
+   const {data,error}=await db.from('orders').select('id,order_number,customer_name,customer_phone,subtotal,shipping_fee,discount,total,status,payment_status,shipping_method,shipping_tracking_code,created_at').order('created_at',{ascending:false}).order('id',{ascending:true}).range(offset,offset+pageSize-1);
+   if(error)throw error;
+   const batch=data||[];all.push(...batch);if(batch.length<pageSize)break;offset+=pageSize;
+  }
+  downloadCSV('ram-tech-orders.csv',[['شماره سفارش','نام مشتری','موبایل','جمع کالاها تومان','هزینه ارسال تومان','تخفیف تومان','مبلغ کل تومان','وضعیت سفارش','وضعیت پرداخت','روش ارسال','کد رهگیری','تاریخ ثبت'],...all.map(o=>[o.order_number,o.customer_name,o.customer_phone,o.subtotal,o.shipping_fee,o.discount,o.total,o.status,o.payment_status,o.shipping_method,o.shipping_tracking_code,o.created_at])]);
+  message('orderMsg','خروجی '+fa(all.length)+' سفارش آماده شد.',true);
+ }catch(error){message('orderMsg','خروجی کامل سفارش‌ها ناموفق بود: '+(error?.message||error));}
+}
 async function exportCustomers(){
  const q=($('customerSearch').value||'').trim().toLocaleLowerCase('fa'),all=[];
  let offset=0;const pageSize=1000;
