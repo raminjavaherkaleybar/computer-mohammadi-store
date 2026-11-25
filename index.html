@@ -1868,9 +1868,12 @@ $("checkoutForm").onsubmit=async e=>{
  e.preventDefault();
  const rows=Object.entries(cart).filter(([id,q])=>q>0&&products.some(p=>p.id===id));
  if(!rows.length){$("checkoutMessage").textContent="سبد خرید خالی است.";return;}
+ const rawPhone=$("customerPhone").value.trim();
+ const normalizedPhone=rawPhone.replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[^0-9]/g,"");
+ if(normalizedPhone.length<10||normalizedPhone.length>15){$("checkoutMessage").textContent="شماره موبایل را با ۱۰ تا ۱۵ رقم وارد کنید.";$("customerPhone").focus();return;}
  const payload={
   customer_name:$("customerName").value.trim(),
-  customer_phone:$("customerPhone").value.trim(),
+  customer_phone:normalizedPhone,
   province:$("province").value.trim(),
   city:$("city").value.trim(),
   shipping_address:$("shippingAddress").value.trim(),
