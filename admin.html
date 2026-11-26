@@ -162,9 +162,9 @@ async function enter(session){
    const response=await fetch(SUPABASE_URL+'/functions/v1/rubika-store-bridge',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({action:'register_secure_webhook'})});
    const result=await response.json().catch(()=>({}));
    if(response.ok&&result.success){sessionStorage.setItem('ramtechSecureWebhookRegistered','1');message('formMsg','پنل آماده است؛ اتصال امن روبیکا نیز ثبت شد.',true)}
-   else console.warn('RAMTECH_SECURE_WEBHOOK_SETUP_FAILED',result.message||response.status);
+   else{const detail=result.message||result.error||('HTTP '+response.status);message('formMsg','پنل باز شد، اما اتصال امن روبیکا ثبت نشد: '+detail+'؛ دوباره از پنل خارج و وارد شوید تا تلاش مجدد انجام شود.');console.warn('RAMTECH_SECURE_WEBHOOK_SETUP_FAILED',detail)}
   }
- }catch(webhookError){console.warn('RAMTECH_SECURE_WEBHOOK_SETUP_FAILED',webhookError)}
+ }catch(webhookError){const detail=webhookError?.message||String(webhookError);message('formMsg','پنل باز شد، اما هنگام ثبت اتصال روبیکا خطا رخ داد: '+detail+'؛ دوباره از پنل خارج و وارد شوید تا تلاش مجدد انجام شود.');console.warn('RAMTECH_SECURE_WEBHOOK_SETUP_FAILED',webhookError)}
 }
 function showLogin(){$('loginPanel').classList.remove('hidden');$('appPanel').classList.add('hidden');$('logout').classList.add('hidden')}
 async function loadCategories(){
