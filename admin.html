@@ -19,6 +19,7 @@
 </section>
 <section id="appPanel" class="hidden">
 <nav class="panel admin-nav" aria-label="دسترسی سریع پنل"><a href="#dashboard">داشبورد</a><a href="#financialDashboard">داشبورد مالی</a><a href="#sales">گزارش سود و فروش</a><a href="#expensesPanel">ثبت هزینه‌ها</a><a href="#productFormPanel">ثبت کالا</a><a href="#categoriesPanel">دسته‌بندی‌ها</a><a href="#productsPanel">فهرست کالاها</a><a href="#ordersPanel">سفارش‌ها</a><a href="#paymentReceiptsPanel">بررسی رسید پرداخت</a><a href="#returnsPanel">مرجوعی و تعویض</a><a href="#shippingSettings">تعرفه ارسال</a><a href="#customersPanel">مشتریان</a><a href="#stockAdjustPanel">ثبت ورود / خروج موجودی</a><a href="#inventoryPanel">گردش موجودی کالا</a><a href="#purchasesPanel">ثبت خرید کالا</a><a href="#supplierPaymentForm">بدهی و پرداخت تأمین‌کنندگان</a><a href="#contactPanel">تماس با ما</a><a href="./backup.html">پشتیبان‌گیری امن</a><a href="./#contact" target="_blank" rel="noopener noreferrer">صفحه تماس عمومی ↗</a></nav>
+<div id="webhookStatus" class="panel msg" role="status" aria-live="polite">وضعیت اتصال امن روبیکا پس از ورود بررسی می‌شود.</div>
 <div class="panel" id="dashboard"><div class="headrow"><div><h2>خلاصه فروشگاه</h2><p class="muted">آمار کالاهای ثبت‌شده در پایگاه داده اختصاصی</p></div><span id="who" class="muted"></span></div><div class="stats"><div class="stat"><strong id="totalProducts">۰</strong><span>کل کالاها</span></div><div class="stat"><strong id="activeProducts">۰</strong><span>کالاهای فعال در سایت</span></div><div class="stat"><strong id="lowStock">۰</strong><span>کالای کم‌موجودی (۳ عدد یا کمتر)</span></div><div class="stat"><strong id="pendingOrders">۰</strong><span>سفارش‌های در انتظار بررسی</span></div><div class="stat"><strong id="unpaidOrders">۰</strong><span>سفارش‌های پرداخت‌نشده</span></div></div></div>
 <div class="panel" id="financialDashboard">
  <div class="headrow"><div><h2>داشبورد مالی جامع</h2><p class="muted">جمع‌بندی مالی بر اساس بازه انتخابی؛ بدهی تأمین‌کنندگان و ارزش موجودی به‌صورت مانده فعلی نمایش داده می‌شود.</p></div><button class="btn secondary" id="refreshFinancialDashboard" type="button">به‌روزرسانی آمار</button></div>
@@ -157,14 +158,23 @@ async function enter(session){
  message('formMsg','ورود موفق بود؛ اطلاعات پنل در حال بارگذاری است...',true);
  try{await withTimeout(loadAll(),20000,'بارگذاری اطلاعات پنل');message('formMsg','اطلاعات پنل با موفقیت بارگذاری شد.',true)}
  catch(e){message('formMsg','ورود انجام شد اما بارگذاری پنل کامل نشد: '+(e?.message||e)+' برای تلاش دوباره دکمه «بروزرسانی اطلاعات» را بزنید.')}
+ message('webhookStatus','در حال بررسی و ثبت اتصال امن ربات روبیکا...',true);
  try{
-  if(!sessionStorage.getItem('ramtechSecureWebhookRegistered')){
-   const response=await fetch(SUPABASE_URL+'/functions/v1/rubika-store-bridge',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({action:'register_secure_webhook'})});
-   const result=await response.json().catch(()=>({}));
-   if(response.ok&&result.success){sessionStorage.setItem('ramtechSecureWebhookRegistered','1');message('formMsg','پنل آماده است؛ اتصال امن روبیکا نیز ثبت شد.',true)}
-   else{const detail=result.message||result.error||('HTTP '+response.status);message('formMsg','پنل باز شد، اما اتصال امن روبیکا ثبت نشد: '+detail+'؛ دوباره از پنل خارج و وارد شوید تا تلاش مجدد انجام شود.');console.warn('RAMTECH_SECURE_WEBHOOK_SETUP_FAILED',detail)}
+  const response=await fetch(SUPABASE_URL+'/functions/v1/rubika-store-bridge',{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+session.access_token},body:JSON.stringify({action:'register_secure_webhook'})});
+  const result=await response.json().catch(()=>({}));
+  if(response.ok&&result.success){
+   sessionStorage.setItem('ramtechSecureWebhookRegistered','1');
+   message('webhookStatus','اتصال امن ربات روبیکا با موفقیت ثبت شد.',true);
+  }else{
+   const detail=result.message||result.error||('HTTP '+response.status);
+   message('webhookStatus','ثبت اتصال روبیکا ناموفق بود: '+detail);
+   console.warn('RAMTECH_SECURE_WEBHOOK_SETUP_FAILED',detail);
   }
- }catch(webhookError){const detail=webhookError?.message||String(webhookError);message('formMsg','پنل باز شد، اما هنگام ثبت اتصال روبیکا خطا رخ داد: '+detail+'؛ دوباره از پنل خارج و وارد شوید تا تلاش مجدد انجام شود.');console.warn('RAMTECH_SECURE_WEBHOOK_SETUP_FAILED',webhookError)}
+ }catch(webhookError){
+  const detail=webhookError?.message||String(webhookError);
+  message('webhookStatus','خطا در ارتباط برای ثبت روبیکا: '+detail);
+  console.warn('RAMTECH_SECURE_WEBHOOK_SETUP_FAILED',webhookError);
+ }
 }
 function showLogin(){$('loginPanel').classList.remove('hidden');$('appPanel').classList.add('hidden');$('logout').classList.add('hidden')}
 async function loadCategories(){
