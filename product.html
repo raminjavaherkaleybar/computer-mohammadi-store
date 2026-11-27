@@ -98,7 +98,7 @@ async function init(){
  if(!response.ok)throw new Error("دریافت محصول ناموفق بود: HTTP "+response.status);
  const rows=await response.json();const p=rows&&rows[0];
  if(!p){$("state").innerHTML='<span class="error">این محصول پیدا نشد یا دیگر فعال نیست.</span>';return}
- const url=location.origin+location.pathname+"?id="+encodeURIComponent(p.id);
+ const url=location.origin+location.pathname+"?id="+encodeURIComponent(p.id);const recentKey="ramtechRecentlyViewed";let recentIds=[];try{recentIds=JSON.parse(localStorage.getItem(recentKey)||"[]")}catch(e){}if(!Array.isArray(recentIds))recentIds=[];recentIds=[String(p.id),...recentIds.filter(x=>String(x)!==String(p.id))].slice(0,12);try{localStorage.setItem(recentKey,JSON.stringify(recentIds))}catch(e){}
  const description=(p.description||("مشاهده قیمت و مشخصات "+p.name+" در فروشگاه رام‌تک.")).slice(0,155);
  document.title=p.name+" | خرید از رام‌تک";
  document.querySelector('meta[name="description"]').content=description;
