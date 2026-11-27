@@ -64,6 +64,26 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
  .info{min-width:0!important}
 }
 
+
+/* RAM TECH related products — silver and gold */
+.related-section{margin:28px 0 12px;padding:22px;border:1px solid #e6e9ed;border-radius:20px;background:linear-gradient(145deg,#fff,#f7f8fa);box-shadow:0 12px 30px #172b4909}
+.related-heading{margin-bottom:15px}.related-kicker{font-size:10px;font-weight:900;letter-spacing:.5px;color:#a17b32}
+.related-heading h2{margin:4px 0;color:#26313d;font-size:21px}.related-heading p{margin:0;color:#788391;font-size:12px}
+.related-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.related-card{min-width:0;overflow:hidden;border:1px solid #e4e7eb;border-radius:14px;background:#fff;transition:transform .2s,border-color .2s}
+.related-card:hover{transform:translateY(-3px);border-color:#c8a75e}
+.related-card-link{display:block;color:inherit;text-decoration:none}
+.related-image{height:135px;display:grid;place-items:center;background:linear-gradient(145deg,#f0f2f5,#fafafa);padding:10px}
+.related-image img{width:100%;height:100%;object-fit:contain}
+.related-emoji{font-size:43px}
+.related-info{padding:10px}
+.related-name{min-height:42px;font-size:12px;font-weight:800;line-height:1.7;color:#273344;overflow-wrap:anywhere}
+.related-price{margin:5px 0 9px;color:#96712d;font-weight:900;font-size:13px}
+.related-add{width:100%;padding:8px 6px;border:1px solid #c6a45c;border-radius:9px;background:linear-gradient(120deg,#d9bd7a,#f3e4bb);color:#4d3b18;font-size:11px;font-weight:900}
+.related-add:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:700px){.related-section{padding:15px;border-radius:16px}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.related-image{height:115px}.related-heading h2{font-size:19px}}
+@media(max-width:380px){.related-grid{grid-template-columns:1fr 1fr}.related-image{height:95px}.related-info{padding:8px}}
+
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#0b1220">
@@ -81,6 +101,12 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 <div class="visual"><img id="productImage" alt="" hidden><span id="productEmoji" class="emoji">📦</span></div>
 <div class="info"><span id="productCategory" class="cat">محصول</span><h1 id="productName" class="name"></h1><div id="productPrice" class="price"></div><div id="productStock" class="stock"></div><p id="productDescription" class="desc"></p><div class="actions"><button id="addToCart" class="primary">افزودن به سبد خرید</button><button id="shareProduct" class="secondary">اشتراک‌گذاری محصول</button></div><div class="hint">ثبت سفارش در رام‌تک بدون پرداخت آنلاین انجام می‌شود؛ هماهنگی نهایی توسط فروشگاه صورت می‌گیرد.</div></div>
 </article>
+
+<section id="relatedSection" class="related-section" hidden aria-label="محصولات مرتبط">
+ <div class="related-heading"><div><span class="related-kicker">RAM TECH • انتخاب هوشمند</span><h2>محصولات مرتبط</h2><p>کالاهای دیگری از همین دسته‌بندی که شاید نیاز داشته باشید</p></div></div>
+ <div id="relatedGrid" class="related-grid"></div>
+</section>
+
 </main>
 <footer>© فروشگاه کامپیوتر محمدی | RAM TECH</footer>
 <script>
@@ -91,10 +117,36 @@ const $=id=>document.getElementById(id);
 const fa=n=>Number(n||0).toLocaleString("fa-IR");
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function emojiFor(p){const n=(p.name+" "+(p.categories?.name||"")).toLowerCase();if(/هندز|هدفون|هدست|ایرپاد/.test(n))return"🎧";if(/شارژ|آداپتور|کابل/.test(n))return"🔌";if(/ماوس|موس/.test(n))return"🖱️";if(/کیبورد/.test(n))return"⌨️";if(/پاوربانک/.test(n))return"🔋";if(/موبایل|گوشی|قاب|گلس/.test(n))return"📱";if(/لپ.?تاپ|کامپیوتر/.test(n))return"💻";return"📦"}
+
+async function loadRelatedProducts(current){
+ const section=$("relatedSection"),grid=$("relatedGrid");
+ if(!section||!grid||!current.category_id)return;
+ try{
+  const query=SUPABASE_URL+"/rest/v1/products?select=id,name,price,stock_quantity,image_url,category_id&category_id=eq."+encodeURIComponent(current.category_id)+"&id=neq."+encodeURIComponent(current.id)+"&is_active=eq.true&stock_quantity=gt.0&order=created_at.desc&limit=4";
+  const response=await fetch(query,{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
+  if(!response.ok)throw new Error("Related products unavailable");
+  const items=await response.json();
+  if(!Array.isArray(items)||!items.length)return;
+  grid.innerHTML=items.map(item=>{
+   const image=item.image_url&&/^https?:\/\//i.test(item.image_url)?'<img src="'+safe(item.image_url)+'" alt="'+safe(item.name)+'" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false">':'';
+   return '<article class="related-card"><a class="related-card-link" href="./product.html?id='+encodeURIComponent(item.id)+'"><div class="related-image">'+image+'<span class="related-emoji" '+(image?'hidden':'')+'>'+emojiFor(item)+'</span></div><div class="related-info"><div class="related-name">'+safe(item.name)+'</div><div class="related-price">'+fa(item.price)+' تومان</div></div></a><div class="related-info" style="padding-top:0"><button class="related-add" type="button" data-related-add="'+safe(item.id)+'">افزودن به سبد خرید</button></div></article>';
+  }).join("");
+  grid.querySelectorAll("[data-related-add]").forEach(button=>button.onclick=()=>{
+   let cart={};try{cart=JSON.parse(localStorage.getItem("mohammadiCart")||"{}")}catch(e){}
+   const item=items.find(x=>String(x.id)===String(button.dataset.relatedAdd));
+   if(!item||Number(item.stock_quantity)<1)return;
+   cart[String(item.id)]=Math.min(Number(item.stock_quantity),Number(cart[item.id]||0)+1);
+   localStorage.setItem("mohammadiCart",JSON.stringify(cart));
+   button.textContent="به سبد اضافه شد ✓";
+  });
+  section.hidden=false;
+ }catch(error){console.warn("RAM TECH related products could not be loaded:",error);}
+}
+
 async function init(){
  const id=new URLSearchParams(location.search).get("id");
  if(!id){$("state").innerHTML='<span class="error">شناسه محصول در لینک وجود ندارد.</span>';return}
- const response=await fetch(SUPABASE_URL+"/rest/v1/products?select=id,name,slug,sku,description,price,stock_quantity,image_url,is_active,categories(name)&id=eq."+encodeURIComponent(id)+"&is_active=eq.true",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
+ const response=await fetch(SUPABASE_URL+"/rest/v1/products?select=id,name,slug,sku,description,price,stock_quantity,image_url,is_active,category_id,categories(name)&id=eq."+encodeURIComponent(id)+"&is_active=eq.true",{headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY}});
  if(!response.ok)throw new Error("دریافت محصول ناموفق بود: HTTP "+response.status);
  const rows=await response.json();const p=rows&&rows[0];
  if(!p){$("state").innerHTML='<span class="error">این محصول پیدا نشد یا دیگر فعال نیست.</span>';return}
@@ -116,6 +168,7 @@ async function init(){
  $("addToCart").onclick=()=>{let cart={};try{cart=JSON.parse(localStorage.getItem("mohammadiCart")||"{}")}catch(e){}cart[String(p.id)]=Math.min(Number(p.stock_quantity),Number(cart[p.id]||0)+1);localStorage.setItem("mohammadiCart",JSON.stringify(cart));location.href="./?openCart=1"};
  $("shareProduct").onclick=async()=>{try{if(navigator.share)await navigator.share({title:p.name,text:"مشاهده محصول در رام‌تک",url});else{await navigator.clipboard.writeText(url);$("shareProduct").textContent="لینک کپی شد"}}catch(e){}};
  $("state").hidden=true;$("productCard").hidden=false;
+ loadRelatedProducts(p);
 }
 init().catch(e=>{$("state").textContent="بارگذاری محصول با خطا روبه‌رو شد. لطفاً دوباره تلاش کنید."});
 </script>
