@@ -1699,6 +1699,27 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 }
 </style>
 
+
+<style id="ramtech-recently-viewed">
+.rt-recent-section{padding:24px 0 12px}
+.rt-recent-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.rt-recent-heading h2{margin:4px 0;color:#26313d;font-size:21px}
+.rt-recent-heading p{margin:0;color:#788391;font-size:12px}
+.rt-recent-clear{border:1px solid #c9a65f;background:linear-gradient(135deg,#fff,#f3ead5);color:#70551d;border-radius:10px;padding:8px 12px;font-weight:700}
+.rt-recent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.rt-recent-card{display:flex;align-items:center;gap:12px;min-width:0;padding:12px;border:1px solid #e3e7ec;border-radius:15px;background:linear-gradient(145deg,#fff,#f7f8fa);box-shadow:0 7px 22px #1c2a3a0b}
+.rt-recent-card img,.rt-recent-fallback{width:76px;height:76px;flex:0 0 76px;object-fit:contain;border-radius:11px;background:#f0f2f5;padding:6px}
+.rt-recent-fallback{display:grid;place-items:center;font-size:30px}
+.rt-recent-info{min-width:0;flex:1}
+.rt-recent-info strong{display:block;color:#273344;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.rt-recent-info small{display:block;color:#98752f;font-weight:800;margin:3px 0 7px}
+.rt-recent-actions{display:flex;gap:7px;flex-wrap:wrap}
+.rt-recent-actions a,.rt-recent-actions button{border:1px solid #d5bd85;border-radius:8px;padding:5px 9px;background:#fff;color:#6d5525;text-decoration:none;font-size:11px;font-weight:700}
+.rt-recent-actions button{background:linear-gradient(135deg,#d9bd7a,#f1dfae);border-color:#c5a15b}
+@media(max-width:700px){.rt-recent-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.rt-recent-grid{grid-template-columns:1fr}.rt-recent-card img,.rt-recent-fallback{width:64px;height:64px;flex-basis:64px}.rt-recent-heading h2{font-size:18px}}
+</style>
+
 </head>
 <body>
 <div class="topline"><div class="wrap utility-links">
@@ -1764,6 +1785,12 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
     <div class="rt-carousel-track" id="rtCarouselTrack"></div>
   </div>
   <p class="rt-motion-footnote">نمایش محصولات بر اساس تازه‌ترین کالاهای ثبت‌شده در موجودی فروشگاه است.</p>
+</section>
+
+
+<section class="rt-recent-section wrap" id="recentlyViewed" aria-label="محصولات بازدیدشده اخیر" hidden>
+ <div class="rt-recent-heading"><div><span class="rt-kicker">RAM TECH • انتخاب‌های اخیر</span><h2>اخیراً مشاهده کرده‌اید</h2><p>برای ادامه خرید، به محصولاتی که دیده‌اید برگردید</p></div><button type="button" class="rt-recent-clear" id="clearRecentlyViewed">پاک کردن تاریخچه</button></div>
+ <div class="rt-recent-grid" id="recentlyViewedGrid"></div>
 </section>
 
 <section class="section wrap" id="products"><div class="section-head"><div><h2>محصولات فروشگاه</h2><p id="productCount">محصولات و قیمت‌ها مستقیماً از موجودی واقعی فروشگاه خوانده می‌شوند</p></div></div>
@@ -2003,6 +2030,23 @@ function toggleCompare(id){id=String(id);if(compareIds.includes(id)){compareIds=
 function renderCompareBar(){const chosen=compareIds.map(id=>products.find(p=>String(p.id)===id)).filter(Boolean);$("compareBar").classList.toggle("visible",chosen.length>0);$("compareSummary").textContent=fa(chosen.length)+" محصول برای مقایسه انتخاب شده";$("compareOpen").disabled=chosen.length<2;}
 function openCompare(){const chosen=compareIds.map(id=>products.find(p=>String(p.id)===id)).filter(Boolean);if(chosen.length<2)return;const rows=[["قیمت",p=>fa(p.price)+" تومان"],["دسته‌بندی",p=>p.label],["موجودی",p=>fa(p.stock_quantity)+" عدد"],["توضیحات",p=>p.description||"ثبت نشده"]];$("compareContent").innerHTML='<div class="compare-table-wrap"><table class="compare-table"><thead><tr><th>مشخصات</th>'+chosen.map(p=>'<th>'+safe(p.name)+'</th>').join("")+'</tr></thead><tbody>'+rows.map(([label,get])=>'<tr><th>'+label+'</th>'+chosen.map(p=>'<td>'+safe(get(p))+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';$("compareModal").classList.add("open");}
 function closeCompare(){$("compareModal").classList.remove("open");}
+
+function renderRecentlyViewed(){
+ const section=$("recentlyViewed"),grid=$("recentlyViewedGrid");
+ if(!section||!grid)return;
+ let ids=[];try{ids=JSON.parse(localStorage.getItem("ramtechRecentlyViewed")||"[]")}catch(e){}
+ if(!Array.isArray(ids))ids=[];
+ const items=ids.map(id=>products.find(x=>String(x.id)===String(id))).filter(Boolean).slice(0,6);
+ if(!items.length){section.hidden=true;return;}
+ section.hidden=false;
+ grid.innerHTML=items.map(p=>{
+  const src=(typeof p.image_url==="string"&&/^https?:\/\//i.test(p.image_url.trim()))?p.image_url.trim():productImageFor(p);
+  return '<article class="rt-recent-card"><img src="'+safe(src)+'" alt="'+safe(p.name)+'" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.hidden=false"><span class="rt-recent-fallback" hidden>'+productEmojiFor(p)+'</span><div class="rt-recent-info"><strong>'+safe(p.name)+'</strong><small>'+fa(p.price)+' تومان</small><div class="rt-recent-actions"><a href="product.html?id='+encodeURIComponent(p.id)+'">مشاهده محصول</a><button type="button" data-recent-add="'+safe(p.id)+'" '+(Number(p.stock_quantity)<1?'disabled':'')+'>افزودن به سبد</button></div></div></article>';
+ }).join("");
+ grid.querySelectorAll("[data-recent-add]").forEach(b=>b.onclick=()=>addToCart(b.dataset.recentAdd));
+ $("clearRecentlyViewed").onclick=()=>{localStorage.removeItem("ramtechRecentlyViewed");section.hidden=true;};
+}
+
 function addToCart(id){id=String(id);const p=products.find(x=>String(x.id)===id);if(!p||p.stock_quantity<1)return;cart[id]=Math.min(Number(p.stock_quantity),Number(cart[id]||0)+1);localStorage.setItem("mohammadiCart",JSON.stringify(cart));renderCart();}
 function renderCart(){
  const rows=Object.entries(cart).filter(([id,q])=>q>0&&products.some(p=>p.id===id));
@@ -2040,6 +2084,7 @@ async function loadCatalog(options={}){
   localStorage.setItem("mohammadiCart",JSON.stringify(cart));
   renderCategories();renderFilters();renderProducts();renderCart();renderCompareBar();
   renderAnimatedShowcase();
+  renderRecentlyViewed();
   const requestedProduct=new URLSearchParams(location.search).get("product");if(requestedProduct){location.replace("product.html?id="+encodeURIComponent(requestedProduct));return;}else resetHomeSEO();
   if(new URLSearchParams(location.search).get("openCart")==="1")openCart();
  }catch(error){
