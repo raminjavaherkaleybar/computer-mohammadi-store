@@ -1808,6 +1808,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 <div id="compareModal" class="compare-modal" role="dialog" aria-modal="true" aria-label="مقایسه محصولات"><div class="compare-card"><div class="compare-head"><strong>مقایسه محصولات</strong><button type="button" id="compareClose" class="close">بستن ✕</button></div><div id="compareContent"></div></div></div>
 <div id="productDetailModal" role="dialog" aria-modal="true" aria-label="جزئیات محصول"><div class="detail-card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px"><strong>جزئیات محصول</strong><button type="button" class="close" id="detailClose">بستن ✕</button></div><div id="detailContent"></div></div></div>
 <div class="drawer-back" id="drawerBack"><aside class="drawer"><div class="drawer-head"><h3>سبد خرید</h3><button class="close" id="closeCart">بستن</button></div><div id="cartItems"></div><div id="cartSummary" class="cart-row"><strong>جمع کالاها</strong><strong id="cartTotal">۰ تومان</strong></div>
+<button id="clearCartBtn" type="button" class="close" style="width:100%;margin-top:8px" disabled>پاک کردن سبد خرید</button>
 <button id="checkoutToggle" class="btn btn-primary" style="width:100%;margin-top:12px">ادامه و ثبت سفارش</button>
 <form id="checkoutForm" class="hidden" style="margin-top:16px">
 <h3>اطلاعات تحویل سفارش</h3>
@@ -2050,13 +2051,13 @@ function renderRecentlyViewed(){
 function addToCart(id){id=String(id);const p=products.find(x=>String(x.id)===id);if(!p||p.stock_quantity<1)return;cart[id]=Math.min(Number(p.stock_quantity),Number(cart[id]||0)+1);localStorage.setItem("mohammadiCart",JSON.stringify(cart));renderCart();}
 function renderCart(){
  const rows=Object.entries(cart).filter(([id,q])=>q>0&&products.some(p=>p.id===id));
- $("cartItems").innerHTML=rows.length?rows.map(([id,q])=>{const p=products.find(x=>x.id===id);const src=(typeof p.image_url==="string"&&(p.image_url.startsWith("https://")||p.image_url.startsWith("http://")))?p.image_url:productImageFor(p);return '<div class="cart-row" style="align-items:center"><img src="'+safe(src)+'" alt="'+safe(p.name)+'" loading="lazy" onerror="this.style.display=\'none\'" style="width:64px;height:64px;object-fit:contain;border-radius:10px;background:#17263a;border:1px solid #30445e;flex:0 0 64px"><div style="flex:1;min-width:0"><strong>'+safe(p.name)+'</strong><small>'+fa(p.price)+' تومان × '+fa(q)+'</small></div><div><button class="close" data-dec="'+id+'">−</button> '+fa(q)+' <button class="close" data-inc="'+id+'">+</button></div></div>';}).join(""):'<div class="empty">سبد خرید شما خالی است.</div>';
+ $("cartItems").innerHTML=rows.length?rows.map(([id,q])=>{const p=products.find(x=>x.id===id);const src=(typeof p.image_url==="string"&&(p.image_url.startsWith("https://")||p.image_url.startsWith("http://")))?p.image_url:productImageFor(p);return '<div class="cart-row" style="align-items:center"><img src="'+safe(src)+'" alt="'+safe(p.name)+'" loading="lazy" onerror="this.style.display=\'none\'" style="width:64px;height:64px;object-fit:contain;border-radius:10px;background:#17263a;border:1px solid #30445e;flex:0 0 64px"><div style="flex:1;min-width:0"><strong>'+safe(p.name)+'</strong><small>'+fa(p.price)+' تومان × '+fa(q)+'</small><small style="color:#e8c477;font-weight:800">جمع این کالا: '+fa(Number(p.price)*q)+' تومان</small></div><div><button class="close" data-dec="'+id+'" aria-label="کاهش تعداد">−</button> '+fa(q)+' <button class="close" data-inc="'+id+'" aria-label="افزایش تعداد">+</button></div></div>';}).join(""):'<div class="empty">سبد خرید شما خالی است. از بخش محصولات، کالای دلخواهتان را اضافه کنید.</div>';
  document.querySelectorAll("[data-inc]").forEach(b=>b.onclick=()=>addToCart(b.dataset.inc));
  document.querySelectorAll("[data-dec]").forEach(b=>b.onclick=()=>{const id=b.dataset.dec;cart[id]--;if(cart[id]<=0)delete cart[id];localStorage.setItem("mohammadiCart",JSON.stringify(cart));renderCart();});
  const total=rows.reduce((sum,[id,q])=>sum+products.find(p=>p.id===id).price*q,0);
  $("cartTotal").textContent=fa(total)+" تومان";
  $("cartCount").textContent=fa(Object.values(cart).reduce((a,b)=>a+b,0));
- $("checkoutToggle").disabled=!rows.length;
+ $("checkoutToggle").disabled=!rows.length;const clearCartButton=$("clearCartBtn");if(clearCartButton)clearCartButton.disabled=!rows.length;
 }
 async function loadCatalog(options={}){
  const grid=$("productGrid");
@@ -2165,6 +2166,7 @@ document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;closeCompare(
 const openCart=()=>{$("drawerBack").classList.add("open");document.querySelector(".drawer").classList.add("open");renderCart();};
 $("cartBtn").onclick=openCart;
 $("utilityCartBtn").onclick=openCart;
+$("clearCartBtn").onclick=()=>{if(!Object.keys(cart).length)return;if(!confirm("تمام کالاهای سبد خرید پاک شوند؟"))return;cart={};localStorage.removeItem("mohammadiCart");$("checkoutForm").classList.add("hidden");renderCart();};
 $("closeCart").onclick=()=>{$("drawerBack").classList.remove("open");document.querySelector(".drawer").classList.remove("open");};
 $("drawerBack").onclick=e=>{if(e.target.id==="drawerBack"){e.currentTarget.classList.remove("open");document.querySelector(".drawer").classList.remove("open");}};
 
