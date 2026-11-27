@@ -1939,7 +1939,7 @@ function rtShowcaseStart(){
 function renderAnimatedShowcase(){
  const section=$("newArrivals");
  if(!section)return;
- rtShowcaseItems=products.filter(p=>Number(p.stock_quantity)>0).slice(0,8);
+ rtShowcaseItems=products.filter(p=>Number(p.stock_quantity)>0).sort((a,b)=>{const at=Date.parse(a.created_at||"")||0,bt=Date.parse(b.created_at||"")||0;return bt-at;}).slice(0,8);
  if(!rtShowcaseItems.length){section.classList.add("hidden");rtShowcaseStop();return;}
  section.classList.remove("hidden");
  $("rtCarouselTrack").innerHTML=rtShowcaseItems.map(p=>{
@@ -2014,17 +2014,18 @@ function renderCart(){
  $("cartCount").textContent=fa(Object.values(cart).reduce((a,b)=>a+b,0));
  $("checkoutToggle").disabled=!rows.length;
 }
-async function loadCatalog(){
+async function loadCatalog(options={}){
  const grid=$("productGrid");
  if(!grid)return;
- grid.innerHTML='<div class="empty" role="status" aria-live="polite">در حال دریافت محصولات فروشگاه...</div>';
+ const silent=options.silent===true;
+ if(!silent)grid.innerHTML='<div class="empty" role="status" aria-live="polite">در حال دریافت محصولات فروشگاه...</div>';
  const controller=new AbortController();
  const timeoutId=setTimeout(()=>controller.abort(),15000);
  try{
   // Products load independently from categories so a category request cannot hide the whole catalog.
   const [cr,pr]=await Promise.all([
    db.from("categories").select("id,name,slug").eq("is_active",true).order("sort_order").abortSignal(controller.signal),
-   db.from("products").select("id,name,price,stock_quantity,image_url,description,category_id").eq("is_active",true).order("created_at",{ascending:false}).abortSignal(controller.signal)
+   db.from("products").select("id,name,price,stock_quantity,image_url,description,category_id,created_at").eq("is_active",true).order("created_at",{ascending:false}).abortSignal(controller.signal)
   ]);
   if(pr.error)throw pr.error;
   const categoryRows=cr.error?[]:(cr.data||[]);
@@ -2033,7 +2034,7 @@ async function loadCatalog(){
   categories=[["all","همه کالاها","🛒"],...categoryRows.map(c=>[c.slug,c.name,"📦"])];
   products=(pr.data||[]).map(p=>{
    const category=categoryById.get(String(p.category_id));
-   return {id:p.id,name:p.name,cat:category?.slug||"all",label:category?.name||"سایر کالاها",emoji:"📦",price:Number(p.price),stock_quantity:Number(p.stock_quantity),image_url:p.image_url,description:p.description};
+   return {id:p.id,name:p.name,cat:category?.slug||"all",label:category?.name||"سایر کالاها",emoji:"📦",price:Number(p.price),stock_quantity:Number(p.stock_quantity),image_url:p.image_url,description:p.description,created_at:p.created_at||null};
   });
   for(const id of Object.keys(cart)){const p=products.find(x=>String(x.id)===id);if(!p||p.stock_quantity<1)delete cart[id];else cart[id]=Math.min(Number(cart[id])||0,Number(p.stock_quantity));}
   localStorage.setItem("mohammadiCart",JSON.stringify(cart));
@@ -2043,9 +2044,11 @@ async function loadCatalog(){
   if(new URLSearchParams(location.search).get("openCart")==="1")openCart();
  }catch(error){
   console.error("RAMTECH catalog load failed:",error);
-  grid.innerHTML='<div class="empty" role="alert">بارگذاری محصولات انجام نشد. اتصال اینترنت را بررسی کنید و <button type="button" id="retryCatalog" class="btn btn-primary" style="margin:10px auto 0">تلاش دوباره</button> را بزنید.</div>';
-  const retry=$("retryCatalog");
-  if(retry)retry.addEventListener("click",loadCatalog,{once:true});
+  if(!silent){
+   grid.innerHTML='<div class="empty" role="alert">بارگذاری محصولات انجام نشد. اتصال اینترنت را بررسی کنید و <button type="button" id="retryCatalog" class="btn btn-primary" style="margin:10px auto 0">تلاش دوباره</button> را بزنید.</div>';
+   const retry=$("retryCatalog");
+   if(retry)retry.addEventListener("click",loadCatalog,{once:true});
+  }
  }finally{
   clearTimeout(timeoutId);
  }
@@ -2160,6 +2163,16 @@ function initProvinceCity(){
 
 initProvinceCity();
 loadCatalog();
+// Refresh quietly so newly added products appear without a manual page reload.
+let ramTechRefreshBusy=false;
+async function refreshRamTechCatalog(){
+ if(document.hidden||ramTechRefreshBusy)return;
+ ramTechRefreshBusy=true;
+ try{await loadCatalog({silent:true});}finally{ramTechRefreshBusy=false;}
+}
+window.setInterval(refreshRamTechCatalog,60000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshRamTechCatalog();});
+window.addEventListener("focus",refreshRamTechCatalog);
 </script>
 
 <style id="ramtak-responsive-standard">
