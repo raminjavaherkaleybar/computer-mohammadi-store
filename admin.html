@@ -434,7 +434,7 @@ async function attachOrderItemImages(items){
  return rows.map(x=>({...x,image_url:byId.get(String(x.product_id||''))||bySku.get(String(x.sku||''))||null}));
 }
 function renderOrders(){
- const labels={pending:'در انتظار بررسی',confirmed:'تأیید شده',processing:'در حال آماده‌سازی',shipped:'ارسال شده',delivered:'تحویل شده',cancelled:'لغو شده'};
+ const labels={pending:'در انتظار بررسی',confirmed:'تأیید شده',processing:'آماده ارسال',shipped:'ارسال شده',delivered:'تحویل شده',cancelled:'لغو شده'};
  const normalizeOrderSearch=v=>String(v??'').replace(/[۰-۹٠-٩]/g,c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c)>=0?'۰۱۲۳۴۵۶۷۸۹'.indexOf(c):'٠١٢٣٤٥٦٧٨٩'.indexOf(c))).toLocaleLowerCase('fa').trim();
  const term=normalizeOrderSearch($('orderSearch')?.value||'');
  const payment=($('orderPaymentFilter')?.value||'');
