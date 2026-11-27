@@ -1812,6 +1812,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 <button id="checkoutToggle" class="btn btn-primary" style="width:100%;margin-top:12px">ادامه و ثبت سفارش</button>
 <form id="checkoutForm" class="hidden" style="margin-top:16px">
 <h3>اطلاعات تحویل سفارش</h3>
+<div id="checkoutReview" class="note" style="border:1px solid #d6b66b;background:rgba(214,182,107,.10);margin:10px 0;padding:12px;border-radius:12px"><strong>خلاصه سفارش</strong><div id="checkoutReviewCount" style="margin-top:6px">۰ کالا</div><div id="checkoutReviewTotal" style="font-weight:900;margin-top:4px">مبلغ کالاها: ۰ تومان</div><small>هزینه ارسال پس از بررسی و هماهنگی اعلام می‌شود.</small></div>
 <label>نام و نام خانوادگی *</label><input id="customerName" required maxlength="120" autocomplete="name" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px">
 <label>شماره موبایل *</label><input id="customerPhone" required inputmode="tel" autocomplete="tel" maxlength="16" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px">
 <label>استان</label><select id="province" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"><option value="">انتخاب استان</option></select>
@@ -2056,6 +2057,7 @@ function renderCart(){
  document.querySelectorAll("[data-dec]").forEach(b=>b.onclick=()=>{const id=b.dataset.dec;cart[id]--;if(cart[id]<=0)delete cart[id];localStorage.setItem("mohammadiCart",JSON.stringify(cart));renderCart();});
  const total=rows.reduce((sum,[id,q])=>sum+products.find(p=>p.id===id).price*q,0);
  $("cartTotal").textContent=fa(total)+" تومان";
+ const checkoutCount=rows.reduce((sum,[,q])=>sum+q,0);const reviewCount=$("checkoutReviewCount"),reviewTotal=$("checkoutReviewTotal");if(reviewCount)reviewCount.textContent=fa(checkoutCount)+" عدد کالا ("+fa(rows.length)+" نوع محصول)";if(reviewTotal)reviewTotal.textContent="مبلغ کالاها: "+fa(total)+" تومان";
  $("cartCount").textContent=fa(Object.values(cart).reduce((a,b)=>a+b,0));
  $("checkoutToggle").disabled=!rows.length;const clearCartButton=$("clearCartBtn");if(clearCartButton)clearCartButton.disabled=!rows.length;
 }
