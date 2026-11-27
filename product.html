@@ -140,6 +140,7 @@ const SUPABASE_KEY="sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB";
 
 const $=id=>document.getElementById(id);
 const fa=n=>Number(n||0).toLocaleString("fa-IR");
+const digits=s=>String(s??"").replace(/[۰-۹٠-٩]/g,ch=>String("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩".indexOf(ch)%10));
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function emojiFor(p){const n=(p.name+" "+(p.categories?.name||"")).toLowerCase();if(/هندز|هدفون|هدست|ایرپاد/.test(n))return"🎧";if(/شارژ|آداپتور|کابل/.test(n))return"🔌";if(/ماوس|موس/.test(n))return"🖱️";if(/کیبورد/.test(n))return"⌨️";if(/پاوربانک/.test(n))return"🔋";if(/موبایل|گوشی|قاب|گلس/.test(n))return"📱";if(/لپ.?تاپ|کامپیوتر/.test(n))return"💻";return"📦"}
 
