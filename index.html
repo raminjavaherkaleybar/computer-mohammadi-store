@@ -1820,10 +1820,16 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 <label>نشانی کامل *</label><textarea id="shippingAddress" required minlength="8" maxlength="600" rows="3" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"></textarea>
 <label>کد پستی</label><input id="postalCode" inputmode="numeric" maxlength="20" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px">
 <label>روش ارسال *</label><select id="shippingMethod" required style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"><option value="">انتخاب روش ارسال</option><option value="post">پست جمهوری اسلامی ایران</option><option value="tipax">تیپاکس</option></select>
+<div style="border:1px solid rgba(212,175,55,.35);border-radius:12px;padding:12px;margin:12px 0;background:rgba(212,175,55,.06)"><label for="couponCode">کد تخفیف باشگاه مشتریان (اختیاری)</label><input id="couponCode" maxlength="24" autocomplete="off" placeholder="کد اختصاصی رام‌تک" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0"><small>کد تخفیف فقط برای همان شماره موبایل صادرشده و پس از بررسی سفارش اعمال می‌شود.</small></div>
 <label>توضیحات سفارش</label><textarea id="customerNote" maxlength="500" rows="2" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"></textarea>
 <div class="note">فعلاً سفارش به‌صورت «در انتظار تأیید» ثبت می‌شود. فروشگاه پیش از پرداخت، هزینه ارسال و روش پرداخت را با شما هماهنگ می‌کند؛ در این مرحله هیچ مبلغی آنلاین دریافت نمی‌شود.</div>
 <button id="submitOrder" type="submit" class="btn btn-primary" style="width:100%;margin-top:12px">ثبت درخواست سفارش</button>
-</form><div id="checkoutMessage" role="status" aria-live="polite" style="font-size:13px;margin-top:10px"></div>
+</form>
+<section id="loyaltyLookup" style="margin-top:16px;padding:16px;border:1px solid rgba(212,175,55,.4);border-radius:14px;background:rgba(212,175,55,.06)">
+<h3 style="margin-top:0">باشگاه مشتریان رام‌تک</h3><p style="font-size:12px;color:inherit">با شماره سفارش و موبایل ثبت‌شده، امتیازها و کدهای تخفیف اختصاصی خود را ببینید.</p>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px"><input id="loyaltyOrder" inputmode="numeric" placeholder="شماره سفارش" style="min-width:0;padding:10px;border:1px solid #dce4ef;border-radius:9px"><input id="loyaltyPhone" inputmode="tel" placeholder="شماره موبایل" style="min-width:0;padding:10px;border:1px solid #dce4ef;border-radius:9px"></div>
+<button id="checkLoyalty" type="button" class="btn" style="margin-top:9px">مشاهده امتیاز و تخفیف‌ها</button><div id="loyaltyResult" role="status" style="margin-top:10px;font-size:13px"></div></section>
+<div id="checkoutMessage" role="status" aria-live="polite" style="font-size:13px;margin-top:10px"></div>
 <div class="note">قیمت کالاها هنگام ثبت سفارش دوباره از پایگاه داده بررسی می‌شود و موجودی به‌صورت موقت برای سفارش رزرو می‌شود.</div></aside></div>
 <script>
 /* Lightweight native Supabase REST client: no third-party JS CDN is needed. */
@@ -2107,6 +2113,7 @@ $("customerPhone").addEventListener("input",()=>{
  $("customerPhone").setCustomValidity("");
 });
 
+$("checkLoyalty").onclick=async()=>{const order=digits($("loyaltyOrder").value).replace(/[^0-9]/g,""),phone=normalizeIranianPhone($("loyaltyPhone").value);const box=$("loyaltyResult");box.textContent="در حال بررسی...";if(!order||!/^09\\d{9}$/.test(phone)){box.textContent="شماره سفارش یا موبایل معتبر نیست.";return}try{const r=await fetch(SUPABASE_URL+"/rest/v1/rpc/get_customer_loyalty",{method:"POST",headers:{...apiHeaders,"Content-Type":"application/json"},body:JSON.stringify({p_order_number:Number(order),p_phone:phone})});const data=await r.json();if(!r.ok||!data)throw new Error("اطلاعاتی با این شماره سفارش و موبایل پیدا نشد.");box.innerHTML='<strong>سطح عضویت: '+safe(data.tier)+'</strong><br>امتیاز قابل استفاده: '+fa(data.points)+'<br>مجموع امتیاز کسب‌شده: '+fa(data.lifetime_points)+'<div style="margin-top:8px">'+(data.coupons||[]).map(x=>'<div style="padding:8px;border:1px solid #d6b66b;border-radius:8px;margin-top:6px">کد: <b>'+safe(x.code)+'</b> — تخفیف '+fa(x.discount_amount)+' تومان <button type="button" data-use-coupon="'+safe(x.code)+'" style="margin-right:8px">استفاده در سبد خرید</button></div>').join("")+'</div>';box.querySelectorAll("[data-use-coupon]").forEach(b=>b.onclick=()=>{$("couponCode").value=b.dataset.useCoupon;box.insertAdjacentText("beforeend"," — کد در فرم سفارش قرار گرفت.")})}catch(e){box.textContent=e.message||"دریافت امتیازها ممکن نیست."}};
 $("checkoutForm").onsubmit=async e=>{
  e.preventDefault();
  const rows=Object.entries(cart).filter(([id,q])=>q>0&&products.some(p=>p.id===id));
@@ -2136,6 +2143,7 @@ $("checkoutForm").onsubmit=async e=>{
   postal_code:$("postalCode").value.trim(),
   shipping_method:$("shippingMethod").value,
   customer_note:$("customerNote").value.trim(),
+  coupon_code:$("couponCode")?.value.trim().toUpperCase()||"",
   items:rows.map(([product_id,quantity])=>({product_id,quantity}))
  };
  const selectedShippingMethod=$("shippingMethod").value;
