@@ -84,6 +84,12 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 @media(max-width:700px){.related-section{padding:15px;border-radius:16px}.related-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.related-image{height:115px}.related-heading h2{font-size:19px}}
 @media(max-width:380px){.related-grid{grid-template-columns:1fr 1fr}.related-image{height:95px}.related-info{padding:8px}}
 
+/* RAM TECH product specifications — silver and gold */
+.product-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%;margin:12px 0 16px;padding:14px;border:1px solid #e8e3d6;border-radius:14px;background:linear-gradient(135deg,#fff,#faf9f5)}
+.meta-item{display:flex;flex-direction:column;gap:3px;min-width:0;padding:4px 7px;border-right:2px solid #c6a45c}
+.meta-item span{font-size:11px;color:#87909b}.meta-item strong{font-size:13px;color:#344054;overflow-wrap:anywhere}
+#productAvailability{color:#98752f}
+@media(max-width:380px){.product-meta{padding:10px;gap:7px}.meta-item strong{font-size:12px}}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <meta name="theme-color" content="#0b1220">
@@ -99,7 +105,7 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 <div id="state" class="state">در حال دریافت اطلاعات محصول...</div>
 <article id="productCard" class="card" hidden>
 <div class="visual"><img id="productImage" alt="" hidden><span id="productEmoji" class="emoji">📦</span></div>
-<div class="info"><span id="productCategory" class="cat">محصول</span><h1 id="productName" class="name"></h1><div id="productPrice" class="price"></div><div id="productStock" class="stock"></div><p id="productDescription" class="desc"></p><div class="actions"><button id="addToCart" class="primary">افزودن به سبد خرید</button><button id="shareProduct" class="secondary">اشتراک‌گذاری محصول</button></div><div class="hint">ثبت سفارش در رام‌تک بدون پرداخت آنلاین انجام می‌شود؛ هماهنگی نهایی توسط فروشگاه صورت می‌گیرد.</div></div>
+<div class="info"><span id="productCategory" class="cat">محصول</span><h1 id="productName" class="name"></h1><div id="productPrice" class="price"></div><div id="productStock" class="stock"></div><section class="product-meta" aria-label="اطلاعات محصول"><div class="meta-item"><span>کد کالا</span><strong id="productSku">—</strong></div><div class="meta-item"><span>دسته‌بندی</span><strong id="productMetaCategory">—</strong></div><div class="meta-item"><span>وضعیت کالا</span><strong id="productAvailability">—</strong></div></section><p id="productDescription" class="desc"></p><div class="actions"><button id="addToCart" class="primary">افزودن به سبد خرید</button><button id="shareProduct" class="secondary">اشتراک‌گذاری محصول</button></div><div class="hint">ثبت سفارش در رام‌تک بدون پرداخت آنلاین انجام می‌شود؛ هماهنگی نهایی توسط فروشگاه صورت می‌گیرد.</div></div>
 </article>
 
 <section id="relatedSection" class="related-section" hidden aria-label="محصولات مرتبط">
@@ -161,7 +167,7 @@ async function init(){
  if(p.image_url)document.querySelector('meta[property="og:image"]').content=p.image_url;
  const schema={"@context":"https://schema.org","@type":"Product",name:p.name,description,image:p.image_url?[p.image_url]:undefined,sku:p.sku||undefined,offers:{"@type":"Offer",priceCurrency:"IRR",price:String(Math.round(Number(p.price)*10)),availability:p.stock_quantity>0?"https://schema.org/InStock":"https://schema.org/OutOfStock",url}};
  const ld=document.createElement("script");ld.type="application/ld+json";ld.textContent=JSON.stringify(schema);document.head.appendChild(ld);
- $("crumbName").textContent=p.name;$("productName").textContent=p.name;$("productCategory").textContent=p.categories?.name||"سایر کالاها";$("productPrice").textContent=fa(p.price)+" تومان";$("productStock").textContent=p.stock_quantity>0?"موجودی: "+fa(p.stock_quantity)+" عدد":"فعلاً ناموجود";$("productDescription").textContent=p.description||"توضیحی برای این کالا ثبت نشده است.";
+ $("crumbName").textContent=p.name;$("productName").textContent=p.name;$("productCategory").textContent=p.categories?.name||"سایر کالاها";$("productPrice").textContent=fa(p.price)+" تومان";$("productStock").textContent=p.stock_quantity>0?"موجودی: "+fa(p.stock_quantity)+" عدد":"فعلاً ناموجود";$("productSku").textContent=p.sku||"ثبت نشده";$("productMetaCategory").textContent=p.categories?.name||"سایر کالاها";$("productAvailability").textContent=Number(p.stock_quantity)>0?"موجود و آماده سفارش":"ناموجود";$("productDescription").textContent=p.description||"توضیحی برای این کالا ثبت نشده است.";
  $("productEmoji").textContent=emojiFor(p);
  if(p.image_url){$("productImage").src=p.image_url;$("productImage").alt=p.name;$("productImage").hidden=false;$("productEmoji").hidden=true;$("productImage").onerror=()=>{$("productImage").hidden=true;$("productEmoji").hidden=false}}
  $("addToCart").disabled=Number(p.stock_quantity)<1;
