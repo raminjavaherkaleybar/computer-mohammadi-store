@@ -82,10 +82,32 @@ async function copyTracking(){
  catch(e){const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);$("result").querySelector(".btn-copy").textContent="کد را انتخاب و کپی کنید"}
 }
 $("trackForm").onsubmit=async e=>{
- e.preventDefault();const order=digits($("orderNumber").value).replace(/[^0-9]/g,""),phone=digits($("phone").value).replace(/[^0-9]/g,"");
- if(!order||!phone||phone.length<10||phone.length>15){$("result").innerHTML='<div class="notice error">شماره سفارش و موبایل معتبر را وارد کنید.</div>';return}
+ e.preventDefault();
+ const order=digits($("orderNumber").value).replace(/[^0-9]/g,"");
+ const enteredPhone=digits($("phone").value).replace(/[^0-9]/g,"");
+ let phone=enteredPhone;
+ if(phone.startsWith("0098"))phone="0"+phone.slice(4);
+ else if(phone.startsWith("98"))phone="0"+phone.slice(2);
+ else if(/^9\\d{9}$/.test(phone))phone="0"+phone;
+ if(!order){$("result").innerHTML='<div class="notice error">لطفاً شماره سفارش را وارد کنید.</div>'; $("orderNumber").focus();return}
+ if(!/^09\\d{9}$/.test(phone)){
+  $("result").innerHTML='<div class="notice error">شماره موبایل معتبر نیست. شماره را به شکل ۰۹۱۲۳۴۵۶۷۸۹ وارد کنید.</div>';
+  $("phone").focus();return;
+ }
  $("submit").disabled=true;$("submit").textContent="در حال بررسی...";$("result").innerHTML='<div class="notice">در حال دریافت وضعیت سفارش...</div>';
- try{const response=await fetch(SUPABASE_URL+"/rest/v1/rpc/track_store_order",{method:"POST",headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_order_number:Number(order),p_phone:phone})});const data=await response.json().catch(()=>null);if(!response.ok)throw new Error(data?.message||"HTTP "+response.status);if(!data){$("result").innerHTML='<div class="notice error">سفارشی با این شماره سفارش و موبایل پیدا نشد. اطلاعات را بررسی کنید.</div>'}else showOrder(data)}
+ try{
+  const request=async p=>fetch(SUPABASE_URL+"/rest/v1/rpc/track_store_order",{method:"POST",headers:{"apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({p_order_number:Number(order),p_phone:p})});
+  let response=await request(phone);
+  let data=await response.json().catch(()=>null);
+  if(!response.ok)throw new Error(data?.message||"HTTP "+response.status);
+  // Compatibility with older orders that may have stored the country-code form.
+  if(!data&&enteredPhone!==phone&&enteredPhone.length>=10&&enteredPhone.length<=15){
+   response=await request(enteredPhone);data=await response.json().catch(()=>null);
+   if(!response.ok)throw new Error(data?.message||"HTTP "+response.status);
+  }
+  if(!data){$("result").innerHTML='<div class="notice error">سفارشی با این شماره سفارش و موبایل پیدا نشد. شماره سفارش و همان موبایلی را بررسی کنید که هنگام خرید ثبت کرده‌اید.</div>'}
+  else showOrder(data);
+ }
  catch(err){$("result").innerHTML='<div class="notice error">فعلاً امکان دریافت وضعیت سفارش وجود ندارد. کمی بعد دوباره تلاش کنید.</div>'}
  finally{$("submit").disabled=false;$("submit").textContent="بررسی وضعیت سفارش"}
 };
