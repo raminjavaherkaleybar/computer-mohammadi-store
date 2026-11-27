@@ -1628,6 +1628,77 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 }
 </script>
 
+
+<style id="ramtech-motion-showcase">
+/* RAM TECH animated new arrivals: isolated styles, existing catalog and checkout remain unchanged. */
+.rt-motion-section{padding:30px 0 18px}
+.rt-motion-heading,.rt-carousel-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:15px}
+.rt-motion-heading h2{margin:4px 0 2px;font-size:23px;color:#172033}
+.rt-motion-heading p,.rt-carousel-heading p{margin:0;color:#778195;font-size:12px}
+.rt-kicker{font-size:10px;font-weight:800;letter-spacing:.7px;color:#a47b31}
+.rt-heading-mark{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;color:#b58a3a;background:linear-gradient(145deg,#fff8e7,#e9edf2);border:1px solid #e8d8b4;font-size:23px}
+.rt-featured-stage{position:relative;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;min-height:255px;overflow:hidden;border-radius:23px;padding:clamp(20px,4vw,38px);background:radial-gradient(circle at 18% 55%,rgba(196,158,83,.25),transparent 34%),linear-gradient(120deg,#121c2c,#263448 62%,#394454);color:#fff;box-shadow:0 16px 38px rgba(18,28,44,.14);isolation:isolate}
+.rt-featured-stage:before{content:"";position:absolute;inset:0;border:1px solid rgba(232,196,119,.25);border-radius:inherit;pointer-events:none}
+.rt-featured-copy{position:relative;z-index:2;min-width:0}
+.rt-featured-label{display:inline-flex;padding:5px 12px;border:1px solid rgba(232,196,119,.5);border-radius:30px;color:#f2d89e;background:rgba(232,196,119,.1);font-size:11px}
+.rt-featured-category{display:block;color:#c5ceda;font-size:11px;margin-top:12px}
+.rt-featured-copy h3{font-size:clamp(20px,3vw,29px);line-height:1.6;margin:3px 0 5px;color:#fff}
+.rt-featured-copy p{font-size:12px;color:#d0d7e1;max-width:510px;margin:0 0 8px;line-height:2}
+.rt-featured-price{display:block;color:#f0d18e;font-size:17px;margin:8px 0 13px}
+.rt-featured-actions{display:flex;gap:9px;flex-wrap:wrap}
+.rt-featured-detail,.rt-featured-add{border:0;border-radius:10px;padding:9px 15px;font:inherit;font-size:11px;font-weight:800;text-decoration:none;cursor:pointer}
+.rt-featured-detail{background:linear-gradient(135deg,#e7c77f,#b58a3a);color:#202a38}
+.rt-featured-add{background:#eef1f5;color:#263448;border:1px solid #d5dce5}
+.rt-featured-visual{position:relative;display:grid;place-items:center;min-height:190px;height:100%;text-decoration:none}
+.rt-featured-visual img{position:relative;z-index:1;width:min(100%,290px);height:205px;object-fit:contain;filter:drop-shadow(0 18px 20px rgba(0,0,0,.32));transition:transform .55s ease,opacity .35s ease}
+.rt-featured-fallback{position:absolute;z-index:0;font-size:85px;filter:drop-shadow(0 12px 14px #0005)}
+.rt-image-glow{position:absolute;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,rgba(232,196,119,.22),transparent 68%);filter:blur(8px)}
+.rt-featured-stage.is-changing .rt-featured-copy,.rt-featured-stage.is-changing .rt-featured-visual{opacity:0;transform:translateY(8px)}
+.rt-featured-copy,.rt-featured-visual{transition:opacity .32s ease,transform .32s ease}
+.rt-carousel-heading{margin:22px 0 10px}
+.rt-carousel-heading h3{font-size:16px;margin:0 0 2px;color:#263448}
+.rt-carousel-controls{display:flex;gap:6px;flex-shrink:0}
+.rt-carousel-controls button{width:34px;height:34px;border:1px solid #e1e5eb;border-radius:10px;background:linear-gradient(145deg,#fff,#edf0f4);color:#344256;font-size:20px;line-height:1;box-shadow:0 3px 9px #1720330b}
+.rt-carousel-controls button:hover{border-color:#c5a15b;color:#9b742d}
+.rt-carousel-viewport{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:#c5a15b #edf0f4;padding:3px 2px 12px;direction:rtl;-webkit-overflow-scrolling:touch}
+.rt-carousel-track{display:flex;gap:12px;width:max-content;min-width:100%}
+.rt-slide-card{width:218px;flex:0 0 218px;scroll-snap-align:start;overflow:hidden;border:1px solid #e6e9ee;border-radius:16px;background:#fff;box-shadow:0 8px 24px rgba(20,35,55,.06);direction:rtl;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.rt-slide-card:hover{transform:translateY(-4px);border-color:#d7bd82;box-shadow:0 13px 28px rgba(20,35,55,.1)}
+.rt-slide-image{display:grid;place-items:center;height:126px;background:linear-gradient(145deg,#f8f9fb,#e9edf2);text-decoration:none;overflow:hidden}
+.rt-slide-image img{width:100%;height:100%;padding:10px;object-fit:contain;transition:transform .45s ease}
+.rt-slide-card:hover .rt-slide-image img{transform:scale(1.06)}
+.rt-slide-body{padding:10px 12px 12px}
+.rt-slide-category{font-size:10px;color:#8993a2}
+.rt-slide-name{display:block;color:#263448;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:3px 0 5px}
+.rt-slide-price{color:#98712e;font-size:12px;font-weight:800}
+.rt-slide-actions{display:flex;gap:6px;margin-top:9px}
+.rt-slide-actions button{flex:1;border:0;border-radius:8px;padding:7px 4px;font:inherit;font-size:10px;font-weight:700;background:#edf0f4;color:#344256}
+.rt-slide-actions button:last-child{background:linear-gradient(135deg,#e7c77f,#b58a3a);color:#202a38}
+.rt-motion-footnote{font-size:10px;color:#8a93a1;margin:5px 2px 0}
+@media(max-width:650px){
+ .rt-motion-section{padding:20px 0 12px}
+ .rt-motion-heading h2{font-size:19px}
+ .rt-featured-stage{grid-template-columns:1fr;gap:5px;padding:18px 16px 14px;min-height:0}
+ .rt-featured-copy{order:2}
+ .rt-featured-visual{order:1;min-height:135px;height:135px}
+ .rt-featured-visual img{height:135px;width:min(100%,220px)}
+ .rt-image-glow{width:130px;height:130px}
+ .rt-featured-copy h3{font-size:20px}
+ .rt-featured-copy p{font-size:11px}
+ .rt-featured-actions button,.rt-featured-actions a{flex:1;text-align:center}
+ .rt-carousel-heading{align-items:center}
+ .rt-carousel-heading h3{font-size:14px}
+ .rt-carousel-heading p{font-size:10px;max-width:235px}
+ .rt-slide-card{width:174px;flex-basis:174px}
+ .rt-slide-image{height:112px}
+ .rt-carousel-controls button{width:31px;height:31px}
+}
+@media(prefers-reduced-motion:reduce){
+ .rt-featured-copy,.rt-featured-visual,.rt-slide-card,.rt-slide-image img{transition:none!important}
+ .rt-carousel-viewport{scroll-behavior:auto}
+}
+</style>
+
 </head>
 <body>
 <div class="topline"><div class="wrap utility-links">
@@ -1657,6 +1728,44 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 </div></section>
 <div class="catalog-search-wrap wrap"><div class="catalog-search"><input id="search" type="search" placeholder="جستجوی محصولات..." aria-label="جست‌وجوی محصولات"><span aria-hidden="true">⌕</span></div></div>
 <section class="section wrap" id="categories"><div class="section-head"><div><h2>دسته‌بندی محصولات</h2><p>سریع‌تر محصول موردنظرت را پیدا کن</p></div></div><div class="categories" id="categoryGrid"></div></section>
+
+<section class="rt-motion-section wrap" id="newArrivals" aria-label="محصولات تازه فروشگاه">
+  <div class="rt-motion-heading">
+    <div><span class="rt-kicker">RAM TECH • تازه‌های فروشگاه</span><h2>تازه رسیده‌ها</h2><p>محصولات جدید را با حرکت آرام و جلوه‌ای ویژه ببینید</p></div>
+    <span class="rt-heading-mark" aria-hidden="true">✦</span>
+  </div>
+  <div class="rt-featured-stage" id="rtFeaturedStage" aria-live="polite">
+    <div class="rt-featured-copy">
+      <span class="rt-featured-label">پیشنهاد تازه رام‌تک</span>
+      <span class="rt-featured-category" id="rtFeaturedCategory">محصول جدید</span>
+      <h3 id="rtFeaturedName">در حال دریافت محصولات...</h3>
+      <p id="rtFeaturedDescription">جدیدترین کالاهای فروشگاه در این قسمت نمایش داده می‌شوند.</p>
+      <strong class="rt-featured-price" id="rtFeaturedPrice"></strong>
+      <div class="rt-featured-actions">
+        <a class="rt-featured-detail" id="rtFeaturedDetail" href="#products">مشاهده محصول</a>
+        <button class="rt-featured-add" id="rtFeaturedAdd" type="button">افزودن به سبد خرید</button>
+      </div>
+    </div>
+    <a class="rt-featured-visual" id="rtFeaturedImageLink" href="#products" tabindex="-1" aria-hidden="true">
+      <img id="rtFeaturedImage" alt="" loading="lazy" decoding="async">
+      <span class="rt-featured-fallback" id="rtFeaturedFallback">📦</span>
+      <span class="rt-image-glow" aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="rt-carousel-heading">
+    <div><h3>گشت‌وگذار بین محصولات جدید</h3><p>کارت‌ها آرام حرکت می‌کنند؛ برای دیدن جزئیات روی محصول بزنید</p></div>
+    <div class="rt-carousel-controls">
+      <button type="button" id="rtShowcasePause" aria-label="توقف حرکت محصولات" title="توقف / ادامه">Ⅱ</button>
+      <button type="button" id="rtShowcasePrev" aria-label="محصول قبلی">›</button>
+      <button type="button" id="rtShowcaseNext" aria-label="محصول بعدی">‹</button>
+    </div>
+  </div>
+  <div class="rt-carousel-viewport" id="rtCarouselViewport" aria-label="نوار محصولات جدید">
+    <div class="rt-carousel-track" id="rtCarouselTrack"></div>
+  </div>
+  <p class="rt-motion-footnote">نمایش محصولات بر اساس تازه‌ترین کالاهای ثبت‌شده در موجودی فروشگاه است.</p>
+</section>
+
 <section class="section wrap" id="products"><div class="section-head"><div><h2>محصولات فروشگاه</h2><p id="productCount">محصولات و قیمت‌ها مستقیماً از موجودی واقعی فروشگاه خوانده می‌شوند</p></div></div>
  <div class="toolbar"><div class="filters" id="filters"></div><label class="stock-only-control"><input type="checkbox" id="inStockOnly"> فقط کالاهای موجود</label><select class="sort" id="sort"><option value="default">مرتب‌سازی پیش‌فرض</option><option value="name">نام محصول</option><option value="price-asc">ارزان‌ترین</option><option value="price-desc">گران‌ترین</option><option value="stock">بیشترین موجودی</option></select></div>
  <div class="products" id="productGrid"></div>
@@ -1783,6 +1892,80 @@ function renderFilters(){
  document.querySelectorAll("#filters .filter[data-cat]").forEach(el=>el.onclick=()=>setCategory(el.dataset.cat));
  $("favoriteFilter").onclick=()=>{favoriteOnly=!favoriteOnly;renderFilters();renderProducts();};
 }
+
+let rtShowcaseItems=[];
+let rtShowcaseIndex=0;
+let rtShowcaseTimer=null;
+let rtShowcasePaused=false;
+let rtShowcaseHover=false;
+function rtShowcaseSet(index){
+ if(!rtShowcaseItems.length)return;
+ rtShowcaseIndex=(index+rtShowcaseItems.length)%rtShowcaseItems.length;
+ const p=rtShowcaseItems[rtShowcaseIndex],stage=$("rtFeaturedStage");
+ if(!p||!stage)return;
+ stage.classList.add("is-changing");
+ window.setTimeout(()=>{
+  $("rtFeaturedCategory").textContent=p.label||"محصول جدید";
+  $("rtFeaturedName").textContent=p.name||"محصول جدید";
+  $("rtFeaturedDescription").textContent=(p.description||"برای مشاهده مشخصات و ثبت سفارش این محصول وارد صفحه جزئیات شوید.").slice(0,180);
+  $("rtFeaturedPrice").textContent=fa(p.price)+" تومان";
+  const src=(typeof p.image_url==="string"&&/^https?:\/\//i.test(p.image_url.trim()))?p.image_url.trim():productImageFor(p);
+  const img=$("rtFeaturedImage");
+  img.style.display="block";
+  img.src=src;
+  img.alt=p.name||"محصول رام‌تک";
+  img.onerror=()=>{img.style.display="none";};
+  $("rtFeaturedFallback").textContent=productEmojiFor(p);
+  $("rtFeaturedDetail").href="product.html?id="+encodeURIComponent(p.id);
+  $("rtFeaturedImageLink").href="product.html?id="+encodeURIComponent(p.id);
+  $("rtFeaturedAdd").disabled=Number(p.stock_quantity)<1;
+  $("rtFeaturedAdd").textContent=Number(p.stock_quantity)>0?"افزودن به سبد خرید":"ناموجود";
+  $("rtFeaturedAdd").onclick=()=>addToCart(p.id);
+  stage.classList.remove("is-changing");
+ },220);
+ const cards=document.querySelectorAll("#rtCarouselTrack .rt-slide-card");
+ if(cards[rtShowcaseIndex])cards[rtShowcaseIndex].scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest",inline:"start"});
+}
+function rtShowcaseStop(){
+ if(rtShowcaseTimer){clearInterval(rtShowcaseTimer);rtShowcaseTimer=null;}
+}
+function rtShowcaseStart(){
+ rtShowcaseStop();
+ if(rtShowcaseItems.length<2||rtShowcasePaused||window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+ rtShowcaseTimer=window.setInterval(()=>{
+  if(!document.hidden&&!rtShowcaseHover)rtShowcaseSet(rtShowcaseIndex+1);
+ },4800);
+}
+function renderAnimatedShowcase(){
+ const section=$("newArrivals");
+ if(!section)return;
+ rtShowcaseItems=products.filter(p=>Number(p.stock_quantity)>0).slice(0,8);
+ if(!rtShowcaseItems.length){section.classList.add("hidden");rtShowcaseStop();return;}
+ section.classList.remove("hidden");
+ $("rtCarouselTrack").innerHTML=rtShowcaseItems.map(p=>{
+  const src=(typeof p.image_url==="string"&&/^https?:\/\//i.test(p.image_url.trim()))?p.image_url.trim():productImageFor(p);
+  return '<article class="rt-slide-card"><a class="rt-slide-image" href="product.html?id='+encodeURIComponent(p.id)+'"><img src="'+safe(src)+'" alt="'+safe(p.name)+'" loading="lazy" decoding="async" onerror="this.style.opacity=0"></a><div class="rt-slide-body"><span class="rt-slide-category">'+safe(p.label||"محصول جدید")+'</span><a class="rt-slide-name" href="product.html?id='+encodeURIComponent(p.id)+'">'+safe(p.name)+'</a><div class="rt-slide-price">'+fa(p.price)+' تومان</div><div class="rt-slide-actions"><button type="button" data-rt-detail="'+safe(p.id)+'">جزئیات</button><button type="button" data-rt-add="'+safe(p.id)+'">افزودن به سبد</button></div></div></article>';
+ }).join("");
+ document.querySelectorAll("[data-rt-detail]").forEach(b=>b.onclick=()=>{location.href="product.html?id="+encodeURIComponent(b.dataset.rtDetail);});
+ document.querySelectorAll("[data-rt-add]").forEach(b=>b.onclick=()=>addToCart(b.dataset.rtAdd));
+ rtShowcaseSet(0);
+ $("rtShowcaseNext").onclick=()=>rtShowcaseSet(rtShowcaseIndex+1);
+ $("rtShowcasePrev").onclick=()=>rtShowcaseSet(rtShowcaseIndex-1);
+ $("rtShowcasePause").onclick=()=>{
+  rtShowcasePaused=!rtShowcasePaused;
+  $("rtShowcasePause").textContent=rtShowcasePaused?"▶":"Ⅱ";
+  $("rtShowcasePause").setAttribute("aria-label",rtShowcasePaused?"ادامه حرکت محصولات":"توقف حرکت محصولات");
+  rtShowcaseStart();
+ };
+ const viewport=$("rtCarouselViewport");
+ viewport.onmouseenter=()=>{rtShowcaseHover=true;};
+ viewport.onmouseleave=()=>{rtShowcaseHover=false;};
+ viewport.onfocusin=()=>{rtShowcaseHover=true;};
+ viewport.onfocusout=()=>{rtShowcaseHover=false;};
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)rtShowcaseStart();});
+ rtShowcaseStart();
+}
+
 function renderProducts(){
  const q=$("search").value.trim().toLocaleLowerCase("fa");
  let list=products.filter(p=>(active==="all"||p.cat===active)&&(!favoriteOnly||favorites.includes(String(p.id)))&&(!$("inStockOnly").checked||p.stock_quantity>0)&&(!q||normalizeSearch([p.name,p.label,p.description].join(" ")).includes(normalizeSearch(q))));
@@ -1855,6 +2038,7 @@ async function loadCatalog(){
   for(const id of Object.keys(cart)){const p=products.find(x=>String(x.id)===id);if(!p||p.stock_quantity<1)delete cart[id];else cart[id]=Math.min(Number(cart[id])||0,Number(p.stock_quantity));}
   localStorage.setItem("mohammadiCart",JSON.stringify(cart));
   renderCategories();renderFilters();renderProducts();renderCart();renderCompareBar();
+  renderAnimatedShowcase();
   const requestedProduct=new URLSearchParams(location.search).get("product");if(requestedProduct){location.replace("product.html?id="+encodeURIComponent(requestedProduct));return;}else resetHomeSEO();
   if(new URLSearchParams(location.search).get("openCart")==="1")openCart();
  }catch(error){
