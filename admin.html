@@ -825,7 +825,7 @@ $('addPurchaseRow').onclick=addPurchaseRow;
 async function loadAdminLoyalty(){
  const {data,error}=await db.from('customer_loyalty').select('customer_id,points_balance,lifetime_points,customers(full_name,phone)').order('updated_at',{ascending:false}).limit(500);
  if(error)throw error;
- const {data:coupons,couponError}=await db.from('loyalty_coupons').select('customer_id,code,discount_amount,expires_at,redeemed_order_id').is('redeemed_order_id',null).gt('expires_at',new Date().toISOString());
+ const {data:coupons,error:couponError}=await db.from('loyalty_coupons').select('customer_id,code,discount_amount,expires_at,redeemed_order_id').is('redeemed_order_id',null).gt('expires_at',new Date().toISOString());
  if(couponError)throw couponError;const grouped=new Map();(coupons||[]).forEach(x=>{const a=grouped.get(x.customer_id)||[];a.push(x.code);grouped.set(x.customer_id,a)});
  $('loyaltyAdminRows').innerHTML=(data||[]).length?data.map(x=>'<tr><td>'+safe(x.customers?.full_name||'—')+'</td><td>'+safe(x.customers?.phone||'—')+'</td><td>'+fa(x.points_balance)+'</td><td>'+fa(x.lifetime_points)+'</td><td>'+safe((grouped.get(x.customer_id)||[]).join('، ')||'—')+'</td></tr>').join(''):'<tr><td colspan="5">هنوز امتیازی ثبت نشده است.</td></tr>';
 }
