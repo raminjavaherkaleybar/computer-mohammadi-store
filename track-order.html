@@ -61,7 +61,7 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 const SUPABASE_URL="https://fgfeiilkzoajguabzuex.supabase.co",SUPABASE_KEY="sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB";
 const $=id=>document.getElementById(id),fa=n=>Number(n||0).toLocaleString("fa-IR"),safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const digits=s=>String(s||"").replace(/[۰-۹٠-٩]/g,c=>"۰۱۲۳۴۵۶۷۸۹".indexOf(c)>=0?String("۰۱۲۳۴۵۶۷۸۹".indexOf(c)) : String("٠١٢٣٤٥٦٧٨٩".indexOf(c)));
-const labels={pending:"در انتظار بررسی",confirmed:"تأیید شده",processing:"در حال آماده‌سازی",shipped:"ارسال شده",delivered:"تحویل شده",cancelled:"لغو شده"};
+const labels={pending:"ثبت‌شده",confirmed:"تأییدشده",processing:"آماده ارسال",shipped:"ارسال‌شده",delivered:"تحویل‌شده",cancelled:"لغو شده"};
 const stages=["pending","confirmed","processing","shipped","delivered"];
 function showOrder(o){
  const cancelled=o.status==="cancelled",idx=stages.indexOf(o.status);
@@ -94,9 +94,9 @@ $("trackForm").onsubmit=async e=>{
  let phone=enteredPhone;
  if(phone.startsWith("0098"))phone="0"+phone.slice(4);
  else if(phone.startsWith("98"))phone="0"+phone.slice(2);
- else if(/^9\\d{9}$/.test(phone))phone="0"+phone;
+ else if(/^9\d{9}$/.test(phone))phone="0"+phone;
  if(!order){$("result").innerHTML='<div class="notice error">لطفاً شماره سفارش را وارد کنید.</div>'; $("orderNumber").focus();return}
- if(!/^09\\d{9}$/.test(phone)){
+ if(!/^09\d{9}$/.test(phone)){
   $("result").innerHTML='<div class="notice error">شماره موبایل معتبر نیست. شماره را به شکل ۰۹۱۲۳۴۵۶۷۸۹ وارد کنید.</div>';
   $("phone").focus();return;
  }
