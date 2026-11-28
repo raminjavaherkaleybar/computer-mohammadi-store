@@ -1764,6 +1764,14 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 #ramtech-live-usd-widget[data-state="stale"] .rt-usd-dot,#ramtech-live-usd-widget[data-state="error"] .rt-usd-dot{background:#d97706}
 #ramtech-live-usd-widget a{color:#596579;text-decoration:underline;text-underline-offset:2px}
 @media(max-width:520px){#ramtech-live-usd-widget{padding:10px 12px;gap:5px}#ramtech-live-usd-widget .rt-usd-meta{width:100%}}
+
+/* USD quote sits inline beside the support/ticket action */
+#ramtech-live-usd-widget{width:auto;max-width:100%;min-width:250px;margin:0;padding:8px 12px;gap:6px;border-radius:10px;box-shadow:0 3px 10px rgba(23,32,51,.08)}
+#ramtech-live-usd-widget .rt-usd-main{gap:8px}
+#ramtech-live-usd-widget .rt-usd-label{font-size:11px}
+#ramtech-live-usd-widget .rt-usd-value{font-size:16px}
+#ramtech-live-usd-widget .rt-usd-meta{font-size:9px;gap:6px}
+@media(max-width:520px){#ramtech-live-usd-widget{min-width:0;flex:1 1 100%;width:100%;padding:8px 10px}#ramtech-live-usd-widget .rt-usd-meta{width:auto}}
 </style>
 </head>
 <body>
@@ -1780,17 +1788,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 </header>
 
 
-<section id="ramtech-live-usd-widget" class="wrap" aria-label="قیمت لحظه‌ای دلار" data-state="loading">
-  <div class="rt-usd-main">
-    <span class="rt-usd-label">💵 دلار آمریکا (بازار آزاد)</span>
-    <strong class="rt-usd-value" id="rtUsdValue">در حال دریافت نرخ…</strong>
-  </div>
-  <div class="rt-usd-meta">
-    <span class="rt-usd-status"><i class="rt-usd-dot" aria-hidden="true"></i><span id="rtUsdStatus">در حال اتصال به منبع قیمت</span></span>
-    <span id="rtUsdUpdated">تاریخ و ساعت آخرین به‌روزرسانی</span>
-    <a href="https://nerkhara.com/dollar/" target="_blank" rel="noopener noreferrer">منبع نرخ</a>
-  </div>
-</section>
+
 <main>
 <section class="hero wrap" id="home"><div class="hero-box">
  <div class="hero-copy"><span class="eyebrow">فروشگاه اینترنتی لوازم جانبی</span><h1>موبایل و کامپیوتر</h1><strong class="hero-brand-name"><span class="brand-en">RAM TECH</span><span class="brand-fa">رام‌تک</span></strong><div class="hero-benefits"><span>🛡️ خرید مطمئن</span><span>🚚 ارسال سریع</span><span>🏷️ قیمت مناسب</span></div><div class="hero-cta"><a class="btn btn-primary" href="#products" style="text-decoration:none">مشاهده محصولات</a></div></div>
@@ -1806,7 +1804,17 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
  </div>
 </div></section>
 <div class="catalog-search-wrap wrap"><div class="catalog-search"><input id="search" type="search" placeholder="جست‌وجوی هوشمند؛ نام محصول را بنویسید..." aria-label="جست‌وجوی محصولات"><span aria-hidden="true">⌕</span><small class="smart-search-hint">جست‌وجو با بخشی از نام کالا و حتی با اشتباه تایپی</small></div></div>
-<section class="wrap" style="margin:12px auto 18px;display:flex;flex-wrap:wrap;gap:9px;align-items:center"><a href="customer.html" style="padding:9px 13px;border-radius:10px;background:#111827;color:#fff;font-size:12px;text-decoration:none">پنل مشتری و پیگیری سفارش</a><a href="wholesale.html" style="padding:9px 13px;border-radius:10px;background:#b38a3e;color:#fff;font-size:12px;text-decoration:none">قیمت همکاری و خرید عمده</a><a href="support.html" style="padding:9px 13px;border-radius:10px;background:#e9eef5;color:#24364b;font-size:12px;text-decoration:none">پشتیبانی و تیکت</a></section>
+<section class="wrap" style="margin:12px auto 18px;display:flex;flex-wrap:wrap;gap:9px;align-items:center"><a href="customer.html" style="padding:9px 13px;border-radius:10px;background:#111827;color:#fff;font-size:12px;text-decoration:none">پنل مشتری و پیگیری سفارش</a><a href="wholesale.html" style="padding:9px 13px;border-radius:10px;background:#b38a3e;color:#fff;font-size:12px;text-decoration:none">قیمت همکاری و خرید عمده</a><a href="support.html" style="padding:9px 13px;border-radius:10px;background:#e9eef5;color:#24364b;font-size:12px;text-decoration:none">پشتیبانی و تیکت</a><section id="ramtech-live-usd-widget" aria-label="قیمت لحظه‌ای دلار" data-state="loading">
+  <div class="rt-usd-main">
+    <span class="rt-usd-label">💵 دلار آمریکا (بازار آزاد)</span>
+    <strong class="rt-usd-value" id="rtUsdValue">در حال دریافت نرخ…</strong>
+  </div>
+  <div class="rt-usd-meta">
+    <span class="rt-usd-status"><i class="rt-usd-dot" aria-hidden="true"></i><span id="rtUsdStatus">در حال اتصال به منبع قیمت</span></span>
+    <span id="rtUsdUpdated">تاریخ و ساعت آخرین به‌روزرسانی</span>
+    <a href="https://nerkhara.com/dollar/" target="_blank" rel="noopener noreferrer">منبع نرخ</a>
+  </div>
+</section></section>
 <section class="section wrap" id="categories"><div class="section-head"><div><h2>دسته‌بندی محصولات</h2><p>سریع‌تر محصول موردنظرت را پیدا کن</p></div></div><div class="categories" id="categoryGrid"></div></section>
 
 <section class="rt-motion-section wrap" id="newArrivals" aria-label="محصولات تازه فروشگاه">
