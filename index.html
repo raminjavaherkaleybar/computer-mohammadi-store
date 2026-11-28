@@ -1766,6 +1766,18 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
  </div>
  <nav><div class="wrap navlinks"><a class="nav-home" href="#home">⌂ خانه</a><a href="#categories">▦ دسته‌بندی محصولات</a><a href="#products">٪ محصولات فروشگاه</a><a href="#specialOffers">✦ شگفت‌انگیزها</a><a href="#benefits">ⓘ درباره ما</a><a href="#contact">☎ تماس با ما</a><a href="track-order.html">پیگیری سفارش</a><a href="admin.html" class="admin-nav-link" aria-label="ورود مدیر به پنل مدیریت">⚙ مدیریت فروشگاه</a><a href="#benefits">؟ راهنمای خرید</a><a href="#contact">همکاری با ما</a></div></nav>
 </header>
+
+<style id="ramtech-live-usd-widget">
+#ramtech-live-usd-widget{margin:12px auto 0;width:min(1160px,92%);border:1px solid #cbd2dc;border-radius:15px;background:linear-gradient(115deg,#f8fafc,#e3e8ef 52%,#f9fafb);box-shadow:0 7px 22px #1720330d;color:#263244;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#ramtech-live-usd-widget .rt-usd-label{font-weight:900;color:#4b5563;font-size:13px}
+#ramtech-live-usd-widget .rt-usd-value{font-weight:950;font-size:clamp(17px,2.4vw,23px);color:#182638;font-variant-numeric:tabular-nums}
+#ramtech-live-usd-widget .rt-usd-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:#64748b;font-size:10px}
+#ramtech-live-usd-widget .rt-usd-status{display:inline-flex;align-items:center;gap:5px}
+#ramtech-live-usd-widget .rt-usd-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;display:inline-block}
+#ramtech-live-usd-widget[data-state="stale"] .rt-usd-dot,#ramtech-live-usd-widget[data-state="error"] .rt-usd-dot{background:#d97706}
+#ramtech-live-usd-widget a{color:#596579;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:520px){#ramtech-live-usd-widget{padding:10px 12px;gap:5px}#ramtech-live-usd-widget .rt-usd-meta{width:100%}}
+</style>
 <main>
 <section class="hero wrap" id="home"><div class="hero-box">
  <div class="hero-copy"><span class="eyebrow">فروشگاه اینترنتی لوازم جانبی</span><h1>موبایل و کامپیوتر</h1><strong class="hero-brand-name"><span class="brand-en">RAM TECH</span><span class="brand-fa">رام‌تک</span></strong><div class="hero-benefits"><span>🛡️ خرید مطمئن</span><span>🚚 ارسال سریع</span><span>🏷️ قیمت مناسب</span></div><div class="hero-cta"><a class="btn btn-primary" href="#products" style="text-decoration:none">مشاهده محصولات</a></div></div>
@@ -3162,6 +3174,46 @@ const pageId=new URLSearchParams(location.search).get('id')||new URLSearchParams
 if(location.pathname.endsWith('/product.html')&&pageId&&/^[0-9a-f-]{36}$/i.test(pageId))event('view',pageId);
 if(pageId&&location.pathname.endsWith('/index.html')&&/^[0-9a-f-]{36}$/i.test(pageId))event('view',pageId);
 snapshot();
+})();
+</script>
+
+<script id="ramtech-live-usd-loader">
+(()=>{'use strict';
+const box=document.getElementById('ramtech-live-usd-widget');
+if(!box||box.dataset.initialized==='1')return;
+box.dataset.initialized='1';
+const endpoint='https://nerkhara.com/api/v1/latest/usd.json';
+const valueEl=document.getElementById('rtUsdValue');
+const statusEl=document.getElementById('rtUsdStatus');
+const updatedEl=document.getElementById('rtUsdUpdated');
+const digits=new Intl.NumberFormat('fa-IR');
+function formatTime(s){
+ if(!s)return '';
+ const d=new Date(/Z$|[+-]\d\d:\d\d$/.test(s)?s:s+'Z');
+ if(Number.isNaN(d.getTime()))return '';
+ return 'آخرین دریافت: '+new Intl.DateTimeFormat('fa-IR',{timeZone:'Asia/Tehran',hour:'2-digit',minute:'2-digit',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+}
+async function refresh(){
+ try{
+  const response=await fetch(endpoint,{cache:'no-store',headers:{Accept:'application/json'}});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const payload=await response.json();
+  const item=payload&&payload.item;
+  const price=Number(item&&item.price);
+  if(!item||item.id!=='usd'||!Number.isFinite(price)||price<=0||item.unit!=='IRT')throw new Error('Invalid rate payload');
+  valueEl.textContent=digits.format(Math.round(price))+' تومان';
+  const stale=Boolean(item.stale);
+  box.dataset.state=stale?'stale':'live';
+  statusEl.textContent=stale?'آخرین نرخ موجود؛ منبع قدیمی است':'نرخ دریافت شد';
+  updatedEl.textContent=formatTime(item.updated_utc||payload.generated_utc);
+ }catch(error){
+  box.dataset.state='error';
+  if(valueEl.textContent==='در حال دریافت نرخ…')valueEl.textContent='فعلاً دریافت نرخ ممکن نیست';
+  statusEl.textContent='اتصال به منبع نرخ برقرار نشد';
+ }
+}
+refresh();
+window.setInterval(refresh,10*60*1000);
 })();
 </script>
 </body></html>
