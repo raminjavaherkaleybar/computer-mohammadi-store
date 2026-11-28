@@ -46,6 +46,44 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" type="image/svg+xml" href="./assets/ram-tech-app-icon.svg">
+
+<style id="ramtech-tracking-polish-2026">
+/* Unified silver/gold customer tracking experience */
+:root{color-scheme:light}
+body{background:linear-gradient(145deg,#f7f8fa 0%,#edf0f4 100%);color:#252a32}
+header{background:linear-gradient(110deg,#252a32,#454c56);border-bottom:3px solid #c7a64b}
+.brand{color:#f5f6f7;letter-spacing:.3px}
+.brand small{color:#d5d9df}
+.back{color:#f1d98c}
+.card{border:1px solid #e0e3e8;box-shadow:0 16px 42px rgba(34,40,49,.09)}
+.card h1{color:#252a32}
+.muted{color:#707986}
+.btn{background:linear-gradient(115deg,#c8a64d,#e0c779);color:#24272c;box-shadow:0 5px 14px rgba(174,140,54,.18)}
+.btn:hover{filter:brightness(1.035)}
+.btn:focus-visible,.btn-copy:focus-visible,.btn-again:focus-visible,a:focus-visible{outline:3px solid rgba(190,151,53,.38);outline-offset:3px}
+input{background:#fff;color:#252a32}
+input:focus-visible{outline:3px solid rgba(190,151,53,.22);border-color:#b99136;box-shadow:0 0 0 2px rgba(190,151,53,.12)}
+.status{background:#f7f1df;border:1px solid #ead9a9;color:#755817}
+.step.current{color:#8b6a1e}
+.step.current .dot{border-color:#c5a044}
+.step.done{color:#267657}
+.tracking{background:#f4f8f5;border-color:#cfe4d8;color:#236747}
+.btn-copy{background:#e8dfc7;color:#66501b}
+.btn-again{background:#e7e9ed;color:#343b45}
+.notice{background:#f1f3f6;color:#535d6a}
+.notice.error{background:#fff1f1;color:#a32d2d}
+.amounts .grand{color:#765b1b;border-color:#e4d7b4}
+.items th,.items td{line-height:1.8}
+footer{color:#78818d}
+@media(max-width:600px){
+ .card{margin:16px 0!important}
+ .btn{min-height:46px}
+ .field input{min-height:46px}
+ .result{overflow-wrap:anywhere}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+
 </head>
 <body>
 <header><div class="wrap"><a class="brand" href="./">RAM TECH<small>کامپیوتر محمدی</small></a><a class="back" href="./">بازگشت به فروشگاه ←</a></div></header>
@@ -61,7 +99,7 @@ html{overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{
 const SUPABASE_URL="https://fgfeiilkzoajguabzuex.supabase.co",SUPABASE_KEY="sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB";
 const $=id=>document.getElementById(id),fa=n=>Number(n||0).toLocaleString("fa-IR"),safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const digits=s=>String(s||"").replace(/[۰-۹٠-٩]/g,c=>"۰۱۲۳۴۵۶۷۸۹".indexOf(c)>=0?String("۰۱۲۳۴۵۶۷۸۹".indexOf(c)) : String("٠١٢٣٤٥٦٧٨٩".indexOf(c)));
-const labels={pending:"ثبت‌شده",confirmed:"تأییدشده",processing:"آماده ارسال",shipped:"ارسال‌شده",delivered:"تحویل‌شده",cancelled:"لغو شده"};
+const labels={pending:"ثبت‌شده",confirmed:"تأییدشده",processing:"در حال آماده‌سازی",shipped:"ارسال‌شده",delivered:"تحویل‌شده",cancelled:"لغو شده"};
 const stages=["pending","confirmed","processing","shipped","delivered"];
 function showOrder(o){
  const cancelled=o.status==="cancelled",idx=stages.indexOf(o.status);
@@ -85,7 +123,7 @@ async function copyOrderNumber(){
 async function copyTracking(){
  const el=$("trackingCode");if(!el)return;
  try{await navigator.clipboard.writeText(el.textContent.trim());$("result").querySelector(".btn-copy").textContent="کپی شد ✓"}
- catch(e){const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);$("result").querySelector(".btn-copy").textContent="کد را انتخاب و کپی کنید"}
+ catch(e){const r=document.createRange();r.selectNodeContents(el);const s=window.getSelection();s.removeAllRanges();s.addRange(r);el.parentElement.querySelector(".btn-copy").textContent="کد را انتخاب و کپی کنید"}
 }
 $("trackForm").onsubmit=async e=>{
  e.preventDefault();
