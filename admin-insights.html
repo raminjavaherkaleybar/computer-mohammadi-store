@@ -46,7 +46,7 @@ async function load(){
  try{
  const from=$('from').value?dayStart($('from').value):new Date(Date.now()-30*86400000).toISOString(),to=$('to').value?dayEnd($('to').value):new Date().toISOString();
  const {data,error}=await db.rpc('admin_get_commerce_insights',{p_from:from,p_to:to});if(error)throw error;report=data;
- const p=data.profit||{},c=data.customers||{},orders=data.orders||[],views=Number(data.views||0),paid=orders.length;
+ const p=data.profit||{},c=data.customers||{},orders=data.orders||[],views=Number(data.views||0),paid=Number(data.paid_order_count||orders.length);
  $('views').textContent=fa(views);$('adds').textContent=fa(data.add_to_cart);$('checkouts').textContent=fa(data.checkout_started);$('conversion').textContent=views?((paid/views)*100).toFixed(2)+'٪':'۰٪';$('paidOrders').textContent=fa(paid);
  $('newCustomers').textContent=$('newCustomer2').textContent=fa(c.new_30d);$('loyalCustomers').textContent=$('loyalCustomer2').textContent=fa(c.loyal);$('inactiveCustomers').textContent=$('inactiveCustomer2').textContent=fa(c.inactive_90d);
  $('revenue').textContent=money(p.revenue);$('discounts').textContent=money(p.discounts);$('cogs').textContent=money(p.cogs);$('shipcost').textContent=money(p.actual_shipping_cost);$('gross').textContent=money(p.gross_profit);$('expenses').textContent=money(data.expenses);$('net').textContent=money(Number(p.net_profit||0)-Number(data.expenses||0));$('shippingIncome').textContent=money(p.shipping_collected);
