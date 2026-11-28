@@ -25,13 +25,17 @@ $('validateRestore').onclick=async()=>{
  try{
   const data=JSON.parse(await file.text());
   if(!data||data.backup_type!=='ramtech_store_data'||!data.tables||typeof data.tables!=='object')throw new Error('ساختار فایل یا شناسه پشتیبان رام‌تک معتبر نیست.');
-  const names=Object.keys(data.tables),unknown=names.filter(n=>!RESTORE_TABLES.includes(n));
+  const names=Object.keys(data.tables),unknown=names.filter(n=>!RESTORE_TABLES.includes(n)),missing=RESTORE_TABLES.filter(n=>!Object.prototype.hasOwnProperty.call(data.tables,n));
   if(unknown.length)throw new Error('جدول ناشناخته در فایل: '+unknown.join('، '));
+  if(missing.length)throw new Error('فایل ناقص است؛ جدول‌های زیر وجود ندارند: '+missing.join('، '));
+  if(data.schema_version!==undefined && ![1,2].includes(data.schema_version))throw new Error('نسخه ساختار پشتیبان پشتیبانی نمی‌شود.');
   const lines=['پیش‌نمایش معتبرسنجی فایل','نسخه ساختار: '+(data.schema_version||'قدیمی / نامشخص'),'تاریخ تهیه: '+(data.created_at||'ثبت نشده'),''];
   let total=0;
   for(const name of names){
    const rows=data.tables[name];if(!Array.isArray(rows))throw new Error('داده جدول '+name+' آرایه نیست.');
    const key=RESTORE_KEYS[name],seen=new Set();
+   if(!key)throw new Error('کلید اصلی جدول '+name+' در فهرست معتبر نیست.');
+   if(data.row_counts && data.row_counts[name]!==undefined && Number(data.row_counts[name])!==rows.length)throw new Error('تعداد ردیف ثبت‌شده با محتوای جدول '+name+' مطابقت ندارد.');
    for(let i=0;i<rows.length;i++){
     const row=rows[i];if(!row||typeof row!=='object'||Array.isArray(row)||row[key]===undefined||row[key]===null||row[key]==='')throw new Error('کلید اصلی در ردیف '+(i+1)+' جدول '+name+' معتبر نیست.');
     const k=String(row[key]);if(seen.has(k))throw new Error('کلید تکراری '+k+' در جدول '+name);seen.add(k);
@@ -39,7 +43,7 @@ $('validateRestore').onclick=async()=>{
    total+=rows.length;lines.push(name+': '+rows.length.toLocaleString('fa-IR')+' ردیف');
   }
   lines.push('','مجموع: '+total.toLocaleString('fa-IR')+' ردیف','');
-  lines.push('نتیجه: ساختار پایه و کلیدهای اصلی بررسی شد.');
+  lines.push('نتیجه: تمام جدول‌های مورد انتظار، کلیدهای اصلی و شمارش ردیف‌ها بررسی شد.');
   lines.push('⚠️ این فقط پیش‌نمایش است؛ هنوز هیچ اطلاعاتی بازیابی نشده و دکمه‌ای برای اعمال تغییرات وجود ندارد.');
   out.textContent=lines.join('\n');
  }catch(e){out.textContent='فایل قابل تأیید نیست: '+e.message}
