@@ -1769,6 +1769,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 
 <style id="ramtech-live-usd-widget">
 #ramtech-live-usd-widget{margin:12px auto 0;width:min(1160px,92%);border:1px solid #cbd2dc;border-radius:15px;background:linear-gradient(115deg,#f8fafc,#e3e8ef 52%,#f9fafb);box-shadow:0 7px 22px #1720330d;color:#263244;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#ramtech-live-usd-widget .rt-usd-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
 #ramtech-live-usd-widget .rt-usd-label{font-weight:900;color:#4b5563;font-size:13px}
 #ramtech-live-usd-widget .rt-usd-value{font-weight:950;font-size:clamp(17px,2.4vw,23px);color:#182638;font-variant-numeric:tabular-nums}
 #ramtech-live-usd-widget .rt-usd-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:#64748b;font-size:10px}
@@ -1778,6 +1779,17 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 #ramtech-live-usd-widget a{color:#596579;text-decoration:underline;text-underline-offset:2px}
 @media(max-width:520px){#ramtech-live-usd-widget{padding:10px 12px;gap:5px}#ramtech-live-usd-widget .rt-usd-meta{width:100%}}
 </style>
+<section id="ramtech-live-usd-widget" class="wrap" aria-label="قیمت لحظه‌ای دلار" data-state="loading">
+  <div class="rt-usd-main">
+    <span class="rt-usd-label">💵 دلار آمریکا (بازار آزاد)</span>
+    <strong class="rt-usd-value" id="rtUsdValue">در حال دریافت نرخ…</strong>
+  </div>
+  <div class="rt-usd-meta">
+    <span class="rt-usd-status"><i class="rt-usd-dot" aria-hidden="true"></i><span id="rtUsdStatus">در حال اتصال به منبع قیمت</span></span>
+    <span id="rtUsdUpdated">تاریخ و ساعت آخرین به‌روزرسانی</span>
+    <a href="https://nerkhara.com/dollar/" target="_blank" rel="noopener noreferrer">منبع نرخ</a>
+  </div>
+</section>
 <main>
 <section class="hero wrap" id="home"><div class="hero-box">
  <div class="hero-copy"><span class="eyebrow">فروشگاه اینترنتی لوازم جانبی</span><h1>موبایل و کامپیوتر</h1><strong class="hero-brand-name"><span class="brand-en">RAM TECH</span><span class="brand-fa">رام‌تک</span></strong><div class="hero-benefits"><span>🛡️ خرید مطمئن</span><span>🚚 ارسال سریع</span><span>🏷️ قیمت مناسب</span></div><div class="hero-cta"><a class="btn btn-primary" href="#products" style="text-decoration:none">مشاهده محصولات</a></div></div>
@@ -3191,7 +3203,7 @@ function formatTime(s){
  if(!s)return '';
  const d=new Date(/Z$|[+-]\d\d:\d\d$/.test(s)?s:s+'Z');
  if(Number.isNaN(d.getTime()))return '';
- return 'آخرین دریافت: '+new Intl.DateTimeFormat('fa-IR',{timeZone:'Asia/Tehran',hour:'2-digit',minute:'2-digit',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+ return 'آخرین به‌روزرسانی: '+new Intl.DateTimeFormat('fa-IR',{timeZone:'Asia/Tehran',weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(d);
 }
 async function refresh(){
  try{
