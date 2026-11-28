@@ -1,8 +1,10 @@
-const CACHE_NAME = 'ramtech-shell-v7';
+const CACHE_NAME = 'ramtech-shell-v8';
 const APP_SHELL = [
   './index.html',
   './product.html',
   './track-order.html',
+  './manifest.webmanifest',
+  './iran-locations.json',
   './assets/ram-tech-logo.svg',
   './assets/ram-tech-hero.svg',
   './assets/ram-tech-app-icon.svg'
