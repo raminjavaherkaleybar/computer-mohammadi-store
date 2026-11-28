@@ -2137,6 +2137,39 @@ $("customerPhone").addEventListener("input",()=>{
 });
 
 $("checkLoyalty").onclick=async()=>{const normalizeDigits=s=>String(s||"").replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[^0-9]/g,"");const order=normalizeDigits($("loyaltyOrder").value),rawPhone=normalizeDigits($("loyaltyPhone").value);let phone=rawPhone;if(phone.startsWith("0098"))phone="0"+phone.slice(4);else if(phone.startsWith("98"))phone="0"+phone.slice(2);else if(/^9\d{9}$/.test(phone))phone="0"+phone;const box=$("loyaltyResult");box.textContent="در حال بررسی...";if(!order||!/^09\d{9}$/.test(phone)){box.textContent="شماره سفارش یا موبایل معتبر نیست.";return}try{const r=await fetch(SUPABASE_URL+"/rest/v1/rpc/get_customer_loyalty",{method:"POST",headers:{...apiHeaders,"Content-Type":"application/json"},body:JSON.stringify({p_order_number:Number(order),p_phone:phone})});const data=await r.json();if(!r.ok||!data)throw new Error("اطلاعاتی با این شماره سفارش و موبایل پیدا نشد.");box.innerHTML='<strong>سطح عضویت: '+safe(data.tier)+'</strong><br>امتیاز قابل استفاده: '+fa(data.points)+'<br>مجموع امتیاز کسب‌شده: '+fa(data.lifetime_points)+'<div style="margin-top:8px">'+(data.coupons||[]).map(x=>'<div style="padding:8px;border:1px solid #d6b66b;border-radius:8px;margin-top:6px">کد: <b>'+safe(x.code)+'</b> — تخفیف '+fa(x.discount_amount)+' تومان <button type="button" data-use-coupon="'+safe(x.code)+'" style="margin-right:8px">استفاده در سبد خرید</button></div>').join("")+'</div>';box.querySelectorAll("[data-use-coupon]").forEach(b=>b.onclick=()=>{$("couponCode").value=b.dataset.useCoupon;box.insertAdjacentText("beforeend"," — کد در فرم سفارش قرار گرفت.")})}catch(e){box.textContent=e.message||"دریافت امتیازها ممکن نیست."}};
+function rtNormalizePhone(value){
+ let phone=String(value||"").replace(/[۰-۹]/g,d=>String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[^0-9]/g,"");
+ if(phone.startsWith("0098"))phone="0"+phone.slice(4);else if(phone.startsWith("98"))phone="0"+phone.slice(2);else if(/^9\\d{9}$/.test(phone))phone="0"+phone;
+ return phone;
+}
+async function rtSaveCartReminderOptin(){
+ const checked=$("cartReminderConsent")?.checked===true;
+ const phone=rtNormalizePhone($("customerPhone")?.value);
+ const visitorKey="ramtechVisitorId";
+ let visitorId=localStorage.getItem(visitorKey)||"";
+ if(!/^[0-9a-f-]{36}$/i.test(visitorId)){
+  const bytes=crypto.getRandomValues(new Uint8Array(16));
+  bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;
+  visitorId=[...bytes].map((b,i)=>[4,6,8,10].includes(i)?"-"+b.toString(16).padStart(2,"0"):b.toString(16).padStart(2,"0")).join("").replace(/^-|-$/g,"").replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/,"$1-$2-$3-$4-$5");
+  localStorage.setItem(visitorKey,visitorId);
+ }
+ if(!/^09\\d{9}$/.test(phone))return;
+ if(!checked){
+  try{await fetch(SUPABASE_URL+"/rest/v1/rpc/cancel_cart_reminder_optin",{method:"POST",headers:{...apiHeaders,"Content-Type":"application/json"},body:JSON.stringify({p_visitor_id:visitorId,p_phone:phone})});}catch(e){}
+  return;
+ }
+ const customerName=$("customerName")?.value.trim()||"";
+ const rows=Object.entries(cart).filter(([id,q])=>Number(q)>0&&products.some(p=>String(p.id)===String(id)));
+ if(customerName.length<2||!rows.length)return;
+ const snapshot=rows.map(([id,quantity])=>{const p=products.find(x=>String(x.id)===String(id));return p?{product_id:id,name:String(p.name||"").slice(0,180),quantity:Number(quantity),unit_price:Number(p.price)||0}:null}).filter(Boolean);
+ try{
+  const r=await fetch(SUPABASE_URL+"/rest/v1/rpc/save_cart_reminder_optin",{method:"POST",headers:{...apiHeaders,"Content-Type":"application/json"},body:JSON.stringify({p_visitor_id:visitorId,p_customer_name:customerName,p_phone:phone,p_cart_snapshot:snapshot,p_consent:true})});
+  if(!r.ok)console.warn("Cart reminder opt-in could not be saved",await r.text());
+ }catch(e){console.warn("Cart reminder opt-in request failed",e);}
+}
+$("cartReminderConsent")?.addEventListener("change",rtSaveCartReminderOptin);
+$("customerPhone")?.addEventListener("blur",rtSaveCartReminderOptin);
+$("customerName")?.addEventListener("blur",rtSaveCartReminderOptin);
 $("checkoutForm").onsubmit=async e=>{
  e.preventDefault();
  const rows=Object.entries(cart).filter(([id,q])=>q>0&&products.some(p=>p.id===id));
@@ -2172,15 +2205,7 @@ $("checkoutForm").onsubmit=async e=>{
   visitor_id:localStorage.getItem("ramtechVisitorId")||""
  };
  const selectedShippingMethod=$("shippingMethod").value;
- if(payload.cart_reminder_consent){
-  try{
-   let visitorId=payload.visitor_id;
-   if(!/^[0-9a-f-]{36}$/i.test(visitorId)){visitorId=crypto.randomUUID();localStorage.setItem("ramtechVisitorId",visitorId);payload.visitor_id=visitorId;}
-   const snapshot=rows.map(([id,quantity])=>{const p=products.find(x=>String(x.id)===String(id));return p?{product_id:id,name:p.name,quantity:Number(quantity),unit_price:Number(p.price)}:null}).filter(Boolean);
-   const reminderResponse=await fetch(SUPABASE_URL+"/rest/v1/cart_reminder_optins",{method:"POST",headers:{...apiHeaders,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify({visitor_id:visitorId,customer_name:customerName,phone:normalizedPhone,consent:true,cart_snapshot:snapshot,status:"pending"})});
-   if(!reminderResponse.ok)console.warn("Cart reminder consent queue unavailable",await reminderResponse.text());
-  }catch(reminderError){console.warn("Cart reminder consent was not stored",reminderError);}
- }
+ await rtSaveCartReminderOptin();
  const btn=$("submitOrder");btn.disabled=true;btn.textContent="در حال ثبت سفارش...";
  $("checkoutMessage").textContent="در حال بررسی قیمت و موجودی...";
  try{
