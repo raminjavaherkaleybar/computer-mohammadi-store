@@ -2150,7 +2150,8 @@ async function rtSaveCartReminderOptin(){
  if(!/^[0-9a-f-]{36}$/i.test(visitorId)){
   const bytes=crypto.getRandomValues(new Uint8Array(16));
   bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;
-  visitorId=[...bytes].map((b,i)=>[4,6,8,10].includes(i)?"-"+b.toString(16).padStart(2,"0"):b.toString(16).padStart(2,"0")).join("").replace(/^-|-$/g,"").replace(/^(.{8})(.{4})(.{4})(.{4})(.{12})$/,"$1-$2-$3-$4-$5");
+  const hex=Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("");
+  visitorId=hex.slice(0,8)+"-"+hex.slice(8,12)+"-"+hex.slice(12,16)+"-"+hex.slice(16,20)+"-"+hex.slice(20);
   localStorage.setItem(visitorKey,visitorId);
  }
  if(!/^09\\d{9}$/.test(phone))return;
