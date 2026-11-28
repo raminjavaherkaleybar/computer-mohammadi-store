@@ -1725,7 +1725,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 .rt-special-offers{margin:22px auto 10px;padding:22px;border:1px solid #a98748;border-radius:22px;background:radial-gradient(circle at 90% 0,#1e4a68,#0b1729 65%);box-shadow:0 16px 40px #0005}
 .rt-special-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;color:#fff}
 .rt-special-heading h2{margin:4px 0;color:#fff;font-size:23px}.rt-special-heading p{margin:0;color:#b9c8dc;font-size:12px}
-.rt-special-kicker{color:#e7c77f;font-size:10px;font-weight:800;letter-spacing:.5px}.rt-special-icon{font-size:34px;color:#e7c77f}
+.rt-special-kicker{color:#e7c77f;font-size:10px;font-weight:800;letter-spacing:.5px}.rt-special-icon{font-size:34px;color:#e7c77f}.rt-special-empty{grid-column:1/-1;padding:18px;border:1px dashed #80683e;border-radius:14px;color:#ead9b2;text-align:center;font-size:13px}
 .rt-special-offers .product{border-color:#5b4a2e}.rt-special-offers .product-visual{background:linear-gradient(145deg,#203750,#121f31)}
 .rt-shipping-payment{margin:28px auto;padding:24px;border:1px solid #29425f;border-radius:22px;background:linear-gradient(135deg,#101d30,#0b1524);color:#eaf3ff;box-shadow:0 14px 38px #0004}
 .rt-guide-head{text-align:center;margin-bottom:18px}.rt-guide-head>span{color:#e3c47d;font-size:11px;font-weight:800}.rt-guide-head h2{margin:5px 0;color:#fff}.rt-guide-head p{margin:0;color:#a9bdd6;font-size:12px}
@@ -1747,7 +1747,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
   <a class="brand" href="#home" aria-label="رام‌تک، صفحه اصلی"><img class="brand-logo" src="assets/ram-tech-logo.svg" alt="RAM TECH | رام‌تک"></a>
   <div class="head-actions"><button class="btn btn-ghost cart-header" id="cartBtn">🛒 <span>سبد خرید</span><strong id="cartCount">۰</strong></button></div>
  </div>
- <nav><div class="wrap navlinks"><a class="nav-home" href="#home">⌂ خانه</a><a href="#categories">▦ دسته‌بندی محصولات</a><a href="#products">٪ محصولات فروشگاه</a><a href="#benefits">ⓘ درباره ما</a><a href="#contact">☎ تماس با ما</a><a href="track-order.html">پیگیری سفارش</a><a href="admin.html" class="admin-nav-link" aria-label="ورود مدیر به پنل مدیریت">⚙ مدیریت فروشگاه</a><a href="#benefits">؟ راهنمای خرید</a><a href="#contact">همکاری با ما</a></div></nav>
+ <nav><div class="wrap navlinks"><a class="nav-home" href="#home">⌂ خانه</a><a href="#categories">▦ دسته‌بندی محصولات</a><a href="#products">٪ محصولات فروشگاه</a><a href="#specialOffers">✦ شگفت‌انگیزها</a><a href="#benefits">ⓘ درباره ما</a><a href="#contact">☎ تماس با ما</a><a href="track-order.html">پیگیری سفارش</a><a href="admin.html" class="admin-nav-link" aria-label="ورود مدیر به پنل مدیریت">⚙ مدیریت فروشگاه</a><a href="#benefits">؟ راهنمای خرید</a><a href="#contact">همکاری با ما</a></div></nav>
 </header>
 <main>
 <section class="hero wrap" id="home"><div class="hero-box">
@@ -1913,7 +1913,7 @@ async function loadProductViewCounts(){
 function renderSpecialOffers(){
  const section=$("specialOffers"),grid=$("specialOfferGrid");if(!section||!grid)return;
  const items=products.filter(p=>p.stock_quantity>0&&(p.is_featured||(Number(p.compare_at_price)>Number(p.price))));
- if(!items.length){section.hidden=true;return;}
+ if(!items.length){section.hidden=false;grid.innerHTML='<div class="rt-special-empty">به‌زودی پیشنهادهای ویژه و تخفیف‌های تأییدشده فروشگاه در این بخش قرار می‌گیرند.</div>';return;}
  section.hidden=false;
  grid.innerHTML=items.slice(0,8).map(p=>{
   const discounted=Number(p.compare_at_price)>Number(p.price);
