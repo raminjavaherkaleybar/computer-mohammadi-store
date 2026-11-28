@@ -33,9 +33,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.86.0/dist/umd/supabase.js"></script>
 <script>
 (()=>{'use strict';
-const URL='https://fgfeiilkzoajguabzuex.supabase.co',KEY='sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB',ADMIN='raminmkaleybar1363@gmail.com';
+const SUPABASE_URL='https://fgfeiilkzoajguabzuex.supabase.co',KEY='sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB',ADMIN='raminmkaleybar1363@gmail.com';
 if(!window.supabase){document.getElementById('loginMsg').textContent='کتابخانه اتصال بارگذاری نشد؛ اتصال اینترنت را بررسی کنید.';return}
-const db=window.supabase.createClient(URL,KEY),$=id=>document.getElementById(id);
+const db=window.supabase.createClient(SUPABASE_URL,KEY),$=id=>document.getElementById(id);
 let report=null;
 const fa=n=>Number(n||0).toLocaleString('fa-IR'),money=n=>fa(Math.round(Number(n||0)))+' تومان';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
