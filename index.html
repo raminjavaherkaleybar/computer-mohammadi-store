@@ -1631,7 +1631,24 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 
 <style id="ramtech-motion-showcase">
 /* RAM TECH animated new arrivals: isolated styles, existing catalog and checkout remain unchanged. */
-.rt-motion-section{padding:30px 0 18px}
+.rt-motion-section{padding:22px;margin:22px auto 18px;border:1px solid #c4cbd3;border-radius:23px;background:linear-gradient(145deg,#f5f7f9 0%,#e1e5e9 52%,#cfd5dc 100%);box-shadow:0 12px 30px rgba(35,48,63,.09)}
+.rt-motion-heading h2{color:#263448}
+.rt-heading-mark{background:linear-gradient(145deg,#f8fafc,#c9d0d8);border-color:#b8c0ca;color:#667383}
+.rt-featured-stage{background:radial-gradient(circle at 18% 55%,rgba(255,255,255,.9),transparent 34%),linear-gradient(120deg,#f7f9fb,#dfe4e9 62%,#c8cfd7);color:#263448;box-shadow:0 12px 28px rgba(35,48,63,.12)}
+.rt-featured-stage:before{border-color:rgba(105,119,136,.28)}
+.rt-featured-label{border-color:#aeb8c4;color:#526174;background:rgba(255,255,255,.55)}
+.rt-featured-category{color:#647184}
+.rt-featured-copy h3{color:#263448}
+.rt-featured-copy p{color:#5e6a79}
+.rt-featured-price{color:#896a31}
+.rt-image-glow{background:radial-gradient(circle,rgba(255,255,255,.9),transparent 68%)}
+.rt-carousel-viewport{overflow:hidden;scroll-snap-type:none;scrollbar-width:none}
+.rt-carousel-viewport::-webkit-scrollbar{display:none}
+.rt-carousel-track{animation:rtProductMarquee var(--rt-marquee-duration,36s) linear infinite;will-change:transform}
+.rt-carousel-viewport:hover .rt-carousel-track,.rt-carousel-viewport:focus-within .rt-carousel-track,.rt-motion-section.is-marquee-paused .rt-carousel-track{animation-play-state:paused!important}
+@keyframes rtProductMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:650px){.rt-motion-section{padding:16px 12px;margin:16px auto 14px}}
+@media(prefers-reduced-motion:reduce){.rt-carousel-track{animation:rtProductMarquee var(--rt-marquee-duration,36s) linear infinite!important;}}
 .rt-motion-heading,.rt-carousel-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:15px}
 .rt-motion-heading h2{margin:4px 0 2px;font-size:23px;color:#172033}
 .rt-motion-heading p,.rt-carousel-heading p{margin:0;color:#778195;font-size:12px}
@@ -1722,11 +1739,11 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 
 <style id="ramtech-catalog-upgrades">
 .rt-manager-label{font-weight:800;color:#e7d2a1;white-space:nowrap}
-.rt-special-offers{margin:22px auto 10px;padding:22px;border:1px solid #a98748;border-radius:22px;background:radial-gradient(circle at 90% 0,#1e4a68,#0b1729 65%);box-shadow:0 16px 40px #0005}
-.rt-special-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;color:#fff}
-.rt-special-heading h2{margin:4px 0;color:#fff;font-size:23px}.rt-special-heading p{margin:0;color:#b9c8dc;font-size:12px}
-.rt-special-kicker{color:#e7c77f;font-size:10px;font-weight:800;letter-spacing:.5px}.rt-special-icon{font-size:34px;color:#e7c77f}.rt-special-empty{grid-column:1/-1;padding:18px;border:1px dashed #80683e;border-radius:14px;color:#ead9b2;text-align:center;font-size:13px}
-.rt-special-offers .product{border-color:#5b4a2e}.rt-special-offers .product-visual{background:linear-gradient(145deg,#203750,#121f31)}
+.rt-special-offers{margin:22px auto 10px;padding:22px;border:1px solid #c1c8d0;border-radius:22px;background:linear-gradient(145deg,#f5f7f9,#dfe4e9 58%,#cbd2da);box-shadow:0 14px 34px rgba(35,48,63,.12)}
+.rt-special-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;color:#263448}
+.rt-special-heading h2{margin:4px 0;color:#263448;font-size:23px}.rt-special-heading p{margin:0;color:#657184;font-size:12px}
+.rt-special-kicker{color:#68778a;font-size:10px;font-weight:800;letter-spacing:.5px}.rt-special-icon{font-size:34px;color:#758294}.rt-special-empty{grid-column:1/-1;padding:18px;border:1px dashed #aab3be;border-radius:14px;color:#465365;text-align:center;font-size:13px}
+.rt-special-offers .product{border-color:#c5ccd4}.rt-special-offers .product-visual{background:linear-gradient(145deg,#f7f9fb,#e0e5ea)}
 .rt-shipping-payment{margin:28px auto;padding:24px;border:1px solid #29425f;border-radius:22px;background:linear-gradient(135deg,#101d30,#0b1524);color:#eaf3ff;box-shadow:0 14px 38px #0004}
 .rt-guide-head{text-align:center;margin-bottom:18px}.rt-guide-head>span{color:#e3c47d;font-size:11px;font-weight:800}.rt-guide-head h2{margin:5px 0;color:#fff}.rt-guide-head p{margin:0;color:#a9bdd6;font-size:12px}
 .rt-guide-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.rt-guide-grid article{padding:15px;border:1px solid #2c4663;border-radius:15px;background:#14243a}
@@ -2020,10 +2037,17 @@ function renderAnimatedShowcase(){
  rtShowcaseItems=products.filter(p=>Number(p.stock_quantity)>0).sort((a,b)=>{const at=Date.parse(a.created_at||"")||0,bt=Date.parse(b.created_at||"")||0;return bt-at;}).slice(0,8);
  if(!rtShowcaseItems.length){section.classList.add("hidden");rtShowcaseStop();return;}
  section.classList.remove("hidden");
- $("rtCarouselTrack").innerHTML=rtShowcaseItems.map(p=>{
+ const cardsHtml=rtShowcaseItems.map(p=>{
   const src=(typeof p.image_url==="string"&&/^https?:\/\//i.test(p.image_url.trim()))?p.image_url.trim():productImageFor(p);
   return '<article class="rt-slide-card"><a class="rt-slide-image" href="product.html?id='+encodeURIComponent(p.id)+'"><img src="'+safe(src)+'" alt="'+safe(p.name)+'" loading="lazy" decoding="async" onerror="this.style.opacity=0"></a><div class="rt-slide-body"><span class="rt-slide-category">'+safe(p.label||"محصول جدید")+'</span><a class="rt-slide-name" href="product.html?id='+encodeURIComponent(p.id)+'">'+safe(p.name)+'</a><div class="rt-slide-price">'+fa(p.price)+' تومان</div><div class="rt-slide-actions"><button type="button" data-rt-detail="'+safe(p.id)+'">جزئیات</button><button type="button" data-rt-add="'+safe(p.id)+'">افزودن به سبد</button></div></div></article>';
  }).join("");
+ const track=$("rtCarouselTrack");
+ track.innerHTML=cardsHtml+cardsHtml;
+ track.style.setProperty("--rt-marquee-duration",Math.max(24,rtShowcaseItems.length*5)+"s");
+ track.querySelectorAll(".rt-slide-card:nth-child(n+"+(rtShowcaseItems.length+1)+")").forEach(card=>{
+  card.setAttribute("aria-hidden","true");
+  card.querySelectorAll("a,button").forEach(el=>el.setAttribute("tabindex","-1"));
+ });
  document.querySelectorAll("[data-rt-detail]").forEach(b=>b.onclick=()=>{location.href="product.html?id="+encodeURIComponent(b.dataset.rtDetail);});
  document.querySelectorAll("[data-rt-add]").forEach(b=>b.onclick=()=>addToCart(b.dataset.rtAdd));
  rtShowcaseSet(0);
@@ -2031,6 +2055,7 @@ function renderAnimatedShowcase(){
  $("rtShowcasePrev").onclick=()=>rtShowcaseSet(rtShowcaseIndex-1);
  $("rtShowcasePause").onclick=()=>{
   rtShowcasePaused=!rtShowcasePaused;
+  section.classList.toggle("is-marquee-paused",rtShowcasePaused);
   $("rtShowcasePause").textContent=rtShowcasePaused?"▶":"Ⅱ";
   $("rtShowcasePause").setAttribute("aria-label",rtShowcasePaused?"ادامه حرکت محصولات":"توقف حرکت محصولات");
   rtShowcaseStart();
