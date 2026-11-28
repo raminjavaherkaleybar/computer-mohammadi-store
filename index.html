@@ -1748,6 +1748,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
  </div>
 </div></section>
 <div class="catalog-search-wrap wrap"><div class="catalog-search"><input id="search" type="search" placeholder="جست‌وجوی هوشمند؛ نام محصول را بنویسید..." aria-label="جست‌وجوی محصولات"><span aria-hidden="true">⌕</span><small class="smart-search-hint">جست‌وجو با بخشی از نام کالا و حتی با اشتباه تایپی</small></div></div>
+<section class="wrap" style="margin:12px auto 18px;display:flex;flex-wrap:wrap;gap:9px;align-items:center"><a href="customer.html" style="padding:9px 13px;border-radius:10px;background:#111827;color:#fff;font-size:12px;text-decoration:none">پنل مشتری و پیگیری سفارش</a><a href="wholesale.html" style="padding:9px 13px;border-radius:10px;background:#b38a3e;color:#fff;font-size:12px;text-decoration:none">قیمت همکاری و خرید عمده</a><a href="support.html" style="padding:9px 13px;border-radius:10px;background:#e9eef5;color:#24364b;font-size:12px;text-decoration:none">پشتیبانی و تیکت</a></section>
 <section class="section wrap" id="categories"><div class="section-head"><div><h2>دسته‌بندی محصولات</h2><p>سریع‌تر محصول موردنظرت را پیدا کن</p></div></div><div class="categories" id="categoryGrid"></div></section>
 
 <section class="rt-motion-section wrap" id="newArrivals" aria-label="محصولات تازه فروشگاه">
@@ -1823,6 +1824,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 <label>روش ارسال *</label><select id="shippingMethod" required style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"><option value="">انتخاب روش ارسال</option><option value="post">پست جمهوری اسلامی ایران</option><option value="tipax">تیپاکس</option></select>
 <div style="border:1px solid rgba(212,175,55,.35);border-radius:12px;padding:12px;margin:12px 0;background:rgba(212,175,55,.06)"><label for="couponCode">کد تخفیف باشگاه مشتریان (اختیاری)</label><input id="couponCode" maxlength="24" autocomplete="off" placeholder="کد اختصاصی رام‌تک" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0"><small>کد تخفیف فقط برای همان شماره موبایل صادرشده و پس از بررسی سفارش اعمال می‌شود.</small></div>
 <label>توضیحات سفارش</label><textarea id="customerNote" maxlength="500" rows="2" style="width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;margin:5px 0 10px"></textarea>
+<label style="display:flex;align-items:flex-start;gap:9px;margin:10px 0;padding:11px;border:1px solid #e8d9b7;border-radius:10px;background:#fffaf0;font-size:12px"><input id="cartReminderConsent" type="checkbox" style="width:auto;margin-top:4px"><span>موافقم اگر این سبد خرید را تکمیل نکردم، رام‌تک برای پیگیری همین سبد با من تماس یا پیام یادآوری ارسال کند. این رضایت اختیاری است و می‌توانم آن را فعال نکنم.</span></label>
 <div class="note">سفارش ابتدا «در انتظار تأیید» ثبت می‌شود. هزینه پست با تعرفه پیش‌فرض ۱۷۰٬۰۰۰ تومان محاسبه شده و ممکن است توسط فروشگاه اصلاح شود؛ هزینه تیپاکس پس از استعلام تعیین می‌شود. پیش از تأیید نهایی فروشگاه هیچ مبلغی آنلاین دریافت نمی‌شود.</div>
 <button id="submitOrder" type="submit" class="btn btn-primary" style="width:100%;margin-top:12px">ثبت درخواست سفارش</button>
 </form>
@@ -2165,9 +2167,20 @@ $("checkoutForm").onsubmit=async e=>{
   shipping_method:$("shippingMethod").value,
   customer_note:$("customerNote").value.trim(),
   coupon_code:$("couponCode")?.value.trim().toUpperCase()||"",
-  items:rows.map(([product_id,quantity])=>({product_id,quantity}))
+  items:rows.map(([product_id,quantity])=>({product_id,quantity})),
+  cart_reminder_consent:!!$("cartReminderConsent")?.checked,
+  visitor_id:localStorage.getItem("ramtechVisitorId")||""
  };
  const selectedShippingMethod=$("shippingMethod").value;
+ if(payload.cart_reminder_consent){
+  try{
+   let visitorId=payload.visitor_id;
+   if(!/^[0-9a-f-]{36}$/i.test(visitorId)){visitorId=crypto.randomUUID();localStorage.setItem("ramtechVisitorId",visitorId);payload.visitor_id=visitorId;}
+   const snapshot=rows.map(([id,quantity])=>{const p=products.find(x=>String(x.id)===String(id));return p?{product_id:id,name:p.name,quantity:Number(quantity),unit_price:Number(p.price)}:null}).filter(Boolean);
+   const reminderResponse=await fetch(SUPABASE_URL+"/rest/v1/cart_reminder_optins",{method:"POST",headers:{...apiHeaders,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify({visitor_id:visitorId,customer_name:customerName,phone:normalizedPhone,consent:true,cart_snapshot:snapshot,status:"pending"})});
+   if(!reminderResponse.ok)console.warn("Cart reminder consent queue unavailable",await reminderResponse.text());
+  }catch(reminderError){console.warn("Cart reminder consent was not stored",reminderError);}
+ }
  const btn=$("submitOrder");btn.disabled=true;btn.textContent="در حال ثبت سفارش...";
  $("checkoutMessage").textContent="در حال بررسی قیمت و موجودی...";
  try{
