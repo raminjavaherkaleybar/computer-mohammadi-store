@@ -2002,7 +2002,7 @@ function rtShowcaseSet(index){
   stage.classList.remove("is-changing");
  },220);
  const cards=document.querySelectorAll("#rtCarouselTrack .rt-slide-card");
- if(cards[rtShowcaseIndex])cards[rtShowcaseIndex].scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"nearest",inline:"start"});
+ /* عمداً صفحه را به کارت تازه‌رسیده‌ها اسکرول نمی‌کنیم؛ تغییر خودکار محصول نباید موقعیت عمودی کاربر را جابه‌جا کند. */
 }
 function rtShowcaseStop(){
  if(rtShowcaseTimer){clearInterval(rtShowcaseTimer);rtShowcaseTimer=null;}
