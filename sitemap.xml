@@ -6,8 +6,68 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html</loc>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/policies.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/support.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/track-order.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=1bc01f36-8c5f-425e-9189-bff3e32b199c</loc>
     <changefreq>daily</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=85f38cc1-2bc2-4af9-b67d-0c55c8e22e5c</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=161b8df4-28ec-4e49-b912-6d498f2d3219</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=33807f69-31da-4bf8-9377-f15688fc31ac</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=107588d4-b7ca-46ac-9cdb-14c040045874</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=ef05ce33-23a1-4407-9c84-16c54ef16cd2</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=c7a0f83f-d5ed-4bc6-8d92-89cb127fcf51</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=4ea2b491-ab31-420e-bfad-163423936627</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=71eed079-010e-4ce0-8e46-c2cf0d7e0965</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://raminjavaherkaleybar.github.io/computer-mohammadi-store/product.html?id=4a97ec37-6092-4ecc-887b-28434bc52071</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
