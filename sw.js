@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ramtech-shell-v10';
+const CACHE_NAME = 'ramtech-shell-v11';
 const APP_SHELL = [
   './index.html',
   './product.html',
@@ -20,7 +20,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.endsWith('/admin.html')) return;
+  if (['/admin.html','/admin-insights.html','/backup.html','/customer-ops.html','/store-tools.html','/support-chat.html','/warranty.html'].some(path => url.pathname.endsWith(path))) return;
   if (url.pathname.includes('/rest/v1/') || url.pathname.includes('/functions/v1/')) return;
   if (request.mode === 'navigate') {
     event.respondWith(fetch(request).then(response => {
