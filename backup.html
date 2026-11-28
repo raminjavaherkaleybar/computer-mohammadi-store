@@ -2,17 +2,17 @@
 <html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>پشتیبان رام‌تک</title>
 <style>body{font-family:Tahoma,Arial;background:#f3f6fb;color:#172338;margin:0;padding:20px}.card{max-width:720px;margin:24px auto;background:#fff;padding:22px;border-radius:15px;box-shadow:0 8px 25px #10203012}h1{font-size:20px}input,button{font:inherit;padding:11px;border-radius:9px;border:1px solid #dce4ef;width:100%;box-sizing:border-box;margin:7px 0}button{background:#176fe0;color:white;border:0;font-weight:bold;cursor:pointer}button:disabled{opacity:.55}.warn{background:#fff8e8;padding:12px;border-radius:10px;font-size:13px;line-height:1.9}.msg{font-size:13px;white-space:pre-wrap}.good{color:#087443}.bad{color:#b42318}</style></head>
 <body><section class="card"><h1>پشتیبان‌گیری رام‌تک</h1><p>این ابزار فقط با ورود حساب مدیر، یک فایل JSON از داده‌های فروشگاهی انتخاب‌شده می‌سازد.</p>
-<div class="warn">اطلاعات مشتریان و سفارش‌ها داخل فایل پشتیبان قرار می‌گیرد. فایل را در دستگاه امن نگه دارید و برای دیگران ارسال نکنید. کلیدها، تنظیمات پرداخت حساس، توکن‌های روبیکا و داده‌های امنیتی در این خروجی نیستند. بازگردانی مستقیم هنوز فعال نیست؛ ابتدا فایل را در همین صفحه اعتبارسنجی و پیش‌نمایش کنید. این مرحله هیچ داده‌ای را به پایگاه‌داده نمی‌فرستد یا تغییر نمی‌دهد.</div>
+<div class="warn">اطلاعات مشتریان و سفارش‌ها داخل فایل پشتیبان قرار می‌گیرد. فایل را در دستگاه امن نگه دارید و برای دیگران ارسال نکنید. کلیدها، تنظیمات پرداخت حساس، توکن‌های روبیکا و داده‌های امنیتی در این خروجی نیستند. بازیابی فقط به‌صورت ادغامی انجام می‌شود: اطلاعات موجود بازنویسی یا حذف نمی‌شوند و ردیف‌های دارای کلید تکراری رد می‌شوند. پیش از اجرا، فایل را اعتبارسنجی و پیش‌نمایش کنید.</div>
 <label>ایمیل مدیر</label><input id="email" type="email" value="raminmkaleybar1363@gmail.com" autocomplete="username">
 <label>رمز عبور حساب مدیر (فقط در این صفحه وارد کنید)</label><input id="password" type="password" autocomplete="current-password">
-<button id="login">ورود</button><button id="backup" disabled>دانلود پشتیبان فروشگاه (JSON)</button><hr><h2 style="font-size:17px">بررسی فایل پشتیبان</h2><p>فایل JSON پشتیبان را انتخاب کنید تا ساختار و تعداد ردیف‌ها بررسی شود.</p><input id="restoreFile" type="file" accept=".json,application/json"><button id="validateRestore" style="background:#475467">اعتبارسنجی و پیش‌نمایش فایل</button><div id="restorePreview" class="msg"></div><button id="logout" disabled style="background:#667085">خروج</button><p id="msg" class="msg"></p><a href="./admin.html">بازگشت به پنل مدیریت</a></section>
+<button id="login">ورود</button><button id="backup" disabled>دانلود پشتیبان فروشگاه (JSON)</button><hr><h2 style="font-size:17px">بررسی فایل پشتیبان</h2><p>فایل JSON پشتیبان را انتخاب کنید تا ساختار و تعداد ردیف‌ها بررسی شود.</p><input id="restoreFile" type="file" accept=".json,application/json"><button id="validateRestore" style="background:#475467">اعتبارسنجی و پیش‌نمایش فایل</button><button id="applyRestore" disabled style="background:#087443">بازیابی امن اطلاعات</button><div id="restorePreview" class="msg"></div><button id="logout" disabled style="background:#667085">خروج</button><p id="msg" class="msg"></p><a href="./admin.html">بازگشت به پنل مدیریت</a></section>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL='https://fgfeiilkzoajguabzuex.supabase.co',KEY='sb_publishable_pJ4jaKNQJA35B1kYmrtxWw_zPSuMMRB',ADMIN='raminmkaleybar1363@gmail.com';
 const db=window.supabase.createClient(SUPABASE_URL,KEY,{auth:{persistSession:true,autoRefreshToken:true}});
-const $=id=>document.getElementById(id),safeMsg=(m,ok=false)=>{$('msg').textContent=m;$('msg').className='msg '+(ok?'good':'bad')};
-function signedIn(user){if(!user||user.email?.toLowerCase()!==ADMIN){$('backup').disabled=true;$('logout').disabled=true;return false}$('backup').disabled=false;$('logout').disabled=false;$('login').disabled=true;safeMsg('با حساب مدیر وارد هستید.',true);return true}
+let isAdmin=false,validatedBackup=null;const $=id=>document.getElementById(id),safeMsg=(m,ok=false)=>{$('msg').textContent=m;$('msg').className='msg '+(ok?'good':'bad')};
+function signedIn(user){if(!user||user.email?.toLowerCase()!==ADMIN){isAdmin=false;$('backup').disabled=true;$('logout').disabled=true;$('applyRestore').disabled=true;return false}isAdmin=true;$('backup').disabled=false;$('logout').disabled=false;$('applyRestore').disabled=!validatedBackup;$('login').disabled=true;safeMsg('با حساب مدیر وارد هستید.',true);return true}
 $('login').onclick=async()=>{const e=$('email').value.trim().toLowerCase(),p=$('password').value;if(e!==ADMIN||!p){safeMsg('ایمیل مدیر و رمز را وارد کنید.');return} $('login').disabled=true;try{const {data,error}=await db.auth.signInWithPassword({email:e,password:p});if(error)throw error;if(!signedIn(data.user))throw new Error('این حساب اجازه پشتیبان‌گیری ندارد.')}catch(err){safeMsg('ورود ناموفق: '+err.message);$('login').disabled=false}};
-$('logout').onclick=async()=>{await db.auth.signOut();$('backup').disabled=true;$('logout').disabled=true;$('login').disabled=false;$('password').value='';safeMsg('خارج شدید.',true)};
+$('logout').onclick=async()=>{await db.auth.signOut();isAdmin=false;$('backup').disabled=true;$('logout').disabled=true;$('applyRestore').disabled=true;$('login').disabled=false;$('password').value='';safeMsg('خارج شدید.',true)};
 db.auth.getSession().then(({data})=>{if(data.session)signedIn(data.session.user)});
 $('backup').onclick=async()=>{if($('backup').disabled)return;$('backup').disabled=true;safeMsg('در حال دریافت داده‌ها...');const tables=['categories','products','customers','orders','order_items','order_returns','inventory_movements','store_settings','store_suppliers','store_purchases','store_purchase_items','store_supplier_payments','store_expenses','store_cash_opening_balances','store_cash_transactions'];const payload={backup_type:'ramtech_store_data',schema_version:2,created_at:new Date().toISOString(),row_counts:{},note:'Data backup only. No secrets, auth tokens or payment credentials included. No automated restore.',tables:{}};try{for(const table of tables){let offset=0,rows=[];while(true){const {data,error}=await db.from(table).select('*').range(offset,offset+499);if(error)throw new Error(table+': '+error.message);const batch=data||[];rows.push(...batch);if(batch.length<500)break;offset+=batch.length}payload.tables[table]=rows;payload.row_counts[table]=rows.length}const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json;charset=utf-8'}),url=window.URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ramtech-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>window.URL.revokeObjectURL(url),1500);safeMsg('پشتیبان دانلود شد. تعداد ردیف هر جدول در فایل درج شده است. فایل را در جای امن نگه دارید.',true)}catch(err){safeMsg('پشتیبان‌گیری کامل نشد: '+err.message)}finally{$('backup').disabled=false}};
 
@@ -45,7 +45,25 @@ $('validateRestore').onclick=async()=>{
   lines.push('','مجموع: '+total.toLocaleString('fa-IR')+' ردیف','');
   lines.push('نتیجه: تمام جدول‌های مورد انتظار، کلیدهای اصلی و شمارش ردیف‌ها بررسی شد.');
   lines.push('⚠️ این فقط پیش‌نمایش است؛ هنوز هیچ اطلاعاتی بازیابی نشده و دکمه‌ای برای اعمال تغییرات وجود ندارد.');
-  out.textContent=lines.join('\n');
- }catch(e){out.textContent='فایل قابل تأیید نیست: '+e.message}
+  out.textContent=lines.join('\n');validatedBackup=data;$('applyRestore').disabled=!isAdmin;
+ }catch(e){validatedBackup=null;$('applyRestore').disabled=true;out.textContent='فایل قابل تأیید نیست: '+e.message}
+};
+
+$('applyRestore').onclick=async()=>{
+ if(!isAdmin||!validatedBackup||$('applyRestore').disabled)return;
+ const ok=window.confirm('هشدار مهم: بازیابی به‌صورت ادغامی اجرا می‌شود. ردیف‌های دارای کلید تکراری رد می‌شوند و اطلاعات موجود بازنویسی یا حذف نمی‌شوند. ادامه می‌دهید؟');
+ if(!ok)return;
+ $('applyRestore').disabled=true;$('validateRestore').disabled=true;
+ const out=$('restorePreview');out.textContent+='\n\nدر حال ارسال امن فایل و بازیابی...';
+ try{
+  const {data:sessionData,error:sessionError}=await db.auth.getSession();if(sessionError)throw sessionError;
+  const token=sessionData.session?.access_token;if(!token)throw new Error('نشست مدیر منقضی شده است؛ دوباره وارد شوید.');
+  const response=await fetch(SUPABASE_URL+'/functions/v1/ramtech-backup-restore',{method:'POST',headers:{'Authorization':'Bearer '+token,'apikey':KEY,'Content-Type':'application/json'},body:JSON.stringify(validatedBackup)});
+  const result=await response.json();if(!response.ok||!result.success)throw new Error(result.message||'بازیابی انجام نشد.');
+  const report=['\n✅ بازیابی ادغامی پایان یافت.','هیچ ردیف موجودی بازنویسی یا حذف نشد.'];
+  for(const [table,stat] of Object.entries(result.result?.tables||{}))report.push(table+': افزوده '+Number(stat.inserted||0).toLocaleString('fa-IR')+'، ردشده '+Number(stat.skipped||0).toLocaleString('fa-IR'));
+  out.textContent+=report.join('\n');safeMsg('بازیابی ادغامی با موفقیت انجام شد.',true);validatedBackup=null;
+ }catch(e){out.textContent+='\n❌ خطا: '+e.message;safeMsg('بازیابی کامل نشد: '+e.message)}
+ finally{$('validateRestore').disabled=false;$('applyRestore').disabled=!validatedBackup||!isAdmin}
 };
 </script></body></html>
