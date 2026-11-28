@@ -3285,11 +3285,12 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const fa=n=>Number(n||0).toLocaleString('fa-IR');
 const headers={apikey:KEY,Authorization:'Bearer '+KEY};
 async function get(path){const r=await fetch(API+path,{headers,cache:'no-store'});if(!r.ok)throw new Error('offer fetch failed');return r.json()}
+async function rpc(name){const r=await fetch(API+'rpc/'+name,{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:'{}',cache:'no-store'});if(!r.ok)throw new Error('campaign rpc failed');return r.json()}
 function insertRoot(){let root=document.getElementById('rtGrowthOffers');if(root)return root;root=document.createElement('section');root.id='rtGrowthOffers';root.setAttribute('aria-label','فروش ویژه و پک‌های پیشنهادی رام‌تک');const anchor=document.querySelector('header')||document.querySelector('nav')||document.body.firstElementChild;if(anchor&&anchor!==document.body)anchor.insertAdjacentElement('afterend',root);else document.body.prepend(root);return root}
 function startCountdown(el,end){if(!end){el.textContent='فرصت استفاده فعال است';return}const tick=()=>{const ms=new Date(end).getTime()-Date.now();if(ms<=0){el.textContent='مهلت این پیشنهاد به پایان رسید';return}const d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),m=Math.floor(ms%3600000/60000),s=Math.floor(ms%60000/1000);el.textContent='زمان باقی‌مانده: '+fa(d)+' روز · '+fa(h)+' ساعت · '+fa(m)+' دقیقه · '+fa(s)+' ثانیه'};tick();setInterval(tick,1000)}
 async function render(){const root=insertRoot();try{
  const [campaigns,bundles]=await Promise.all([
-  get('marketing_campaigns?select=id,name,discount_type,discount_value,coupon_code,starts_at,ends_at&channel=eq.website&status=in.(scheduled,sent)&order=starts_at.asc&limit=8'),
+  rpc('get_active_website_campaigns'),
   get('product_bundles?select=id,title,description,discount_type,discount_value,coupon_code,starts_at,ends_at,product_bundle_items(quantity,products(id,name,price,image_url,stock_quantity))&is_active=eq.true&limit=12')
  ]);
  const now=Date.now(),active=(campaigns||[]).filter(x=>(!x.starts_at||new Date(x.starts_at).getTime()<=now)&&(!x.ends_at||new Date(x.ends_at).getTime()>now)&&(!String(x.coupon_code||'').startsWith('PACK')||(bundles||[]).some(b=>b.coupon_code===x.coupon_code)));
