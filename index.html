@@ -3292,7 +3292,7 @@ async function render(){const root=insertRoot();try{
   get('marketing_campaigns?select=id,name,discount_type,discount_value,coupon_code,starts_at,ends_at&channel=eq.website&status=in.(scheduled,sent)&order=starts_at.asc&limit=8'),
   get('product_bundles?select=id,title,description,discount_type,discount_value,coupon_code,starts_at,ends_at,product_bundle_items(quantity,products(id,name,price,image_url,stock_quantity))&is_active=eq.true&limit=12')
  ]);
- const now=Date.now(),active=(campaigns||[]).filter(x=>(!x.starts_at||new Date(x.starts_at).getTime()<=now)&&(!x.ends_at||new Date(x.ends_at).getTime()>now));
+ const now=Date.now(),active=(campaigns||[]).filter(x=>(!x.starts_at||new Date(x.starts_at).getTime()<=now)&&(!x.ends_at||new Date(x.ends_at).getTime()>now)&&(!String(x.coupon_code||'').startsWith('PACK')||(bundles||[]).some(b=>b.coupon_code===x.coupon_code)));
  const bundleRows=(bundles||[]).filter(b=>(b.product_bundle_items||[]).length);
  if(!active.length&&!bundleRows.length){root.remove();return}
  root.innerHTML='';
