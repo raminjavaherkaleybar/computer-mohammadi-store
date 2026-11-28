@@ -2888,4 +2888,132 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 }
 </style>
 
+
+<style id="ramtech-checkout-ux-2026">
+/* Checkout usability refinement — presentation only; existing order logic is unchanged. */
+.drawer-back .drawer{
+  max-height: min(94dvh, 900px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.drawer-head{
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: inherit;
+}
+#checkoutForm{
+  padding-top: 8px;
+}
+#checkoutForm h3{
+  margin: 8px 0 14px;
+  font-size: 1.12rem;
+  letter-spacing: -.2px;
+}
+#checkoutForm label{
+  display: block;
+  margin-top: 4px;
+  color: var(--text, inherit);
+  font-size: .9rem;
+  font-weight: 750;
+}
+#checkoutForm input,
+#checkoutForm select,
+#checkoutForm textarea,
+#loyaltyLookup input{
+  box-sizing: border-box;
+  min-height: 44px;
+  max-width: 100%;
+  background: var(--surface, #fff);
+  color: var(--text, #20242b);
+  font: inherit;
+  font-size: 16px;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+#checkoutForm textarea{
+  min-height: 76px;
+  resize: vertical;
+}
+#checkoutForm input:focus-visible,
+#checkoutForm select:focus-visible,
+#checkoutForm textarea:focus-visible,
+#loyaltyLookup input:focus-visible{
+  outline: 3px solid rgba(198,160,65,.24);
+  outline-offset: 1px;
+  border-color: #b99136 !important;
+  box-shadow: 0 0 0 2px rgba(198,160,65,.12);
+}
+#checkoutReview{
+  line-height: 1.9;
+  box-shadow: 0 5px 18px rgba(30,35,45,.045);
+}
+#checkoutReview small{
+  display: block;
+  margin-top: 5px;
+  line-height: 1.8;
+  opacity: .82;
+}
+#checkoutForm .note{
+  line-height: 1.9;
+  font-size: .86rem;
+  border-radius: 12px;
+}
+#submitOrder{
+  min-height: 49px;
+  font-size: 1rem;
+  font-weight: 850;
+  letter-spacing: -.15px;
+}
+#submitOrder:disabled{
+  opacity: .7;
+  cursor: wait;
+  filter: saturate(.72);
+}
+#checkoutMessage{
+  line-height: 1.95;
+  overflow-wrap: anywhere;
+}
+#checkoutMessage a{
+  color: #8b681b !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+#checkoutToggle:disabled,
+#clearCartBtn:disabled{
+  opacity: .48;
+  cursor: not-allowed;
+}
+#loyaltyLookup{
+  line-height: 1.9;
+}
+@media(max-width:600px){
+  .drawer-back .drawer{
+    width: min(100%, 520px);
+    max-height: 96dvh;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  #checkoutForm input,
+  #checkoutForm select,
+  #checkoutForm textarea{
+    margin-bottom: 12px !important;
+  }
+  #checkoutForm .note{
+    padding: 11px !important;
+  }
+  #submitOrder{
+    position: sticky;
+    bottom: 8px;
+    z-index: 4;
+    box-shadow: 0 5px 18px rgba(0,0,0,.14);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  #checkoutForm input,
+  #checkoutForm select,
+  #checkoutForm textarea,
+  #loyaltyLookup input{transition:none}
+}
+</style>
+
 </body></html>
