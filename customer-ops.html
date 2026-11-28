@@ -12,7 +12,7 @@ const admin='raminmkaleybar1363@gmail.com',el=id=>document.getElementById(id),es
 async function gate(){const {data}=await db.auth.getSession();const u=data.session?.user;if(u&&u.email?.toLowerCase()===admin){el('login').classList.add('hidden');el('workspace').classList.remove('hidden');el('signOut').classList.remove('hidden');el('status').textContent='مدیر وارد شده است.';await load()}else if(u){await db.auth.signOut();el('status').textContent='این حساب اجازه مدیریت رام‌تک را ندارد.'}}
 el('signIn').onclick=async()=>{el('status').textContent='در حال ورود...';const {error}=await db.auth.signInWithPassword({email:el('email').value.trim(),password:el('password').value});if(error){el('status').textContent='ورود ناموفق: '+error.message;return}await gate()};
 el('signOut').onclick=async()=>{await db.auth.signOut();location.reload()};
-async function load(){await Promise.all([loadTickets(),loadQuestions(),loadWholesale(),loadTable('ramtech_referrals','referrals',['referrer_name','referrer_phone','friend_phone','referral_code','status','created_at']),loadReminders()])}
+async function load(){await Promise.all([loadTickets(),loadQuestions(),loadWholesale(),loadTable('ramtech_referrals','referrals',['referrer_name','referrer_phone','friend_phone','referral_code','status','created_at','reward_points','rewarded_at']),loadReminders()])}
 async function loadTickets(){
  const box=el('tickets');
  const {data,error}=await db.from('support_tickets').select('id,ticket_number,customer_name,customer_phone,order_number,topic,subject,message,status,admin_note,customer_reply,created_at').order('created_at',{ascending:false}).limit(100);
@@ -30,7 +30,31 @@ async function loadWholesale(){
  box.innerHTML=data.length?data.map(x=>'<div class="item"><b>'+esc(x.contact_name)+'</b> — '+esc(x.phone)+'<div>'+esc(x.business_name||'')+' | '+esc(x.city||'')+' | تعداد تقریبی: '+esc(x.estimated_quantity||'—')+'</div><p>'+esc(x.product_interest)+'</p><div class="muted">'+esc(x.details||'')+'</div><div class="grid"><div><label>قیمت اختصاصی پیشنهادی (تومان)</label><input type="number" min="0" id="quote-'+x.id+'" value="'+(x.quoted_price??'')+'" placeholder="مبلغ نهایی پیشنهادی"></div><div><label>وضعیت درخواست</label><select id="wstatus-'+x.id+'">'+['new','reviewing','quoted','closed'].map(v=>'<option value="'+v+'" '+(x.status===v?'selected':'')+'>'+({new:'جدید',reviewing:'در حال بررسی',quoted:'قیمت اعلام شده',closed:'بسته شده'}[v])+'</option>').join('')+'</select></div></div><label>توضیح شرایط قیمت، حداقل تعداد و اعتبار پیشنهاد</label><textarea id="qnote-'+x.id+'" maxlength="1500">'+esc(x.quote_note||'')+'</textarea><button class="btn" data-quote-save="'+x.id+'">ذخیره قیمت اختصاصی</button></div>').join(''):'درخواست خرید عمده ثبت نشده است.';
  box.onclick=async e=>{const id=e.target.dataset.quoteSave;if(!id)return;const raw=el('quote-'+id).value.trim(),quoted_price=raw===''?null:Number(raw);if(quoted_price!==null&&(!Number.isFinite(quoted_price)||quoted_price<0)){alert('قیمت معتبر وارد کنید.');return}const status=el('wstatus-'+id).value,quote_note=el('qnote-'+id).value.trim();const {error}=await db.from('wholesale_inquiries').update({quoted_price,quote_note,status,quoted_at:quoted_price===null?null:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);else{alert('قیمت اختصاصی ذخیره شد. برای اعلام نهایی با مشتری تماس بگیرید.');await loadWholesale()}}
 }
-async function loadTable(table,target,fields){const box=el(target);const {data,error}=await db.from(table).select('*').order('created_at',{ascending:false}).limit(100);if(error){box.textContent=error.message;return}box.innerHTML=data.length?data.map(x=>'<div class="item">'+fields.filter(k=>x[k]!==null&&x[k]!==undefined).map(k=>'<div><b>'+esc(k)+':</b> '+esc(x[k])+'</div>').join('')+'<label>وضعیت</label><select data-status="'+table+':'+x.id+'">'+(table==='wholesale_inquiries'?['new','reviewing','quoted','closed']:['pending','contacted','converted','rejected']).map(v=>'<option '+(x.status===v?'selected':'')+'>'+v+'</option>').join('')+'</select><button class="btn" data-save="'+table+':'+x.id+'">ذخیره وضعیت</button></div>').join(''):'درخواستی ثبت نشده است.';box.onclick=async e=>{const k=e.target.dataset.save;if(!k)return;const [t,id]=k.split(':');const value=box.querySelector('[data-status="'+k+'"]').value;const {error}=await db.from(t).update({status:value}).eq('id',id);if(error)alert(error.message);else await loadTable(table,target,fields)}}
+async function loadTable(table,target,fields){
+ const box=el(target);
+ const {data,error}=await db.from(table).select('*').order('created_at',{ascending:false}).limit(100);
+ if(error){box.textContent=error.message;return}
+ box.innerHTML=data.length?data.map(x=>'<div class="item">'+fields.filter(k=>x[k]!==null&&x[k]!==undefined).map(k=>'<div><b>'+esc(k)+':</b> '+esc(x[k])+'</div>').join('')+'<label>وضعیت</label><select data-status="'+table+':'+x.id+'">'+(table==='wholesale_inquiries'?['new','reviewing','quoted','closed']:['pending','contacted','converted','rejected']).map(v=>'<option '+(x.status===v?'selected':'')+'>'+v+'</option>').join('')+'</select><button class="btn" data-save="'+table+':'+x.id+'">ذخیره وضعیت</button>'+(table==='ramtech_referrals'&&x.status==='converted'&&!x.rewarded_at?'<button class="btn" data-reward="'+x.id+'">ثبت پاداش امتیازی معرف</button>':x.rewarded_at?'<span class="status">پاداش '+esc(x.reward_points)+' امتیاز ثبت شده</span>':'')+'</div>').join(''):'درخواستی ثبت نشده است.';
+ box.onclick=async e=>{
+  const reward=e.target.closest('[data-reward]');
+  if(reward){
+   const raw=prompt('چند امتیاز به کیف امتیاز معرف اضافه شود؟','100');
+   if(raw===null)return;
+   const points=Number(raw);
+   if(!Number.isInteger(points)||points<1||points>10000){alert('امتیاز باید عدد صحیح بین ۱ تا ۱۰٬۰۰۰ باشد.');return}
+   reward.disabled=true;
+   const {data:result,error:rewardError}=await db.rpc('admin_reward_referral',{p_referral_id:reward.dataset.reward,p_points:points});
+   if(rewardError){alert('ثبت پاداش انجام نشد: '+rewardError.message);reward.disabled=false;return}
+   alert('پاداش '+points+' امتیازی به کیف امتیاز معرف افزوده شد.');
+   await loadTable(table,target,fields);
+   return;
+  }
+  const k=e.target.dataset.save;if(!k)return;
+  const [t,id]=k.split(':');const value=box.querySelector('[data-status="'+k+'"]').value;
+  const {error:updateError}=await db.from(t).update({status:value}).eq('id',id);
+  if(updateError)alert(updateError.message);else await loadTable(table,target,fields);
+ }
+}
 async function loadReminders(){const box=el('reminders');const {data,error}=await db.from('cart_reminder_optins').select('*').eq('status','pending').eq('consent',true).order('created_at',{ascending:false}).limit(100);if(error){box.textContent=error.message;return}box.innerHTML=data.length?data.map(x=>'<div class="item"><b>'+esc(x.customer_name||'مشتری رام‌تک')+'</b> — '+esc(x.phone)+'<div class="muted">'+fa(x.created_at)+'</div><div>'+((x.cart_snapshot||[]).map(i=>esc(i.name)+' × '+esc(i.quantity)).join('، '))+'</div><button class="btn alt" data-copy="'+x.id+'">کپی متن یادآوری</button><button class="btn" data-sent="'+x.id+'">ثبت ارسال دستی</button></div>').join(''):'درخواست یادآوریِ در انتظار وجود ندارد.';box.onclick=async e=>{const id=e.target.dataset.copy||e.target.dataset.sent;if(!id)return;const x=data.find(a=>a.id===id);if(e.target.dataset.copy){const msg='سلام '+(x.customer_name||'دوست عزیز')+'، سبد خرید شما در فروشگاه رام‌تک هنوز تکمیل نشده است. اگر برای ثبت سفارش یا انتخاب کالا کمکی لازم دارید، با ما در تماس باشید. برای مشاهده فروشگاه: https://raminjavaherkaleybar.github.io/computer-mohammadi-store/';await navigator.clipboard.writeText(msg);alert('متن یادآوری کپی شد. آن را فقط از مسیر مورد رضایت مشتری ارسال کنید.')}else{const {error}=await db.from('cart_reminder_optins').update({status:'sent',sent_at:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);else await loadReminders()}}}
 db.auth.onAuthStateChange(()=>{});
 gate();
