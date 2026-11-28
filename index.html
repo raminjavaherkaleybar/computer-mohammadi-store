@@ -1753,6 +1753,18 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
 @media(max-width:760px){.rt-guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rt-manager-label{font-size:10px}}
 @media(max-width:480px){.rt-special-offers{padding:14px}.rt-special-heading h2{font-size:18px}.rt-guide-grid{grid-template-columns:1fr}.rt-shipping-payment{padding:16px}}
 </style>
+<style id="ramtech-live-usd-widget">
+#ramtech-live-usd-widget{margin:12px auto 0;width:min(1160px,92%);border:1px solid #cbd2dc;border-radius:15px;background:linear-gradient(115deg,#f8fafc,#e3e8ef 52%,#f9fafb);box-shadow:0 7px 22px #1720330d;color:#263244;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#ramtech-live-usd-widget .rt-usd-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#ramtech-live-usd-widget .rt-usd-label{font-weight:900;color:#4b5563;font-size:13px}
+#ramtech-live-usd-widget .rt-usd-value{font-weight:950;font-size:clamp(17px,2.4vw,23px);color:#182638;font-variant-numeric:tabular-nums}
+#ramtech-live-usd-widget .rt-usd-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:#64748b;font-size:10px}
+#ramtech-live-usd-widget .rt-usd-status{display:inline-flex;align-items:center;gap:5px}
+#ramtech-live-usd-widget .rt-usd-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;display:inline-block}
+#ramtech-live-usd-widget[data-state="stale"] .rt-usd-dot,#ramtech-live-usd-widget[data-state="error"] .rt-usd-dot{background:#d97706}
+#ramtech-live-usd-widget a{color:#596579;text-decoration:underline;text-underline-offset:2px}
+@media(max-width:520px){#ramtech-live-usd-widget{padding:10px 12px;gap:5px}#ramtech-live-usd-widget .rt-usd-meta{width:100%}}
+</style>
 </head>
 <body>
 <div class="topline"><div class="wrap utility-links">
@@ -1767,18 +1779,7 @@ html.ramtech-force-mobile .hero-earbuds{left:22%!important;bottom:0!important;wi
  <nav><div class="wrap navlinks"><a class="nav-home" href="#home">⌂ خانه</a><a href="#categories">▦ دسته‌بندی محصولات</a><a href="#products">٪ محصولات فروشگاه</a><a href="#specialOffers">✦ شگفت‌انگیزها</a><a href="#benefits">ⓘ درباره ما</a><a href="#contact">☎ تماس با ما</a><a href="track-order.html">پیگیری سفارش</a><a href="admin.html" class="admin-nav-link" aria-label="ورود مدیر به پنل مدیریت">⚙ مدیریت فروشگاه</a><a href="#benefits">؟ راهنمای خرید</a><a href="#contact">همکاری با ما</a></div></nav>
 </header>
 
-<style id="ramtech-live-usd-widget">
-#ramtech-live-usd-widget{margin:12px auto 0;width:min(1160px,92%);border:1px solid #cbd2dc;border-radius:15px;background:linear-gradient(115deg,#f8fafc,#e3e8ef 52%,#f9fafb);box-shadow:0 7px 22px #1720330d;color:#263244;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-#ramtech-live-usd-widget .rt-usd-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-#ramtech-live-usd-widget .rt-usd-label{font-weight:900;color:#4b5563;font-size:13px}
-#ramtech-live-usd-widget .rt-usd-value{font-weight:950;font-size:clamp(17px,2.4vw,23px);color:#182638;font-variant-numeric:tabular-nums}
-#ramtech-live-usd-widget .rt-usd-meta{display:flex;align-items:center;gap:9px;flex-wrap:wrap;color:#64748b;font-size:10px}
-#ramtech-live-usd-widget .rt-usd-status{display:inline-flex;align-items:center;gap:5px}
-#ramtech-live-usd-widget .rt-usd-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;display:inline-block}
-#ramtech-live-usd-widget[data-state="stale"] .rt-usd-dot,#ramtech-live-usd-widget[data-state="error"] .rt-usd-dot{background:#d97706}
-#ramtech-live-usd-widget a{color:#596579;text-decoration:underline;text-underline-offset:2px}
-@media(max-width:520px){#ramtech-live-usd-widget{padding:10px 12px;gap:5px}#ramtech-live-usd-widget .rt-usd-meta{width:100%}}
-</style>
+
 <section id="ramtech-live-usd-widget" class="wrap" aria-label="قیمت لحظه‌ای دلار" data-state="loading">
   <div class="rt-usd-main">
     <span class="rt-usd-label">💵 دلار آمریکا (بازار آزاد)</span>
