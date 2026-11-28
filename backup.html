@@ -27,7 +27,7 @@ $('validateRestore').onclick=async()=>{
   if(!data||data.backup_type!=='ramtech_store_data'||!data.tables||typeof data.tables!=='object')throw new Error('ساختار فایل یا شناسه پشتیبان رام‌تک معتبر نیست.');
   const names=Object.keys(data.tables),unknown=names.filter(n=>!RESTORE_TABLES.includes(n));
   if(unknown.length)throw new Error('جدول ناشناخته در فایل: '+unknown.join('، '));
-  const lines=['<b>پیش‌نمایش معتبرسنجی فایل</b>','نسخه ساختار: '+(data.schema_version||'قدیمی / نامشخص'),'تاریخ تهیه: '+(data.created_at||'ثبت نشده'),''];
+  const lines=['پیش‌نمایش معتبرسنجی فایل','نسخه ساختار: '+(data.schema_version||'قدیمی / نامشخص'),'تاریخ تهیه: '+(data.created_at||'ثبت نشده'),''];
   let total=0;
   for(const name of names){
    const rows=data.tables[name];if(!Array.isArray(rows))throw new Error('داده جدول '+name+' آرایه نیست.');
@@ -41,7 +41,7 @@ $('validateRestore').onclick=async()=>{
   lines.push('','مجموع: '+total.toLocaleString('fa-IR')+' ردیف','');
   lines.push('نتیجه: ساختار پایه و کلیدهای اصلی بررسی شد.');
   lines.push('⚠️ این فقط پیش‌نمایش است؛ هنوز هیچ اطلاعاتی بازیابی نشده و دکمه‌ای برای اعمال تغییرات وجود ندارد.');
-  out.innerHTML=lines.map(x=>'<div>'+x+'</div>').join('');
+  out.textContent=lines.join('\n');
  }catch(e){out.textContent='فایل قابل تأیید نیست: '+e.message}
 };
 </script></body></html>
